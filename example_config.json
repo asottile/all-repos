@@ -1,0 +1,12 @@
+{
+    "repo_sources": [
+        {
+            "type": "all_repos.source.github",
+            "settings": {
+                "api_key": null,
+                "username": "asottile",
+                "private_repositories": false
+            }
+        }
+    ]
+}
