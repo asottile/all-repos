@@ -1,6 +1,7 @@
 import argparse
 import collections
 import contextlib
+import functools
 import json
 import multiprocessing
 import os.path
@@ -10,19 +11,9 @@ import subprocess
 from typing import Dict
 
 
-Config = collections.namedtuple('Config', ('output_dir', 'repo_sources'))
-RepoSource = collections.namedtuple(
-    'RepoSource', ('mod', 'settings', 'include', 'exclude'),
+Config = collections.namedtuple(
+    'Config', ('output_dir', 'mod', 'settings', 'include', 'exclude'),
 )
-RepoSource.__new__.__defaults__ = ('', '^$')
-
-
-def _to_repo_source(source: dict) -> RepoSource:
-    mod = __import__(source['mod'], fromlist=['__trash'])
-    settings = mod.Settings(**source['settings'])
-    include = re.compile(source.get('include', ''))
-    exclude = re.compile(source.get('exclude', '^$'))
-    return RepoSource(mod, settings, include, exclude)
 
 
 def _check_permissions(filename: str) -> None:
@@ -39,10 +30,16 @@ def load_config(filename: str) -> Config:
     with open(filename) as f:
         contents = json.load(f)
 
-    sources = tuple(_to_repo_source(x) for x in contents['repo_sources'])
+    mod = __import__(contents['mod'], fromlist=['__trash'])
+    settings = mod.Settings(**contents['settings'])
+    include = re.compile(contents.get('include', ''))
+    exclude = re.compile(contents.get('exclude', '^$'))
     return Config(
         output_dir=contents['output_dir'],
-        repo_sources=sources,
+        mod=mod,
+        settings=settings,
+        include=include,
+        exclude=exclude,
     )
 
 
@@ -100,50 +97,76 @@ def _fetch_reset(path: str) -> None:
         print(f'Error fetching {path}')
 
 
+def jobs_type(s):
+    jobs = int(s)
+    if jobs <= 0:
+        return multiprocessing.cpu_count()
+    else:
+        return jobs
+
+
+@contextlib.contextmanager
+def in_process_mapper():
+    yield map
+
+
+@contextlib.contextmanager
+def pool_mapper(jobs):
+    with contextlib.closing(multiprocessing.Pool(jobs)) as pool:
+        yield functools.partial(pool.map, chunksize=4)
+
+
+def get_mapper(jobs):
+    if jobs == 1:
+        return in_process_mapper()
+    else:
+        return pool_mapper(jobs)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-C', '--config-filename', default='all-repos.json')
+    parser.add_argument('-j', '--jobs', type=jobs_type, default=8)
     args = parser.parse_args(argv)
 
     config = load_config(args.config_filename)
     os.makedirs(config.output_dir, exist_ok=True)
-    for source in config.repo_sources:
-        output_dir = source.mod.output_dir(source.settings)
-        repos = source.mod.list_repos(source.settings)
-        repos_filtered = {
-            k: v for k, v in repos.items()
-            if source.include.search(k) and not source.exclude.search(k)
-        }
 
-        dest = os.path.join(config.output_dir, output_dir)
-        os.makedirs(dest, exist_ok=True)
+    repos = config.mod.list_repos(config.settings)
+    repos_filtered = {
+        k: v for k, v in repos.items()
+        if config.include.search(k) and not config.exclude.search(k)
+    }
 
-        # If the previous `repos.json` / `repos_filtered.json` files exist
-        # remove them.
-        for f in ('repos.json', 'repos_filtered.json'):
-            path = os.path.join(dest, 'repos.json')
-            if os.path.exists(path):
-                os.remove(path)
+    os.makedirs(config.output_dir, exist_ok=True)
 
-        current_repos = set(_get_current_state(dest).items())
-        filtered_repos = set(repos_filtered.items())
+    # If the previous `repos.json` / `repos_filtered.json` files exist
+    # remove them.
+    repos_f = os.path.join(config.output_dir, 'repos.json')
+    repos_filtered_f = os.path.join(config.output_dir, 'repos_filtered.json')
+    for path in (repos_f, repos_filtered_f):
+        if os.path.exists(path):
+            os.remove(path)
 
-        # Remove old no longer cloned repositories
-        for path, _ in current_repos - filtered_repos:
-            _remove(dest, path)
+    current_repos = set(_get_current_state(config.output_dir).items())
+    filtered_repos = set(repos_filtered.items())
 
-        for path, remote in filtered_repos - current_repos:
-            _init(dest, path, remote)
+    # Remove old no longer cloned repositories
+    for path, _ in current_repos - filtered_repos:
+        _remove(config.output_dir, path)
 
-        todo = [os.path.join(dest, p) for p in repos_filtered]
-        with contextlib.closing(multiprocessing.Pool(8)) as pool:
-            pool.map(_fetch_reset, todo, chunksize=4)
+    for path, remote in filtered_repos - current_repos:
+        _init(config.output_dir, path, remote)
 
-        # TODO: write these last
-        with open(os.path.join(dest, 'repos.json'), 'w') as f:
-            f.write(json.dumps(repos))
-        with open(os.path.join(dest, 'repos_filtered.json'), 'w') as f:
-            f.write(json.dumps(repos_filtered))
+    todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
+    with get_mapper(args.jobs) as mapper:
+        tuple(mapper(_fetch_reset, todo))
+
+    # TODO: write these last
+    with open(repos_f, 'w') as f:
+        f.write(json.dumps(repos))
+    with open(repos_filtered_f, 'w') as f:
+        f.write(json.dumps(repos_filtered))
 
 
 if __name__ == '__main__':
