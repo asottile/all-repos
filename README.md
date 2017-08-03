@@ -18,29 +18,24 @@ A configuration file looks roughly like this:
 ```json
 {
     "output_dir": "output",
-    "repo_sources": [
-        {
-            "mod": "all_repos.sources.github",
-            "settings":  {
-                "api_key": "...",
-                "username": "asottile"
-            }
-        }
-    ]
+    "mod": "all_repos.sources.github",
+    "settings":  {
+        "api_key": "...",
+        "username": "asottile"
+    }
 }
 ```
 
 - `output_dir`: where repositories will be cloned to when `all-repos-clone` is
   run.
-- `repo_sources`: a list of configured repository sources.
-    - `mod`: the module import path to a `source`, see below for builtin
-      sources as well as directions for writing your own.
-    - `settings`: the source-type-specific settings, the source's
-      documentation will explain the various possible values here.
-    - `include` (default `""`): python regex for selecting repositories.  Only
-      repository names which match this regex will be included.
-    - `exclude` (default `"^$"`): python regex for excluding repositories.
-      Repository names which match this regex will be excluded.
+- `mod`: the module import path to a `source`, see below for builtin
+  sources as well as directions for writing your own.
+- `settings`: the source-type-specific settings, the source's
+  documentation will explain the various possible values here.
+- `include` (default `""`): python regex for selecting repositories.  Only
+  repository names which match this regex will be included.
+- `exclude` (default `"^$"`): python regex for excluding repositories.
+  Repository names which match this regex will be excluded.
 
 ## Sources
 
@@ -58,20 +53,18 @@ follows:
 
 #### Required `settings`
 
-- `output_dir`: where the repositories will be placed in the output directory.
 - `filename`: file containing repositories one-per-line.
 
 #### Directory location
 
 ```
 output/
-+--- {output_dir}/
-    +--- repos.json
-    +--- repos_filtered.json
-    +--- {repo_key1}/
-    +--- {repo_key2}/
-    +--- {repo_key3}/
-    +--- {repo_key4}/
++--- repos.json
++--- repos_filtered.json
++--- {repo_key1}/
++--- {repo_key2}/
++--- {repo_key3}/
++--- {repo_key4}/
 ```
 
 ### `all_repos.sources.github`
@@ -98,15 +91,14 @@ Clones all repositories available to a user on github.
 
 ```
 output/
-+--- github.{username}/
-    +--- repos.json
-    +--- repos_filtered.json
-    +--- {username1}/
-        +--- {repo1}.git/
-        +--- {repo2}.git/
-        +--- {repo3}.git/
-    +--- {username2}/
-        +--- {repo4}.git/
++--- repos.json
++--- repos_filtered.json
++--- {username1}/
+    +--- {repo1}.git/
+    +--- {repo2}.git/
+    +--- {repo3}.git/
++--- {username2}/
+    +--- {repo4}.git/
 ```
 
 ## Writing your own source
@@ -129,12 +121,6 @@ Settings.__new__.__defaults__ = ('optional default value',)
 In this example, the `required_thing` setting is a **required** setting
 whereas `optional` may be omitted (and will get a default value of
 `'optional default value'`).
-
-### `def output_dir(settings: Settings) -> str:` callable
-
-This callable will be passed an instance of your `Settings` class.  It must
-return a string representing the directory inside the output directory which
-will contain each repository.
 
 ### `def list_repos(settings: Settings) -> Dict[str, str]:` callable
 

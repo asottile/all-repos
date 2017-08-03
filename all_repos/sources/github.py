@@ -11,10 +11,6 @@ Settings = collections.namedtuple(
 Settings.__new__.__defaults__ = (False, False, False)
 
 
-def output_dir(settings: Settings) -> str:
-    return f'github.{settings.username}'
-
-
 def _get_all(url: str, **kwargs) -> List[dict]:
     ret = []
     resp = requests.get(url, **kwargs)
