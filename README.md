@@ -127,7 +127,7 @@ Settings.__new__.__defaults__ = ('optional default value',)
 ```
 
 In this example, the `required_thing` setting is a **required** setting
-whereas `optional` may be omitted (and well get a default value of
+whereas `optional` may be omitted (and will get a default value of
 `'optional default value'`).
 
 ### `def output_dir(settings: Settings) -> str:` callable
