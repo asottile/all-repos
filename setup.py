@@ -13,7 +13,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
     ],
-    install_requires=[],
+    install_requires=['requests'],
     packages=find_packages(exclude=('tests*',)),
-    entry_points={'console_scripts': []},
+    entry_points={'console_scripts': ['all-repos-clone=all_repos.clone:main']},
 )

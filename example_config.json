@@ -1,11 +1,12 @@
 {
+    "output_dir": "output",
     "repo_sources": [
         {
-            "type": "all_repos.source.github",
+            "mod": "all_repos.sources.github",
+            "exclude": "^pre-commit/mirrors",
             "settings": {
-                "api_key": null,
-                "username": "asottile",
-                "private_repositories": false
+                "api_key": "...",
+                "username": "asottile"
             }
         }
     ]
