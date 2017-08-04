@@ -112,7 +112,7 @@ def in_process_mapper():
 
 @contextlib.contextmanager
 def pool_mapper(jobs):
-    with contextlib.closing(multiprocessing.Pool(jobs)) as pool:
+    with multiprocessing.Pool(jobs) as pool:
         yield functools.partial(pool.map, chunksize=4)
 
 
