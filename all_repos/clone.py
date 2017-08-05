@@ -1,7 +1,6 @@
 import argparse
 import collections
-import contextlib
-import functools
+import concurrent.futures
 import json
 import multiprocessing
 import os.path
@@ -60,7 +59,7 @@ def _get_current_state_helper(path):
     for direntry in os.scandir(path):
         if direntry.name == '.git':
             seen_git = True
-        elif direntry.is_dir():
+        elif direntry.is_dir():  # pragma: no branch (defensive)
             pths.append(direntry)
     if seen_git:
         yield path, _git_remote(path)
@@ -115,24 +114,6 @@ def jobs_type(s):
         return jobs
 
 
-@contextlib.contextmanager
-def in_process_mapper():
-    yield map
-
-
-@contextlib.contextmanager
-def pool_mapper(jobs):
-    with multiprocessing.Pool(jobs) as pool:
-        yield functools.partial(pool.map, chunksize=4)
-
-
-def get_mapper(jobs):
-    if jobs == 1:
-        return in_process_mapper()
-    else:
-        return pool_mapper(jobs)
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-C', '--config-filename', default='all-repos.json')
@@ -166,8 +147,8 @@ def main(argv=None):
         _init(config.output_dir, path, remote)
 
     todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
-    with get_mapper(args.jobs) as mapper:
-        tuple(mapper(_fetch_reset, todo))
+    with concurrent.futures.ThreadPoolExecutor(args.jobs) as ex:
+        tuple(ex.map(_fetch_reset, todo))
 
     # TODO: write these last
     with open(repos_f, 'w') as f:
