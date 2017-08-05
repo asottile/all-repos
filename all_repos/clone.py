@@ -30,12 +30,14 @@ def load_config(filename: str) -> Config:
     with open(filename) as f:
         contents = json.load(f)
 
+    output_dir = os.path.join(filename, '..', contents['output_dir'])
+    output_dir = os.path.normpath(output_dir)
     mod = __import__(contents['mod'], fromlist=['__trash'])
     settings = mod.Settings(**contents['settings'])
     include = re.compile(contents.get('include', ''))
     exclude = re.compile(contents.get('exclude', '^$'))
     return Config(
-        output_dir=contents['output_dir'],
+        output_dir=output_dir,
         mod=mod,
         settings=settings,
         include=include,
@@ -50,6 +52,9 @@ def _git_remote(path: str) -> str:
 
 
 def _get_current_state_helper(path):
+    if not os.path.exists(path):
+        return
+
     pths = []
     seen_git = False
     for direntry in os.scandir(path):
@@ -73,6 +78,11 @@ def _get_current_state(path: str) -> Dict[str, str]:
 def _remove(dest: str, path: str) -> None:
     print(f'Removing {path}')
     shutil.rmtree(os.path.join(dest, path))
+    # Remove any empty directories
+    path = os.path.dirname(path)
+    while path and not os.listdir(os.path.join(dest, path)):
+        os.rmdir(os.path.join(dest, path))
+        path = os.path.dirname(path)
 
 
 def _init(dest: str, path: str, remote: str) -> None:
@@ -130,15 +140,12 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     config = load_config(args.config_filename)
-    os.makedirs(config.output_dir, exist_ok=True)
 
     repos = config.mod.list_repos(config.settings)
     repos_filtered = {
         k: v for k, v in repos.items()
         if config.include.search(k) and not config.exclude.search(k)
     }
-
-    os.makedirs(config.output_dir, exist_ok=True)
 
     # If the previous `repos.json` / `repos_filtered.json` files exist
     # remove them.

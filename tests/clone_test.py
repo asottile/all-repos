@@ -51,29 +51,31 @@ def file_config(tmpdir):
         'repo1': dir1.strpath, 'repo2': dir2.strpath,
     }))
 
-    output_dir = tmpdir.join('output')
     cfg = tmpdir.join('config.json')
     cfg.write(json.dumps({
-        'output_dir': output_dir.strpath,
+        'output_dir': 'output',
         'mod': 'all_repos.sources.json_file',
         'settings': {'filename': repos_json.strpath},
     }))
     cfg.chmod(0o600)
     return auto_namedtuple(
-        output_dir=output_dir,
+        output_dir=tmpdir.join('output'),
         cfg=cfg,
         repos_json=repos_json,
         dir1=dir1,
         dir2=dir2,
         rev1=rev1,
         rev2=rev2,
-        tmp=tmpdir,
     )
 
 
-def test_clone_file_config(file_config):
-    ret = main(('--config-file', file_config.cfg.strpath, '--jobs', '1'))
-    assert not ret
+def _main(cfg, jobs='1'):
+    assert not main(('--config-file', cfg.strpath, '--jobs', jobs))
+
+
+@pytest.mark.parametrize('jobs', ('1', '4'))
+def test_it_clones(file_config, jobs):
+    _main(file_config.cfg, jobs=jobs)
     assert file_config.output_dir.isdir()
 
     expected = {
@@ -90,19 +92,50 @@ def test_clone_file_config(file_config):
     assert file_config.output_dir.join('repo2').isdir()
     assert _revparse(file_config.output_dir.join('repo2')) == file_config.rev2
 
+
+def test_it_updates(file_config):
+    _main(file_config.cfg)
+
     # Recloning should end up with an updated revision
     subprocess.check_call((
         'git', '-C', file_config.dir1, 'commit', '--allow-empty', '-m', 'foo',
     ))
     new_rev = _revparse(file_config.dir1)
     assert new_rev != file_config.rev1
-    ret = main(('--config-file', file_config.cfg.strpath, '--jobs', '1'))
-    assert not ret
+    _main(file_config.cfg)
     assert _revparse(file_config.output_dir.join('repo1')) == new_rev
+
+
+def test_it_removes_directories(file_config):
+    _main(file_config.cfg)
 
     # Recloning with a removed directory should remove the repo
     new_contents = json.dumps({'repo2': file_config.dir2.strpath})
     file_config.repos_json.write(new_contents)
-    ret = main(('--config-file', file_config.cfg.strpath, '--jobs', '4'))
-    assert not ret
+    _main(file_config.cfg)
     assert not file_config.output_dir.join('repo1').exists()
+
+
+def test_it_removes_empty_directories(file_config):
+    new_contents = json.dumps({'dir1/repo2': file_config.dir2.strpath})
+    file_config.repos_json.write(new_contents)
+    _main(file_config.cfg)
+    assert file_config.output_dir.join('dir1/repo2').isdir()
+
+    new_contents = json.dumps({'repo1': file_config.dir1.strpath})
+    file_config.repos_json.write(new_contents)
+    _main(file_config.cfg)
+
+    assert not file_config.output_dir.join('dir1/repo2').exists()
+    assert not file_config.output_dir.join('dir1').exists()
+
+
+def test_too_permissive(file_config):
+    file_config.cfg.chmod(0o777)
+    with pytest.raises(SystemExit) as excinfo:
+        _main(file_config.cfg)
+    msg, = excinfo.value.args
+    assert msg == (
+        f'{file_config.cfg} has too-permissive permissions, Expected 0o600, '
+        f'got 0o777'
+    )
