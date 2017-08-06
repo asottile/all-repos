@@ -83,7 +83,7 @@ Clones all repositories available to a user on github.
 #### Optional `settings`
 
 - `collaborator` (default `false`): whether to include repositories which are
-  owned but only visible as a collaborator.
+  not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 
