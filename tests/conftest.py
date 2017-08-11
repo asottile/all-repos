@@ -1,5 +1,7 @@
 import json
 import subprocess
+import sys
+from unittest import mock
 
 import pytest
 
@@ -41,3 +43,9 @@ def file_config(tmpdir):
         rev1=rev1,
         rev2=rev2,
     )
+
+
+@pytest.fixture(autouse=True)
+def not_a_tty():
+    with mock.patch.object(sys.stdout, 'isatty', return_value=False) as mck:
+        yield mck

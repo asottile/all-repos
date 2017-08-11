@@ -45,7 +45,12 @@ def repos_matching_cli(config, grep_args):
     return int(not matching)
 
 
-def grep_cli(config, grep_args):
+def grep_cli(config, grep_args, *, color):
+    if color:
+        grep_args = ('--color=always', *grep_args)
+        filename_fmt = b'\033[1;34m%s\033[m\033[36m:\033[m%s\n'
+    else:
+        filename_fmt = b'%s:%s\n'
     try:
         matching = grep(config, grep_args)
     except GrepError as e:
@@ -53,7 +58,7 @@ def grep_cli(config, grep_args):
     for repo, stdout in sorted(matching.items()):
         repo_b = os.path.join(config.output_dir, repo).encode()
         for line in stdout.splitlines():
-            sys.stdout.buffer.write(b'%s:%s\n' % (repo_b, line))
+            sys.stdout.buffer.write(filename_fmt % (repo_b, line))
             sys.stdout.buffer.flush()
     return int(not matching)
 
@@ -61,6 +66,7 @@ def grep_cli(config, grep_args):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     cli.add_config_arg(parser)
+    cli.add_color_arg(parser)
     parser.add_argument(
         '--repos-with-matches', action='store_true',
         help='Only print repositories with matches.',
@@ -71,7 +77,7 @@ def main(argv=None):
     if args.repos_with_matches:
         return repos_matching_cli(config, rest)
     else:
-        return grep_cli(config, rest)
+        return grep_cli(config, rest, color=args.color)
 
 
 if __name__ == '__main__':
