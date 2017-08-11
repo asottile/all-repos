@@ -1,4 +1,6 @@
 import subprocess
+import sys
+from unittest import mock
 
 import pytest
 
@@ -89,6 +91,29 @@ def test_grep_cli(file_config_files, capsys):
     assert ret == 1
     out, _ = capsys.readouterr()
     assert out == ''
+
+
+def _test_grep_color(file_config_files, capsys, *, args=()):
+    ret = main(('-C', str(file_config_files.cfg), 'OHAI', *args))
+    assert ret == 0
+    out, _ = capsys.readouterr()
+    expected = (
+        '\033[1;34m{}\033[m'
+        '\033[36m:\033[m'
+        'f'
+        '\033[36m:\033[m'
+        '\033[1;31mOHAI\033[m\n'
+    ).format(file_config_files.output_dir.join('repo1'))
+    assert out == expected
+
+
+def test_grep_color_always(file_config_files, capsys):
+    _test_grep_color(file_config_files, capsys, args=('--color', 'always'))
+
+
+def test_grep_color_tty(file_config_files, capsys):
+    with mock.patch.object(sys.stdout, 'isatty', return_value=True):
+        _test_grep_color(file_config_files, capsys)
 
 
 @pytest.mark.parametrize('args', ((), ('--repos-with-matches',)))
