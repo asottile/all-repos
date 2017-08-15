@@ -56,13 +56,9 @@ def main(argv=None):
     config = load_config(args.config_filename)
     repos = repos_matching(config, ('', '--', '.pre-commit-config.yaml'))
 
-    commit = autofix_lib.Commit(
+    repos, commit, autofix_settings = autofix_lib.from_cli(
+        args,
         msg='Ran pre-commit autoupdate.', branch_name='pre-commit-autoupdate',
-        author=args.author,
-    )
-    autofix_settings = autofix_lib.AutofixSettings(
-        jobs=args.jobs, color=args.color, limit=args.limit,
-        dry_run=args.dry_run,
     )
 
     with tmp_pre_commit_home():

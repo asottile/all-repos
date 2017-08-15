@@ -9,6 +9,19 @@ from all_repos import git
 from all_repos.config import load_config
 
 
+@pytest.mark.parametrize(
+    ('cli_repos', 'expected'),
+    (
+        (None, ['found_repo']),
+        ([], []),
+        (['cli_repo'], ['cli_repo']),
+    ),
+)
+def test_filter_repos(cli_repos, expected):
+    ret = autofix_lib.filter_repos(['found_repo'], cli_repos)
+    assert ret == expected
+
+
 def test_assert_importable_is_importable():
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
 

@@ -13,10 +13,42 @@ from all_repos import mapper
 from all_repos.config import Config
 
 
-Commit = collections.namedtuple('Commit', ('msg', 'branch_name', 'author'))
-AutofixSettings = collections.namedtuple(
-    'AutofixSettings', ('jobs', 'color', 'limit', 'dry_run'),
-)
+class Commit(collections.namedtuple(
+        'Commit', ('msg', 'branch_name', 'author'),
+)):
+    __slots__ = ()
+
+    @classmethod
+    def from_cli(cls, args, *, msg, branch_name):
+        return cls(msg=msg, branch_name=branch_name, author=args.author)
+
+
+class AutofixSettings(collections.namedtuple(
+        'AutofixSettings', ('jobs', 'color', 'limit', 'dry_run'),
+)):
+    __slots__ = ()
+
+    @classmethod
+    def from_cli(cls, args):
+        return cls(
+            jobs=args.jobs, color=args.color, limit=args.limit,
+            dry_run=args.dry_run,
+        )
+
+
+def filter_repos(repos, cli_repos):
+    if cli_repos is not None:
+        return cli_repos
+    else:
+        return repos
+
+
+def from_cli(args, *, repos, msg, branch_name):
+    return (
+        filter_repos(repos, args.repos),
+        Commit.from_cli(args, msg=msg, branch_name=branch_name),
+        AutofixSettings.from_cli(args),
+    )
 
 
 def run(*args, **kwargs):

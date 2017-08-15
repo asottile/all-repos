@@ -52,3 +52,4 @@ def add_fixer_args(parser):
     )
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--limit', type=int, default=None)
+    parser.add_argument('--repos', nargs='*')
