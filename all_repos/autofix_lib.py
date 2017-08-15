@@ -1,0 +1,108 @@
+import collections
+import contextlib
+import functools
+import os
+import pipes
+import subprocess
+import tempfile
+import traceback
+
+from all_repos import color
+from all_repos import git
+from all_repos import mapper
+from all_repos.config import Config
+
+
+Commit = collections.namedtuple('Commit', ('msg', 'branch_name', 'author'))
+AutofixSettings = collections.namedtuple(
+    'AutofixSettings', ('jobs', 'color', 'limit', 'dry_run'),
+)
+
+
+def run(*args, **kwargs):
+    cmdstr = ' '.join(pipes.quote(arg) for arg in args)
+    print(f'$ {cmdstr}', flush=True)
+    kwargs.setdefault('check', True)
+    return subprocess.run(args, **kwargs)
+
+
+@contextlib.contextmanager
+def cwd(path):
+    pwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(pwd)
+
+
+def assert_importable(module: str, *, install: str) -> None:
+    try:
+        __import__(module)
+    except ImportError:
+        raise SystemExit(
+            f'This tool requires the `{module}` module to be installed.\n'
+            f'Try installing it via `pip install {install}`.',
+        )
+
+
+@contextlib.contextmanager
+def repo_context(repo, *, use_color):
+    print(color.fmt(f'***{repo}', color.TURQUOISE_H, use_color=use_color))
+    try:
+        remote = git.remote(repo)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            run('git', 'clone', '--quiet', repo, tmpdir)
+            with cwd(tmpdir):
+                run('git', 'remote', 'set-url', 'origin', remote)
+                yield
+    except Exception:
+        print(color.fmt(f'***Errored', color.RED_H, use_color=use_color))
+        traceback.print_exc()
+
+
+def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
+    with repo_context(repo, use_color=autofix_settings.color):
+        branch_name = f'all-repos_autofix_{commit.branch_name}'
+        run('git', 'checkout', '--quiet', 'origin/master', '-b', branch_name)
+
+        apply_fix()
+
+        diff = run('git', 'diff', 'origin/master', '--exit-code', check=False)
+        if not diff.returncode:
+            return
+
+        check_fix()
+
+        commit_message = (
+            f'{commit.msg}\n\n'
+            f'Committed via https://github.com/asottile/all-repos'
+        )
+        commit_cmd = ('git', 'commit', '--quiet', '-a', '-m', commit_message)
+        if commit.author:
+            commit_cmd += ('--author', commit.author)
+
+        run(*commit_cmd)
+
+        if autofix_settings.dry_run:
+            return
+
+        config.push(config.push_settings, branch_name)
+
+
+def fix(
+        repos, *,
+        apply_fix,
+        check_fix=lambda: None,
+        config: Config,
+        commit: Commit,
+        autofix_settings: AutofixSettings,
+):
+    repos = tuple(repos)[:autofix_settings.limit]
+    func = functools.partial(
+        _fix_inner,
+        apply_fix=apply_fix, check_fix=check_fix,
+        config=config, commit=commit, autofix_settings=autofix_settings,
+    )
+    with mapper.process_mapper(autofix_settings.jobs) as do_map:
+        mapper.exhaust(do_map(func, repos))

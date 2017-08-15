@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 from all_repos import cli
+from all_repos import color
 from all_repos.config import load_config
 
 
@@ -16,7 +17,7 @@ def grep_result(config, repo, args):
     ret = subprocess.run(
         ('git', '-C', path, 'grep', *args), stdout=subprocess.PIPE,
     )
-    return repo, ret.returncode, ret.stdout
+    return path, ret.returncode, ret.stdout
 
 
 def grep(config, grep_args):
@@ -41,24 +42,25 @@ def repos_matching_cli(config, grep_args):
     except GrepError as e:
         return e.args[0]
     for repo in sorted(matching):
-        print(os.path.join(config.output_dir, repo))
+        print(repo)
     return int(not matching)
 
 
-def grep_cli(config, grep_args, *, color):
-    if color:
+def grep_cli(config, grep_args, *, use_color):
+    if use_color:
         grep_args = ('--color=always', *grep_args)
-        filename_fmt = b'\033[1;34m%s\033[m\033[36m:\033[m%s\n'
-    else:
-        filename_fmt = b'%s:%s\n'
     try:
         matching = grep(config, grep_args)
     except GrepError as e:
         return e.args[0]
     for repo, stdout in sorted(matching.items()):
-        repo_b = os.path.join(config.output_dir, repo).encode()
+        repo_b = repo.encode()
         for line in stdout.splitlines():
-            sys.stdout.buffer.write(filename_fmt % (repo_b, line))
+            sys.stdout.buffer.write(
+                color.fmtb(repo_b, color.BLUE_B, use_color=use_color) +
+                color.fmtb(b':', color.TURQUOISE, use_color=use_color) +
+                line + b'\n',
+            )
             sys.stdout.buffer.flush()
     return int(not matching)
 
@@ -77,7 +79,7 @@ def main(argv=None):
     if args.repos_with_matches:
         return repos_matching_cli(config, rest)
     else:
-        return grep_cli(config, rest, color=args.color)
+        return grep_cli(config, rest, use_color=args.color)
 
 
 if __name__ == '__main__':

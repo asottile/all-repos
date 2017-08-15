@@ -18,8 +18,13 @@ A configuration file looks roughly like this:
 ```json
 {
     "output_dir": "output",
-    "mod": "all_repos.sources.github",
-    "settings":  {
+    "source": "all_repos.source.github",
+    "source_settings":  {
+        "api_key": "...",
+        "username": "asottile"
+    },
+    "push": "all_repos.push.github_pull_request",
+    "push_settings": {
         "api_key": "...",
         "username": "asottile"
     }
@@ -28,18 +33,22 @@ A configuration file looks roughly like this:
 
 - `output_dir`: where repositories will be cloned to when `all-repos-clone` is
   run.
-- `mod`: the module import path to a `source`, see below for builtin
-  sources as well as directions for writing your own.
-- `settings`: the source-type-specific settings, the source's
-  documentation will explain the various possible values here.
+- `source`: the module import path to a `source`, see below for builtin
+  source modules as well as directions for writing your own.
+- `source_settings`: the source-type-specific settings, the source module's
+  documentation will explain the various possible values.
+- `push`: the module import path to a `push`, see below for builtin push
+  modules as well as directions for writing your own.
+- `push_settings`: the push-type-specific settings, the push module's
+  documentation will explain the various possible values.
 - `include` (default `""`): python regex for selecting repositories.  Only
   repository names which match this regex will be included.
 - `exclude` (default `"^$"`): python regex for excluding repositories.
   Repository names which match this regex will be excluded.
 
-## Sources
+## Source modules
 
-### `all_repos.sources.json_file`
+### `all_repos.source.json_file`
 
 Clones all repositories listed in a file.  The file must be formatted as
 follows:
@@ -51,7 +60,7 @@ follows:
 }
 ```
 
-#### Required `settings`
+#### Required `source_settings`
 
 - `filename`: file containing repositories one-per-line.
 
@@ -67,11 +76,11 @@ output/
 +--- {repo_key4}/
 ```
 
-### `all_repos.sources.github`
+### `all_repos.source.github`
 
 Clones all repositories available to a user on github.
 
-#### Required `settings`
+#### Required `source_settings`
 
 - `api_key`: the api key which the user will log in as.
     - Use [the settings tab](//github.com/settings/tokens/new) to create a
@@ -80,7 +89,7 @@ Clones all repositories available to a user on github.
       need `repo` to access private repositories.
 - `username`: the github username you will log in as.
 
-#### Optional `settings`
+#### Optional `source_settings`
 
 - `collaborator` (default `false`): whether to include repositories which are
   not owned but can be contributed to as a collaborator.
@@ -103,13 +112,12 @@ output/
 
 ## Writing your own source
 
-To create a `source`, first create a module.  This module must have the
-following api:
+First create a module.  This module must have the following api:
 
 ### A `Settings` class
 
-This class will receive keyword arguments for all values in the `settings`
-dictionary.
+This class will receive keyword arguments for all values in the
+`source_settings` dictionary.
 
 An easy way to implement the `Settings` class is by using a `namedtuple`:
 
@@ -128,6 +136,53 @@ This callable will be passed an instance of your `Settings` class.  It must
 return a mapping from `{repo_name: repository_url}`.  The `repo_name` is the
 directory name inside the `output_dir`.
 
+## Push modules
+
+### `all_repos.push.merge_to_master`
+
+Merges the branch directly to `master` and pushes.  The commands it runs look
+roughly like this:
+
+```bash
+git checkout master
+git pull
+git merge --no-ff $BRANCH
+git push origin HEAD
+```
+
+#### `push_settings`
+
+There are no configurable settings for `merge_to_master`.
+
+### `all_repos.push.github_pull_request`
+
+Pushes the branch to `origin` and then creates a github pull request for the
+branch.
+
+#### Required `push_settings`
+
+- `api_key`: the api key which the user will log in as.
+    - Use [the settings tab](//github.com/settings/tokens/new) to create a
+      personal access token.
+    - The minimum scope required to function is `public_repo`, though you'll
+      need `repo` to access private repositories.
+- `username`: the github username you will log in as.
+
+
+## Writing your own push module
+
+First create a module.  This module must have the following api:
+
+### A `Settings` class
+
+This class will receive keyword arguments for all values in the `push_settings`
+dictionary.
+
+### `def push(settings: Settings, branch_name: str) -> None:`
+
+This callable will be passed an instance of your `Settings` class.  It should
+deploy the branch.  The function will be called with the root of the
+repository as the `cwd`.
 
 ## Usage
 

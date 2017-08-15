@@ -1,8 +1,13 @@
 {
     "output_dir": "output",
-    "mod": "all_repos.sources.github",
     "exclude": "^pre-commit/mirrors",
-    "settings": {
+    "source": "all_repos.source.github",
+    "source_settings": {
+        "api_key": "...",
+        "username": "asottile"
+    },
+    "push": "all_repos.push.github_pull_request",
+    "push_settings": {
         "api_key": "...",
         "username": "asottile"
     }

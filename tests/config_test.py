@@ -1,13 +1,13 @@
 import pytest
 
-import all_repos.sources.json_file
+import all_repos.source.json_file
 from all_repos import clone
 from all_repos.config import load_config
 
 
 def test_load_config(file_config):
     cfg = load_config(file_config.cfg)
-    assert cfg.mod is all_repos.sources.json_file
+    assert cfg.list_repos is all_repos.source.json_file.list_repos
 
 
 def test_load_config_too_permissive(file_config):
