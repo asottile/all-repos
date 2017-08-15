@@ -1,36 +1,23 @@
-import subprocess
 import sys
 from unittest import mock
 
 import pytest
 
-from all_repos import clone
 from all_repos.config import load_config
 from all_repos.grep import grep
 from all_repos.grep import main
 from all_repos.grep import repos_matching
 
 
-def _write_file_commit(git, filename, contents):
-    git.join(filename).write(contents)
-    subprocess.check_call(('git', '-C', git, 'add', '.'))
-    subprocess.check_call(('git', '-C', git, 'commit', '-mfoo'))
-
-
-@pytest.fixture
-def file_config_files(file_config):
-    _write_file_commit(file_config.dir1, 'f', 'OHAI\n')
-    _write_file_commit(file_config.dir2, 'f', 'OHELLO\n')
-    clone.main(('--config-filename', str(file_config.cfg)))
-    return file_config
-
-
 def test_repos_matching(file_config_files):
     config = load_config(file_config_files.cfg)
     ret = repos_matching(config, ['^OH'])
-    assert ret == {'repo1', 'repo2'}
+    assert ret == {
+        file_config_files.output_dir.join('repo1'),
+        file_config_files.output_dir.join('repo2'),
+    }
     ret = repos_matching(config, ['^OHAI'])
-    assert ret == {'repo1'}
+    assert ret == {file_config_files.output_dir.join('repo1')}
     ret = repos_matching(config, ['nope'])
     assert ret == set()
 
@@ -64,9 +51,12 @@ def test_repos_matching_cli(file_config_files, capsys):
 def test_grep(file_config_files):
     config = load_config(file_config_files.cfg)
     ret = grep(config, ['^OH'])
-    assert ret == {'repo1': b'f:OHAI\n', 'repo2': b'f:OHELLO\n'}
+    assert ret == {
+        file_config_files.output_dir.join('repo1'): b'f:OHAI\n',
+        file_config_files.output_dir.join('repo2'): b'f:OHELLO\n',
+    }
     ret = grep(config, ['^OHAI'])
-    assert ret == {'repo1': b'f:OHAI\n'}
+    assert ret == {file_config_files.output_dir.join('repo1'): b'f:OHAI\n'}
     ret = grep(config, ['nope'])
     assert ret == {}
 

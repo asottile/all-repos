@@ -5,7 +5,12 @@ import re
 
 
 class Config(collections.namedtuple(
-        'Config', ('output_dir', 'mod', 'settings', 'include', 'exclude'),
+        'Config',
+        (
+            'output_dir', 'include', 'exclude',
+            'list_repos', 'source_settings',
+            'push', 'push_settings',
+        ),
 )):
     __slots__ = ()
 
@@ -31,14 +36,14 @@ def load_config(filename: str) -> Config:
 
     output_dir = os.path.join(filename, '..', contents['output_dir'])
     output_dir = os.path.normpath(output_dir)
-    mod = __import__(contents['mod'], fromlist=['__trash'])
-    settings = mod.Settings(**contents['settings'])
+    source_module = __import__(contents['source'], fromlist=['__trash'])
+    source_settings = source_module.Settings(**contents['source_settings'])
+    push_module = __import__(contents['push'], fromlist=['__trash'])
+    push_settings = push_module.Settings(**contents['push_settings'])
     include = re.compile(contents.get('include', ''))
     exclude = re.compile(contents.get('exclude', '^$'))
     return Config(
-        output_dir=output_dir,
-        mod=mod,
-        settings=settings,
-        include=include,
-        exclude=exclude,
+        output_dir=output_dir, include=include, exclude=exclude,
+        list_repos=source_module.list_repos, source_settings=source_settings,
+        push=push_module.push, push_settings=push_settings,
     )

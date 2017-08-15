@@ -14,8 +14,8 @@ def jobs_type(s):
         return jobs
 
 
-def add_jobs_arg(parser):
-    parser.add_argument('-j', '--jobs', type=jobs_type, default=8)
+def add_jobs_arg(parser, default=8):
+    parser.add_argument('-j', '--jobs', type=jobs_type, default=default)
 
 
 COLOR_CHOICES = ('auto', 'always', 'never')
@@ -36,3 +36,19 @@ def add_color_arg(parser):
         metavar='{' + ','.join(COLOR_CHOICES) + '}',
         help='Whether to use color in output.  Defaults to `%(default)s`.',
     )
+
+
+def add_fixer_args(parser):
+    add_config_arg(parser)
+    add_jobs_arg(parser, default=1)
+    add_color_arg(parser)
+    parser.add_argument(
+        '--author',
+        help=(
+            'Override commit author.  '
+            'This is passed directly to `git commit`.  '
+            "An example: `--author='Herp Derp <herp.derp@umich.edu>'`"
+        ),
+    )
+    parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--limit', type=int, default=None)

@@ -1,5 +1,4 @@
 import argparse
-import concurrent.futures
 import json
 import os.path
 import shutil
@@ -7,6 +6,7 @@ import subprocess
 from typing import Dict
 
 from all_repos import cli
+from all_repos import mapper
 from all_repos.config import load_config
 
 
@@ -80,7 +80,7 @@ def main(argv=None):
 
     config = load_config(args.config_filename)
 
-    repos = config.mod.list_repos(config.settings)
+    repos = config.list_repos(config.source_settings)
     repos_filtered = {
         k: v for k, v in repos.items()
         if config.include.search(k) and not config.exclude.search(k)
@@ -105,8 +105,8 @@ def main(argv=None):
         _init(config.output_dir, path, remote)
 
     todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
-    with concurrent.futures.ThreadPoolExecutor(args.jobs) as ex:
-        tuple(ex.map(_fetch_reset, todo))
+    with mapper.thread_mapper(args.jobs) as do_map:
+        mapper.exhaust(do_map(_fetch_reset, todo))
 
     # TODO: write these last
     with open(repos_f, 'w') as f:
