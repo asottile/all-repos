@@ -58,6 +58,7 @@ def main(argv=None):
 
     repos, commit, autofix_settings = autofix_lib.from_cli(
         args,
+        repos=repos,
         msg='Ran pre-commit autoupdate.', branch_name='pre-commit-autoupdate',
     )
 
