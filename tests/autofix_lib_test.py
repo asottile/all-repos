@@ -18,7 +18,7 @@ from all_repos.config import load_config
     ),
 )
 def test_filter_repos(cli_repos, expected):
-    ret = autofix_lib.filter_repos(['found_repo'], cli_repos)
+    ret = autofix_lib.filter_repos(None, cli_repos, lambda _: ['found_repo'])
     assert ret == expected
 
 

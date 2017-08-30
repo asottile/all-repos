@@ -35,6 +35,10 @@ def _run_all_files(**kwargs):
     )
 
 
+def find_repos(config):
+    return repos_matching(config, ('', '--', '.pre-commit-config.yaml'))
+
+
 def apply_fix():
     autofix_lib.run(sys.executable, '-m', 'pre_commit', 'autoupdate')
     # This may return nonzero for fixes, that's ok!
@@ -48,17 +52,17 @@ def check_fix():
 def main(argv=None):
     parser = argparse.ArgumentParser()
     cli.add_fixer_args(parser)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
     assert args.jobs == 1, 'https://github.com/pre-commit/pre-commit/issues/363'  # noqa
 
     config = load_config(args.config_filename)
-    repos = repos_matching(config, ('', '--', '.pre-commit-config.yaml'))
 
     repos, commit, autofix_settings = autofix_lib.from_cli(
         args,
-        repos=repos,
+        config=config,
+        find_repos=find_repos,
         msg='Ran pre-commit autoupdate.', branch_name='pre-commit-autoupdate',
     )
 
