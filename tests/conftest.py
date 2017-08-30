@@ -4,30 +4,26 @@ import sys
 from unittest import mock
 
 import pytest
+import requests
 
 from all_repos import clone
 from testing.auto_namedtuple import auto_namedtuple
-from testing.git import revparse
+from testing.git import init_repo
 
 
-def _init_repo(pth):
-    subprocess.check_call(('git', 'init', pth))
-    subprocess.check_call((
-        'git', '-C', pth, 'commit', '--allow-empty', '-m', pth,
-    ))
-    subprocess.check_call((
-        'git', '-C', pth, 'config',
-        'receive.denyCurrentBranch', 'updateInstead',
-    ))
-    return revparse(pth)
+@pytest.fixture
+def mock_requests():
+    with mock.patch.object(requests, 'get') as get_mock:
+        with mock.patch.object(requests, 'post') as post_mock:
+            yield auto_namedtuple(get=get_mock, post=post_mock)
 
 
 @pytest.fixture
 def file_config(tmpdir):
     dir1 = tmpdir.join('1')
     dir2 = tmpdir.join('2')
-    rev1 = _init_repo(dir1)
-    rev2 = _init_repo(dir2)
+    rev1 = init_repo(dir1)
+    rev2 = init_repo(dir2)
 
     repos_json = tmpdir.join('repos.json')
     repos_json.write(json.dumps({'repo1': str(dir1), 'repo2': str(dir2)}))
