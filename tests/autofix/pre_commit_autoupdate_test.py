@@ -39,12 +39,12 @@ def autoupdatable(tmpdir):
         '    language: system\n'
         '    types: [file]\n',
     )
-    subprocess.check_call(('git', '-C', str(hook_repo), 'add', '.'))
+    subprocess.check_call(('git', '-C', hook_repo, 'add', '.'))
     subprocess.check_call((
-        'git', '-C', str(hook_repo), 'commit', '-m', 'add hook',
+        'git', '-C', hook_repo, 'commit', '-m', 'add hook',
     ))
     rev = revparse(hook_repo)
-    subprocess.check_call(('git', '-C', str(hook_repo), 'tag', 'v1'))
+    subprocess.check_call(('git', '-C', hook_repo, 'tag', 'v1'))
 
     consuming_repo = tmpdir.join('consuming')
     init_repo(consuming_repo)
@@ -54,15 +54,13 @@ def autoupdatable(tmpdir):
         f'    hooks:\n'
         f'    -   id: hook\n',
     )
-    subprocess.check_call(('git', '-C', str(consuming_repo), 'add', '.'))
+    subprocess.check_call(('git', '-C', consuming_repo, 'add', '.'))
     subprocess.check_call((
-        'git', '-C', str(consuming_repo), 'commit', '-m', 'consume hook',
+        'git', '-C', consuming_repo, 'commit', '-m', 'consume hook',
     ))
 
     update_repo = tmpdir.join('update_repo')
-    subprocess.check_call((
-        'git', 'clone', str(consuming_repo), str(update_repo),
-    ))
+    subprocess.check_call(('git', 'clone', consuming_repo, update_repo))
 
     return auto_namedtuple(
         hook_repo=hook_repo,

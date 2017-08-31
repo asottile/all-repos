@@ -15,12 +15,12 @@ def fake_github_repo(tmpdir):
     init_repo(src)
 
     dest = tmpdir.join('dest')
-    subprocess.check_call(('git', 'clone', str(src), str(dest)))
+    subprocess.check_call(('git', 'clone', src, dest))
     subprocess.check_call((
-        'git', '-C', str(dest), 'checkout', 'origin/master', '-b', 'feature',
+        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
     ))
     subprocess.check_call((
-        'git', '-C', str(dest), 'commit', '--allow-empty',
+        'git', '-C', dest, 'commit', '--allow-empty',
         '-m', 'This is a commit message\n\nHere is some more information!',
     ))
     settings = github_pull_request.Settings(api_key='fake', username='user')
@@ -33,7 +33,7 @@ def test_github_pull_request(mock_requests, fake_github_repo):
 
     # Should have pushed the branch to origin
     out = subprocess.check_output((
-        'git', '-C', str(fake_github_repo.src), 'branch',
+        'git', '-C', fake_github_repo.src, 'branch',
     )).decode()
     assert out == '  feature\n* master\n'
 
