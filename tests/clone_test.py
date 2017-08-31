@@ -57,3 +57,12 @@ def test_it_removes_empty_directories(file_config):
 
     assert not file_config.output_dir.join('dir1/repo2').exists()
     assert not file_config.output_dir.join('dir1').exists()
+
+
+def test_it_continues_on_unclonable_repositories(file_config, capsys):
+    new_contents = json.dumps({'dir1/repo2': '/does/not/exist'})
+    file_config.repos_json.write(new_contents)
+    assert not main(('--config-file', str(file_config.cfg)))
+
+    out, err = capsys.readouterr()
+    assert 'Error fetching ' in out
