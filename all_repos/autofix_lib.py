@@ -36,16 +36,16 @@ class AutofixSettings(collections.namedtuple(
         )
 
 
-def filter_repos(repos, cli_repos):
+def filter_repos(config, cli_repos, find_repos):
     if cli_repos is not None:
         return cli_repos
     else:
-        return repos
+        return find_repos(config)
 
 
-def from_cli(args, *, repos, msg, branch_name):
+def from_cli(args, *, config, find_repos, msg, branch_name):
     return (
-        filter_repos(repos, args.repos),
+        filter_repos(config, args.repos, find_repos),
         Commit.from_cli(args, msg=msg, branch_name=branch_name),
         AutofixSettings.from_cli(args),
     )
