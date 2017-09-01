@@ -1,5 +1,4 @@
 import json
-import subprocess
 import sys
 from unittest import mock
 
@@ -9,6 +8,7 @@ import requests
 from all_repos import clone
 from testing.auto_namedtuple import auto_namedtuple
 from testing.git import init_repo
+from testing.git import write_file_commit
 
 
 @pytest.fixture
@@ -48,16 +48,10 @@ def file_config(tmpdir):
     )
 
 
-def _write_file_commit(git, filename, contents):
-    git.join(filename).write(contents)
-    subprocess.check_call(('git', '-C', git, 'add', '.'))
-    subprocess.check_call(('git', '-C', git, 'commit', '-mfoo'))
-
-
 @pytest.fixture
 def file_config_files(file_config):
-    _write_file_commit(file_config.dir1, 'f', 'OHAI\n')
-    _write_file_commit(file_config.dir2, 'f', 'OHELLO\n')
+    write_file_commit(file_config.dir1, 'f', 'OHAI\n')
+    write_file_commit(file_config.dir2, 'f', 'OHELLO\n')
     clone.main(('--config-filename', str(file_config.cfg)))
     return file_config
 
