@@ -6,7 +6,6 @@ import tempfile
 
 from all_repos import autofix_lib
 from all_repos import cli
-from all_repos.config import load_config
 from all_repos.grep import repos_matching
 
 
@@ -57,11 +56,8 @@ def main(argv=None):
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
     assert args.jobs == 1, 'https://github.com/pre-commit/pre-commit/issues/363'  # noqa
 
-    config = load_config(args.config_filename)
-
-    repos, commit, autofix_settings = autofix_lib.from_cli(
+    repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
-        config=config,
         find_repos=find_repos,
         msg='Ran pre-commit autoupdate.', branch_name='pre-commit-autoupdate',
     )

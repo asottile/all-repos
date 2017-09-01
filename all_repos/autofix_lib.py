@@ -11,6 +11,7 @@ from all_repos import color
 from all_repos import git
 from all_repos import mapper
 from all_repos.config import Config
+from all_repos.config import load_config
 
 
 class Commit(collections.namedtuple(
@@ -43,9 +44,11 @@ def filter_repos(config, cli_repos, find_repos):
         return find_repos(config)
 
 
-def from_cli(args, *, config, find_repos, msg, branch_name):
+def from_cli(args, *, find_repos, msg, branch_name):
+    config = load_config(args.config_filename)
     return (
         filter_repos(config, args.repos, find_repos),
+        config,
         Commit.from_cli(args, msg=msg, branch_name=branch_name),
         AutofixSettings.from_cli(args),
     )
