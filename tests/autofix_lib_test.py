@@ -2,6 +2,7 @@ import os
 import subprocess
 
 import pytest
+from pre_commit.constants import VERSION as PRE_COMMIT_VERSION
 
 import testing.git
 from all_repos import autofix_lib
@@ -33,6 +34,21 @@ def test_assert_importable_not_importable():
     assert msg == (
         'This tool requires the `watmodule` module to be installed.\n'
         'Try installing it via `pip install wat`.'
+    )
+
+
+def test_require_version_new_enough():
+    autofix_lib.require_version_gte('pre-commit', '0.17.0')
+
+
+def test_require_version_not_new_enough():
+    with pytest.raises(SystemExit) as excinfo:
+        autofix_lib.require_version_gte('pre-commit', '999')
+    msg, = excinfo.value.args
+    assert msg == (
+        f'This tool requires the `pre-commit` package is at least version '
+        f'999.  The currently installed version is {PRE_COMMIT_VERSION}.\n\n'
+        f'Try `pip install --upgrade pre-commit`'
     )
 
 
