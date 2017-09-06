@@ -7,6 +7,8 @@ import subprocess
 import tempfile
 import traceback
 
+import pkg_resources
+
 from all_repos import color
 from all_repos import git
 from all_repos import mapper
@@ -78,6 +80,19 @@ def assert_importable(module: str, *, install: str) -> None:
         raise SystemExit(
             f'This tool requires the `{module}` module to be installed.\n'
             f'Try installing it via `pip install {install}`.',
+        )
+
+
+def require_version_gte(pkg_name: str, version: str) -> None:
+    pkg = pkg_resources.get_distribution(pkg_name)
+    pkg_version = pkg_resources.parse_version(pkg.version)
+    target_version = pkg_resources.parse_version(version)
+    if pkg_version < target_version:
+        raise SystemExit(
+            f'This tool requires the `{pkg_name}` package is at least version '
+            f'{version}.  '
+            f'The currently installed version is {pkg.version}.\n\n'
+            f'Try `pip install --upgrade {pkg_name}`',
         )
 
 

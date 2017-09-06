@@ -54,7 +54,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
-    assert args.jobs == 1, 'https://github.com/pre-commit/pre-commit/issues/363'  # noqa
+    # pre-commit 0.16.3: autoupdate maintains formatting better
+    # pre-commit 0.17.0: race conditions in pre-commit install fixed
+    autofix_lib.require_version_gte('pre-commit', '0.17.0')
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
