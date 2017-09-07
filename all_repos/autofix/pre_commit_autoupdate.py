@@ -56,6 +56,8 @@ def main(argv=None):
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
     # pre-commit 0.16.3: autoupdate maintains formatting better
     # pre-commit 0.17.0: race conditions in pre-commit install fixed
+    # pre-commit 1.0.0: migrate_config(...) is called for autoupdate
+    # pre-commit 1.0.1: exit code fix
     autofix_lib.require_version_gte('pre-commit', '0.17.0')
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
