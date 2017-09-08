@@ -141,10 +141,14 @@ def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
         config.push(config.push_settings, branch_name)
 
 
+def _noop_check_fix():
+    """A lambda is not pickleable, this must be a module-level function"""
+
+
 def fix(
         repos, *,
         apply_fix,
-        check_fix=lambda: None,
+        check_fix=_noop_check_fix,
         config: Config,
         commit: Commit,
         autofix_settings: AutofixSettings,
