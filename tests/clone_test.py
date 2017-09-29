@@ -22,6 +22,13 @@ def test_it_clones(file_config):
     assert revparse(file_config.output_dir.join('repo2')) == file_config.rev2
 
 
+def test_it_does_not_crash_with_no_repos(file_config):
+    cfg = json.loads(file_config.cfg.read())
+    cfg['include'] = '^$'
+    file_config.cfg.write(json.dumps(cfg))
+    assert not main(('--config-file', str(file_config.cfg)))
+
+
 def test_it_updates(file_config):
     assert not main(('--config-file', str(file_config.cfg)))
 

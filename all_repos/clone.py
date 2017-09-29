@@ -108,7 +108,8 @@ def main(argv=None):
     with mapper.thread_mapper(args.jobs) as do_map:
         mapper.exhaust(do_map(_fetch_reset, todo))
 
-    # TODO: write these last
+    # write these last
+    os.makedirs(config.output_dir, exist_ok=True)
     with open(repos_f, 'w') as f:
         f.write(json.dumps(repos))
     with open(repos_filtered_f, 'w') as f:
