@@ -45,7 +45,8 @@ def add_fixer_args(parser):
     mutex = parser.add_mutually_exclusive_group()
     mutex.add_argument('--dry-run', action='store_true')
     mutex.add_argument(
-        '-i', '--interactive', help='Interactively approve / deny fixes.',
+        '-i', '--interactive', action='store_true',
+        help='Interactively approve / deny fixes.',
     )
     add_jobs_arg(mutex, default=1)
 
