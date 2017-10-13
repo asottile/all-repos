@@ -1,4 +1,5 @@
 BLUE_B = '\033[1;34m'
+RED = '\033[31m'
 RED_H = '\033[41m'
 TURQUOISE = '\033[36m'
 TURQUOISE_H = '\033[46;30m'

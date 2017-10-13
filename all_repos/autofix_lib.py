@@ -27,7 +27,8 @@ class Commit(collections.namedtuple(
 
 
 class AutofixSettings(collections.namedtuple(
-        'AutofixSettings', ('jobs', 'color', 'limit', 'dry_run'),
+        'AutofixSettings',
+        ('jobs', 'color', 'limit', 'dry_run', 'interactive'),
 )):
     __slots__ = ()
 
@@ -35,7 +36,7 @@ class AutofixSettings(collections.namedtuple(
     def from_cli(cls, args):
         return cls(
             jobs=args.jobs, color=args.color, limit=args.limit,
-            dry_run=args.dry_run,
+            dry_run=args.dry_run, interactive=args.interactive,
         )
 
 
@@ -112,6 +113,43 @@ def repo_context(repo, *, use_color):
         traceback.print_exc()
 
 
+def _interactive_check(*, use_color):
+    def _quit():
+        print('Goodbye!')
+        raise SystemExit()
+
+    while True:
+        try:
+            s = input(color.fmt(
+                '***Looks good [y,n,s,q,?]? ',
+                color.BLUE_B, use_color=use_color,
+            ))
+        except (EOFError, KeyboardInterrupt):
+            _quit()
+
+        s = s.strip().lower()
+        if s in {'y', 'yes'}:
+            return True
+        elif s in {'n', 'no'}:
+            return False
+        elif s in {'s', 'shell'}:
+            print('Opening an interactive shell, type `exit` to continue.')
+            print('Any modifications will be committed.')
+            subprocess.call(os.environ.get('SHELL', 'bash'))
+        elif s in {'q', 'quit'}:
+            _quit()
+        else:
+            if s not in {'?', 'help'}:
+                print(color.fmt(
+                    f'Unexpected input: {s}', color.RED, use_color=use_color,
+                ))
+            print('y (yes): yes it looks good, commit and continue.')
+            print('n (no): no, do not commit this repository.')
+            print('s (shell): open an interactive shell in the repo.')
+            print('q (quit, ^C): early exit from the autofixer.')
+            print('? (help): show this help message.')
+
+
 def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
     with repo_context(repo, use_color=autofix_settings.color):
         branch_name = f'all-repos_autofix_{commit.branch_name}'
@@ -124,6 +162,12 @@ def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
             return
 
         check_fix()
+
+        if (
+                autofix_settings.interactive and
+                not _interactive_check(use_color=autofix_settings.color)
+        ):
+            return
 
         commit_message = (
             f'{commit.msg}\n\n'
@@ -153,6 +197,7 @@ def fix(
         commit: Commit,
         autofix_settings: AutofixSettings,
 ):
+    assert not autofix_settings.interactive or autofix_settings.jobs == 1
     repos = tuple(repos)[:autofix_settings.limit]
     func = functools.partial(
         _fix_inner,
