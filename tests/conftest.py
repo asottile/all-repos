@@ -52,6 +52,7 @@ def file_config(tmpdir):
 def file_config_files(file_config):
     write_file_commit(file_config.dir1, 'f', 'OHAI\n')
     write_file_commit(file_config.dir2, 'f', 'OHELLO\n')
+    write_file_commit(file_config.dir2, 'f2', '')
     clone.main(('--config-filename', str(file_config.cfg)))
     return file_config
 

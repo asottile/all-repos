@@ -18,6 +18,7 @@ setup(
     entry_points={
         'console_scripts': [
             'all-repos-clone=all_repos.clone:main',
+            'all-repos-find-files=all_repos.find_files:main',
             'all-repos-grep=all_repos.grep:main',
         ],
     },
