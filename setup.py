@@ -20,6 +20,7 @@ setup(
             'all-repos-clone=all_repos.clone:main',
             'all-repos-find-files=all_repos.find_files:main',
             'all-repos-grep=all_repos.grep:main',
+            'all-repos-sed=all_repos.sed:main',
         ],
     },
 )
