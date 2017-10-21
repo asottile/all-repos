@@ -7,6 +7,7 @@ import sys
 from all_repos import cli
 from all_repos import color
 from all_repos.config import load_config
+from all_repos.util import zsplit
 
 
 def ls_files(config, repo):
@@ -15,7 +16,7 @@ def ls_files(config, repo):
         ('git', '-C', path, 'ls-files', '-z'),
         stdout=subprocess.PIPE, check=True,
     )
-    return path, ret.stdout.rstrip(b'\0').split(b'\0')
+    return path, zsplit(ret.stdout)
 
 
 def find_files(config, regex):
