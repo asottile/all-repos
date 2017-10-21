@@ -66,13 +66,12 @@ def grep_cli(config, grep_args, *, use_color):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    cli.add_config_arg(parser)
-    cli.add_color_arg(parser)
-    parser.add_argument(
-        '--repos-with-matches', action='store_true',
-        help='Only print repositories with matches.',
+    parser = argparse.ArgumentParser(
+        description='Similar to a distributed `git grep ...`.',
+        usage='%(prog)s [options] [GIT_GREP_OPTIONS]',
     )
+    cli.add_common_args(parser)
+    cli.add_repos_with_matches_arg(parser)
     args, rest = parser.parse_known_args(argv)
 
     config = load_config(args.config_filename)

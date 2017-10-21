@@ -5,7 +5,6 @@ import sys
 import tempfile
 
 from all_repos import autofix_lib
-from all_repos import cli
 from all_repos.grep import repos_matching
 
 
@@ -50,7 +49,7 @@ def check_fix():
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    cli.add_fixer_args(parser)
+    autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
 
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
@@ -58,7 +57,7 @@ def main(argv=None):
     # pre-commit 0.17.0: race conditions in pre-commit install fixed
     # pre-commit 1.0.0: migrate_config(...) is called for autoupdate
     # pre-commit 1.0.1: exit code fix
-    autofix_lib.require_version_gte('pre-commit', '0.17.0')
+    autofix_lib.require_version_gte('pre-commit', '1.0.1')
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,

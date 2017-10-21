@@ -9,11 +9,48 @@ import traceback
 
 import pkg_resources
 
+from all_repos import cli
 from all_repos import color
 from all_repos import git
 from all_repos import mapper
 from all_repos.config import Config
 from all_repos.config import load_config
+
+
+def add_fixer_args(parser):
+    cli.add_common_args(parser)
+
+    mutex = parser.add_mutually_exclusive_group()
+    mutex.add_argument(
+        '--dry-run', action='store_true',
+        help='show what would happen but do not push.',
+    )
+    mutex.add_argument(
+        '-i', '--interactive', action='store_true',
+        help='interactively approve / deny fixes.',
+    )
+    cli.add_jobs_arg(mutex, default=1)
+
+    parser.add_argument(
+        '--limit', type=int, default=None,
+        help='maximum number of repos to process (default: unlimited).',
+    )
+    parser.add_argument(
+        '--author',
+        help=(
+            'override commit author.  '
+            'This is passed directly to `git commit`.  '
+            "An example: `--author='Herp Derp <herp.derp@umich.edu>'`."
+        ),
+    )
+    parser.add_argument(
+        '--repos', nargs='*',
+        help=(
+            'run against specific repositories instead.  This is especially '
+            'useful with `xargs autofixer ... --repos`.  This can be used to '
+            'specify repositories which are not managed by `all-repos`.'
+        ),
+    )
 
 
 class Commit(collections.namedtuple(
@@ -57,11 +94,11 @@ def from_cli(args, *, find_repos, msg, branch_name):
     )
 
 
-def run(*args, **kwargs):
-    cmdstr = ' '.join(pipes.quote(arg) for arg in args)
+def run(*cmd, **kwargs):
+    cmdstr = ' '.join(pipes.quote(arg) for arg in cmd)
     print(f'$ {cmdstr}', flush=True)
     kwargs.setdefault('check', True)
-    return subprocess.run(args, **kwargs)
+    return subprocess.run(cmd, **kwargs)
 
 
 @contextlib.contextmanager

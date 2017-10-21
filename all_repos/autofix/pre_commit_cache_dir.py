@@ -2,7 +2,6 @@ import argparse
 import os.path
 
 from all_repos import autofix_lib
-from all_repos import cli
 from all_repos.grep import repos_matching
 
 
@@ -36,7 +35,7 @@ def apply_fix():
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    cli.add_fixer_args(parser)
+    autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(

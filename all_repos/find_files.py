@@ -19,27 +19,27 @@ def ls_files(config, repo):
     return path, zsplit(ret.stdout)
 
 
-def find_files(config, regex):
-    regex_compiled = re.compile(regex.encode())
+def find_files(config, pattern):
+    regex = re.compile(pattern.encode())
     repos = config.get_cloned_repos()
     ret = {}
     for repo in repos:
         repo, filenames = ls_files(config, repo)
-        matched = [f for f in filenames if regex_compiled.search(f)]
+        matched = [f for f in filenames if regex.search(f)]
         if matched:
             ret[repo] = matched
     return ret
 
 
-def find_files_repos_cli(config, regex, *, use_color):
-    repo_files = find_files(config, regex)
+def find_files_repos_cli(config, pattern, *, use_color):
+    repo_files = find_files(config, pattern)
     for repo in repo_files:
         print(repo)
     return not repo_files
 
 
-def find_files_cli(config, regex, *, use_color):
-    repo_files = find_files(config, regex)
+def find_files_cli(config, pattern, *, use_color):
+    repo_files = find_files(config, pattern)
     for repo, matching in repo_files.items():
         for filename in matching:
             sys.stdout.buffer.write(
@@ -51,21 +51,22 @@ def find_files_cli(config, regex, *, use_color):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    cli.add_config_arg(parser)
-    cli.add_color_arg(parser)
-    parser.add_argument(
-        '--repos-with-matches', action='store_true',
-        help='Only print repositories with matches.',
+    parser = argparse.ArgumentParser(
+        description=(
+            'Similar to a distributed `git ls-files | grep -P PATTERN`.'
+        ),
+        usage='%(prog)s [options] PATTERN',
     )
-    parser.add_argument('regex')
+    cli.add_common_args(parser)
+    cli.add_repos_with_matches_arg(parser)
+    parser.add_argument('pattern', help='the python regex to match.')
     args = parser.parse_args(argv)
 
     config = load_config(args.config_filename)
     if args.repos_with_matches:
-        return find_files_repos_cli(config, args.regex, use_color=args.color)
+        return find_files_repos_cli(config, args.pattern, use_color=args.color)
     else:
-        return find_files_cli(config, args.regex, use_color=args.color)
+        return find_files_cli(config, args.pattern, use_color=args.color)
 
 
 if __name__ == '__main__':

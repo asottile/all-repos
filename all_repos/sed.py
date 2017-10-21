@@ -5,7 +5,6 @@ import shlex
 import subprocess
 
 from all_repos import autofix_lib
-from all_repos import cli
 from all_repos.util import zsplit
 
 
@@ -30,22 +29,41 @@ def _quote_cmd(cmd):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    cli.add_fixer_args(parser)
+    parser = argparse.ArgumentParser(
+        description=(
+            'Similar to a distributed '
+            '`git ls-files -z -- FILENAMES | xargs -0 sed -i EXPRESSION`.'
+        ),
+        usage='%(prog)s [options] EXPRESSION FILENAMES',
+    )
+    autofix_lib.add_fixer_args(parser)
     parser.add_argument(
         '-r', '--regexp-extended',
         action='store_true',
         help='use extended regular expressions in the script.',
     )
-    parser.add_argument('--branch-name', default='all-repos-sed')
-    parser.add_argument('--commit-msg')
-    parser.add_argument('pattern')
-    parser.add_argument('filenames_glob', help='(passed to ls-files)')
+    parser.add_argument(
+        '--branch-name', default='all-repos-sed',
+        help='override the autofixer branch name (default `%(default)s`).',
+    )
+    parser.add_argument(
+        '--commit-msg',
+        help=(
+            'override the autofixer commit message.  (default '
+            '`git ls-files -z -- FILENAMES | xargs -0 sed -i ... EXPRESSION`).'
+        ),
+    )
+    parser.add_argument(
+        'expression', help='sed program. For example: `s/hi/hello/g`.',
+    )
+    parser.add_argument(
+        'filenames', help='filenames glob (passed to `git ls-files`).',
+    )
     args = parser.parse_args(argv)
 
     dash_r = ('-r',) if args.regexp_extended else ()
-    sed_cmd = ('sed', '-i', *dash_r, args.pattern)
-    ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames_glob)
+    sed_cmd = ('sed', '-i', *dash_r, args.expression)
+    ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
 
     msg = f'{_quote_cmd(ls_files_cmd)} | xargs -0 {_quote_cmd(sed_cmd)}'
     msg = args.commit_msg or msg

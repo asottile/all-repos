@@ -73,8 +73,11 @@ def _fetch_reset(path: str) -> None:
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser()
-    cli.add_config_arg(parser)
+    parser = argparse.ArgumentParser(
+        description='Clone all the repositories into the `output_dir`.',
+        usage='%(prog)s [options]',
+    )
+    cli.add_common_args(parser)
     cli.add_jobs_arg(parser)
     args = parser.parse_args(argv)
 

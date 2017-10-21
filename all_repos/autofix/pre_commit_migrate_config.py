@@ -6,7 +6,6 @@ import yaml
 from pre_commit.constants import CONFIG_FILE
 
 from all_repos import autofix_lib
-from all_repos import cli
 from all_repos.autofix.pre_commit_autoupdate import check_fix
 from all_repos.autofix.pre_commit_autoupdate import find_repos as _find_repos
 from all_repos.autofix.pre_commit_autoupdate import tmp_pre_commit_home
@@ -28,7 +27,7 @@ def find_repos(config):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    cli.add_fixer_args(parser)
+    autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
 
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
