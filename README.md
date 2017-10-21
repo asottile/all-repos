@@ -96,6 +96,29 @@ Clones all repositories available to a user on github.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 
+### `all_repos.source.gitolite`
+
+Clones all repositories available to a user on a
+[gitolite](http://gitolite.com/gitolite/index.html) host.
+
+#### Required `source_settings`
+
+- `username`: the user to SSH to the server as (usually `git`)
+- `hostname`: the hostname of your gitolite server (e.g. `git.mycompany.com`)
+
+The gitolite API is served over SSH.  It is assumed that when `all-repos-clone`
+is called, it's possible to make SSH connections with the username and hostname
+configured here in order to query that API.
+
+#### Optional `source_settings`
+
+- `mirror_path` (default `None`): an optional mirror to clone repositories from.
+  This is a Python format string, and can use the variable `repo_name`.
+
+  This can be anything git understands, such as another remote server (e.g.
+  `gitmirror.mycompany.com:{repo_name}`) or a local path (e.g.
+  `/gitolite/git/{repo_name}.git`).
+
 #### Directory location
 
 ```
