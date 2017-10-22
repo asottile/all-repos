@@ -31,6 +31,9 @@ def _repo_names_from_source(settings: Settings) -> List[str]:
 
 def list_repos(settings: Settings) -> Dict[str, str]:
     return {
-        repo_name: settings.clone_url(repo_name)
+        # Repo names have ".git" appended to avoid naming conflicts between
+        # repos and directories in the gitolite hierarchy (a path could
+        # otherwise be both).
+        f'{repo_name}.git': settings.clone_url(repo_name)
         for repo_name in _repo_names_from_source(settings)
     }

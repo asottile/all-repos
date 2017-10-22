@@ -73,6 +73,6 @@ def test_repo_names_from_source(settings):
 @pytest.mark.usefixtures('fake_info_response')
 def test_list_repos(settings):
     assert gitolite.list_repos(settings) == {
-        'some_rw_repo': 'git@git.mycompany.com:some_rw_repo',
-        'some_ro_repo': 'git@git.mycompany.com:some_ro_repo',
+        'some_rw_repo.git': 'git@git.mycompany.com:some_rw_repo',
+        'some_ro_repo.git': 'git@git.mycompany.com:some_ro_repo',
     }
