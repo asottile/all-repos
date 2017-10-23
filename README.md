@@ -71,6 +71,10 @@ Sample invocations:
 - `all-repos-grep -L six -- setup.py`: find setup.py files which do not
   contain `six`.
 
+### `all-repos-list-repos [options]`
+
+List all cloned repository names.
+
 ### `all-repos-sed [options] EXPRESSION FILENAMES`
 
 Similar to a distributed
