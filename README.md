@@ -161,7 +161,6 @@ output/
 +--- {repo_key1}/
 +--- {repo_key2}/
 +--- {repo_key3}/
-+--- {repo_key4}/
 ```
 
 ### `all_repos.source.github`
@@ -183,6 +182,19 @@ Clones all repositories available to a user on github.
   not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
+
+#### Directory location
+
+```
+output/
++--- repos.json
++--- repos_filtered.json
++--- {username1}/
+    +--- {repo1}/
+    +--- {repo2}/
++--- {username2}/
+    +--- {repo3}/
+```
 
 ### `all_repos.source.gitolite`
 
@@ -213,12 +225,9 @@ configured here in order to query that API.
 output/
 +--- repos.json
 +--- repos_filtered.json
-+--- {username1}/
-    +--- {repo1}.git/
-    +--- {repo2}.git/
-    +--- {repo3}.git/
-+--- {username2}/
-    +--- {repo4}.git/
++--- {repo_name1}.git/
++--- {repo_name2}.git/
++--- {repo_name3}.git/
 ```
 
 ## Writing your own source
