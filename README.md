@@ -26,6 +26,8 @@ options:
 
 Add `git clone` tab completion for all-repos repositories.
 
+Requires [jq](https://stedolan.github.io/jq/) to function.
+
 Add to `.bash_profile`:
 
 ```bash
