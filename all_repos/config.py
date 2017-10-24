@@ -14,9 +14,19 @@ class Config(collections.namedtuple(
 )):
     __slots__ = ()
 
+    def _path(self, *paths):
+        return os.path.abspath(os.path.join(self.output_dir, *paths))
+
+    @property
+    def repos_path(self):
+        return self._path('repos.json')
+
+    @property
+    def repos_filtered_path(self):
+        return self._path('repos_filtered.json')
+
     def get_cloned_repos(self):
-        repos = os.path.join(self.output_dir, 'repos_filtered.json')
-        with open(repos) as f:
+        with open(self.repos_filtered_path) as f:
             return json.load(f)
 
 

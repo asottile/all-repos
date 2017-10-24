@@ -91,9 +91,7 @@ def main(argv=None):
 
     # If the previous `repos.json` / `repos_filtered.json` files exist
     # remove them.
-    repos_f = os.path.join(config.output_dir, 'repos.json')
-    repos_filtered_f = os.path.join(config.output_dir, 'repos_filtered.json')
-    for path in (repos_f, repos_filtered_f):
+    for path in (config.repos_path, config.repos_filtered_path):
         if os.path.exists(path):
             os.remove(path)
 
@@ -113,9 +111,9 @@ def main(argv=None):
 
     # write these last
     os.makedirs(config.output_dir, exist_ok=True)
-    with open(repos_f, 'w') as f:
+    with open(config.repos_path, 'w') as f:
         f.write(json.dumps(repos))
-    with open(repos_filtered_f, 'w') as f:
+    with open(config.repos_filtered_path, 'w') as f:
         f.write(json.dumps(repos_filtered))
 
 

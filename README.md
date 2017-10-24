@@ -21,6 +21,17 @@ options:
   config file (default `all-repos.json`).
 - `--color {auto,always,never}`: use color in output (default `auto`).
 
+
+### `all-repos-complete [options]`
+
+Add `git clone` tab completion for all-repos repositories.
+
+Add to `.bash_profile`:
+
+```bash
+eval "$(all-repos-complete -C ~/.../all-repos.json --bash)"
+```
+
 ### `all-repos-clone [options]`
 
 Clone all the repositories into the `output_dir`.
