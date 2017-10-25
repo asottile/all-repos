@@ -46,6 +46,19 @@ _git_clone() {
 }
 '''
 
+ZSH = '''\
+__git_remote_repositories() {
+    local -a options
+    options=( $(
+        jq -r \
+           'to_entries | map([.value, .key]|join("\\t")) | join("\\n")' \
+           "$__all_repos__repos_json" |
+            sed 's/:/\\\\:/; s/\\t/:/'
+    ) )
+    _describe 'values' options
+}
+'''
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
@@ -60,6 +73,7 @@ def main(argv=None):
     cli.add_common_args(parser)
     mutex = parser.add_mutually_exclusive_group(required=True)
     mutex.add_argument('--bash', action='store_true')
+    mutex.add_argument('--zsh', action='store_true')
     args = parser.parse_args(argv)
 
     config = load_config(args.config_filename)
@@ -67,6 +81,8 @@ def main(argv=None):
     print(f'__all_repos__repos_json={config.repos_filtered_path}')
     if args.bash:
         print(BASH)
+    elif args.zsh:
+        print(ZSH)
     else:
         raise NotImplementedError()
 
