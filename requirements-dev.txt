@@ -1,5 +1,5 @@
 coverage
 flake8
 pre-commit
-pytest
+pytest!=3.3.0
 pytest-env

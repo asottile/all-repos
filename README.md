@@ -18,7 +18,8 @@ options:
 
 - `-h` / `--help`: show usage information
 - `-c CONFIG_FILENAME` / `--config-filename CONFIG_FILENAME`: use a non-default
-  config file (default `all-repos.json`).
+  config file (the default `all-repos.json` can be changed with the environment
+  variable `ALL_REPOS_CONFIG_FILENAME`).
 - `--color {auto,always,never}`: use color in output (default `auto`).
 
 
