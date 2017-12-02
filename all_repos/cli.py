@@ -1,4 +1,5 @@
 import multiprocessing
+import os
 import sys
 
 
@@ -35,7 +36,8 @@ def use_color(setting):
 
 def add_common_args(parser):
     parser.add_argument(
-        '-C', '--config-filename', default='all-repos.json',
+        '-C', '--config-filename',
+        default=os.getenv('ALL_REPOS_CONFIG_FILENAME') or 'all-repos.json',
         help='use a non-default config file (default `%(default)s`).',
     )
     parser.add_argument(
