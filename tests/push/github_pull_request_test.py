@@ -45,3 +45,38 @@ def test_github_pull_request(mock_requests, fake_github_repo):
     assert data['title'] == 'This is a commit message'
     assert data['body'] == 'Here is some more information!'
     assert data['head'] == 'feature'
+
+
+@pytest.fixture
+def fake_github_repo_fork(tmpdir, fake_github_repo):
+    fork = tmpdir.join('repo:u2/slug')
+    subprocess.check_call(('git', 'clone', fake_github_repo.src, fork))
+
+    settings = fake_github_repo.settings._replace(fork=True, username='u2')
+    dct = dict(fake_github_repo._asdict(), settings=settings, fork=fork)
+    return auto_namedtuple(**dct)
+
+
+def test_github_pull_request_with_fork(mock_requests, fake_github_repo_fork):
+    # this is a mishmash of both of the requests (satisfies both)
+    resp = {'full_name': 'u2/slug', 'html_url': 'https://example/com'}
+    mock_requests.post.return_value.json.return_value = resp
+
+    with fake_github_repo_fork.dest.as_cwd():
+        github_pull_request.push(fake_github_repo_fork.settings, 'feature')
+
+    # Should have pushed the branch to the fork
+    out = subprocess.check_output((
+        'git', '-C', fake_github_repo_fork.src, 'branch',
+    )).decode()
+    assert out == '* master\n'
+    out = subprocess.check_output((
+        'git', '-C', fake_github_repo_fork.fork, 'branch',
+    )).decode()
+    assert out == '  feature\n* master\n'
+
+    args, kwargs = mock_requests.post.call_args
+    url, = args
+    assert url == 'https://api.github.com/repos/user/slug/pulls'
+    data = json.loads(kwargs['data'])
+    assert data['head'] == 'u2:feature'
