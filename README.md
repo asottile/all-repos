@@ -306,6 +306,12 @@ branch.
       need `repo` to access private repositories.
 - `username`: the github username you will log in as.
 
+#### Optional `push_settings`
+
+- `fork` (default: `false`): (if applicable) a fork will be created and pushed
+  to instead of the upstream repository.  The pull request will then be made
+  to the upstream repository.
+
 
 ## Writing your own push module
 
