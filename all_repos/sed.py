@@ -21,6 +21,7 @@ def find_repos(config, *, ls_files_cmd):
 def apply_fix(*, ls_files_cmd, sed_cmd):
     filenames = zsplit(subprocess.check_output(ls_files_cmd))
     filenames = [f.decode() for f in filenames]
+    filenames = [f for f in filenames if os.path.isfile(f)]
     autofix_lib.run(*sed_cmd, *filenames)
 
 
