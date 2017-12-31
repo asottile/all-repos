@@ -18,7 +18,11 @@ def init_repo(pth):
     return revparse(pth)
 
 
-def write_file_commit(git, filename, contents):
-    git.join(filename).write(contents)
+def commit(git):
     subprocess.check_call(('git', '-C', git, 'add', '.'))
     subprocess.check_call(('git', '-C', git, 'commit', '-mfoo'))
+
+
+def write_file_commit(git, filename, contents):
+    git.join(filename).write(contents)
+    commit(git)
