@@ -107,7 +107,7 @@ def _get_input_side_effect(*inputs):
     return side_effect
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def mock_input():
     with mock.patch.object(builtins, 'input') as mck:
         yield mck
