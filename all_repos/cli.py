@@ -52,3 +52,13 @@ def add_repos_with_matches_arg(parser):
         '--repos-with-matches', action='store_true',
         help='only print repositories with matches.',
     )
+
+
+def add_output_paths_arg(parser):
+    parser.add_argument(
+        '--output-paths', action='store_true',
+        help=(
+            f'Use `{os.sep}` as a separator instead of `:` in outputs (often '
+            f'helpful for scripting).'
+        ),
+    )
