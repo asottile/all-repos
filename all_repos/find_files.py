@@ -38,13 +38,14 @@ def find_files_repos_cli(config, pattern, *, use_color):
     return not repo_files
 
 
-def find_files_cli(config, pattern, *, use_color):
+def find_files_cli(config, pattern, *, output_paths, use_color):
+    sep = os.sep.encode() if output_paths else b':'
     repo_files = find_files(config, pattern)
     for repo, matching in repo_files.items():
         for filename in matching:
             sys.stdout.buffer.write(
                 color.fmtb(repo.encode(), color.BLUE_B, use_color=use_color) +
-                color.fmtb(b':', color.TURQUOISE, use_color=use_color) +
+                color.fmtb(sep, color.TURQUOISE, use_color=use_color) +
                 filename + b'\n',
             )
     return not repo_files
@@ -59,6 +60,7 @@ def main(argv=None):
     )
     cli.add_common_args(parser)
     cli.add_repos_with_matches_arg(parser)
+    cli.add_output_paths_arg(parser)
     parser.add_argument('pattern', help='the python regex to match.')
     args = parser.parse_args(argv)
 
@@ -66,7 +68,10 @@ def main(argv=None):
     if args.repos_with_matches:
         return find_files_repos_cli(config, args.pattern, use_color=args.color)
     else:
-        return find_files_cli(config, args.pattern, use_color=args.color)
+        return find_files_cli(
+            config, args.pattern,
+            output_paths=args.output_paths, use_color=args.color,
+        )
 
 
 if __name__ == '__main__':

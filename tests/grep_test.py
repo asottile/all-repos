@@ -83,6 +83,16 @@ def test_grep_cli(file_config_files, capsys):
     assert out == ''
 
 
+def test_grep_cli_output_paths(file_config_files, capsys):
+    cmd = ('-C', str(file_config_files.cfg), '-l', '^OH', '--output-paths')
+    assert not main(cmd)
+    out, _ = capsys.readouterr()
+    assert out == '{}\n{}\n'.format(
+        file_config_files.output_dir.join('repo1/f'),
+        file_config_files.output_dir.join('repo2/f'),
+    )
+
+
 def _test_grep_color(file_config_files, capsys, *, args=()):
     ret = main(('-C', str(file_config_files.cfg), 'OHAI', *args))
     assert ret == 0

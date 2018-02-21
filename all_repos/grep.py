@@ -46,7 +46,8 @@ def repos_matching_cli(config, grep_args):
     return int(not matching)
 
 
-def grep_cli(config, grep_args, *, use_color):
+def grep_cli(config, grep_args, *, output_paths, use_color):
+    sep = os.sep.encode() if output_paths else b':'
     if use_color:
         grep_args = ('--color=always', *grep_args)
     try:
@@ -58,7 +59,7 @@ def grep_cli(config, grep_args, *, use_color):
         for line in stdout.splitlines():
             sys.stdout.buffer.write(
                 color.fmtb(repo_b, color.BLUE_B, use_color=use_color) +
-                color.fmtb(b':', color.TURQUOISE, use_color=use_color) +
+                color.fmtb(sep, color.TURQUOISE, use_color=use_color) +
                 line + b'\n',
             )
             sys.stdout.buffer.flush()
@@ -72,13 +73,16 @@ def main(argv=None):
     )
     cli.add_common_args(parser)
     cli.add_repos_with_matches_arg(parser)
+    cli.add_output_paths_arg(parser)
     args, rest = parser.parse_known_args(argv)
 
     config = load_config(args.config_filename)
     if args.repos_with_matches:
         return repos_matching_cli(config, rest)
     else:
-        return grep_cli(config, rest, use_color=args.color)
+        return grep_cli(
+            config, rest, output_paths=args.output_paths, use_color=args.color,
+        )
 
 
 if __name__ == '__main__':
