@@ -29,7 +29,7 @@ def autoupdatable(tmpdir):
     init_repo(consuming_repo)
     consuming_repo.join('.pre-commit-config.yaml').write(
         f'-   repo: {hook_repo}\n'
-        f'    sha: {rev}\n'
+        f'    rev: {rev}\n'
         f'    hooks:\n'
         f'    -   id: hook\n',
     )

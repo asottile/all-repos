@@ -57,7 +57,8 @@ def main(argv=None):
     # pre-commit 0.17.0: race conditions in pre-commit install fixed
     # pre-commit 1.0.0: migrate_config(...) is called for autoupdate
     # pre-commit 1.0.1: exit code fix
-    autofix_lib.require_version_gte('pre-commit', '1.0.1')
+    # pre-commit 1.7.0: sha -> rev
+    autofix_lib.require_version_gte('pre-commit', '1.7.0')
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,

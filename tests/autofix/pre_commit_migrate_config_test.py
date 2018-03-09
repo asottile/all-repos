@@ -16,7 +16,7 @@ def test_main(file_config, autoupdatable):
     assert ret == (
         f'repos:\n'
         f'-   repo: {autoupdatable.hook_repo}\n'
-        f'    sha: {autoupdatable.hook_repo_rev}\n'
+        f'    rev: {autoupdatable.hook_repo_rev}\n'
         f'    hooks:\n'
         f'    -   id: hook\n'
     )

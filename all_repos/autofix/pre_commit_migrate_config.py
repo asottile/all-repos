@@ -33,7 +33,8 @@ def main(argv=None):
     autofix_lib.assert_importable('pre_commit', install='pre-commit')
     # pre-commit 1.0.0: introduces migrate-config
     # pre-commit 1.0.1: exit code fix
-    autofix_lib.require_version_gte('pre-commit', '1.0.1')
+    # pre-commit 1.7.0: sha -> rev
+    autofix_lib.require_version_gte('pre-commit', '1.7.0')
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
