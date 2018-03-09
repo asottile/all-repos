@@ -13,7 +13,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
     ],
-    install_requires=['identify', 'requests'],
+    install_requires=['identify'],
     packages=find_packages(exclude=('tests*', 'testing*')),
     entry_points={
         'console_scripts': [

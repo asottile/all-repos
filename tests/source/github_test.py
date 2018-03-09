@@ -1,8 +1,8 @@
+import io
 import json
 import os.path
 
 import pytest
-import requests
 
 from all_repos.source.github import _get_all
 from all_repos.source.github import better_repr
@@ -39,31 +39,32 @@ def test_better_repr(val, expected):
     assert better_repr(val) == expected
 
 
-def _mock_get(url_mapping):
-    def get(url, **kwargs):
-        return url_mapping[url]
-    return get
+def _mock_urlopen(url_mapping):
+    def urlopen(request):
+        return url_mapping[request.get_full_url()]
+    return urlopen
 
 
-def _fake_response(body, *, next_link=None):
-    resp = requests.Response()
-    resp._content = body
-    if next_link is not None:
-        resp.headers['Link'] = f'<{next_link}>; rel="next"'
-    return resp
+class FakeResponse(io.BytesIO):
+    def __init__(self, body, *, next_link=None):
+        super().__init__(body)
+        if next_link is None:
+            self.headers = {'link': '<https://example.com>; rel="example"'}
+        else:
+            self.headers = {'link': f'<{next_link}>; rel="next"'}
 
 
-def test_get_all(mock_requests):
-    mock_requests.get.side_effect = _mock_get({
-        'https://example.com/api': _fake_response(
+def test_get_all(mock_urlopen):
+    mock_urlopen.side_effect = _mock_urlopen({
+        'https://example.com/api': FakeResponse(
             b'["page1_1", "page1_2"]',
             next_link='https://example.com/api?page=2',
         ),
-        'https://example.com/api?page=2': _fake_response(
+        'https://example.com/api?page=2': FakeResponse(
             b'["page2_1", "page2_2"]',
             next_link='https://example.com/api?page=3',
         ),
-        'https://example.com/api?page=3': _fake_response(
+        'https://example.com/api?page=3': FakeResponse(
             b'["page3_1"]',
         ),
     })
@@ -79,7 +80,7 @@ def _resource_json(repo_name: str) -> dict:
 
 
 @pytest.fixture
-def repos_response(mock_requests):
+def repos_response(mock_urlopen):
     repos = [
         # full permissions
         _resource_json('git-code-debt'),
@@ -90,8 +91,8 @@ def repos_response(mock_requests):
         # A private repo
         _resource_json('eecs381-p4'),
     ]
-    mock_requests.get.side_effect = _mock_get({
-        'https://api.github.com/user/repos?per_page=100': _fake_response(
+    mock_urlopen.side_effect = _mock_urlopen({
+        'https://api.github.com/user/repos?per_page=100': FakeResponse(
             json.dumps(repos).encode(),
         ),
     })

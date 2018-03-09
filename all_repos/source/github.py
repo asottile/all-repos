@@ -1,8 +1,8 @@
 import collections
+import json
+import urllib.request
 from typing import Dict
 from typing import List
-
-import requests
 
 
 Settings = collections.namedtuple(
@@ -11,21 +11,38 @@ Settings = collections.namedtuple(
 Settings.__new__.__defaults__ = (False, False, False)
 
 
+def _parse_link_header(lnk):
+    ret = {}
+    parts = lnk.split(',')
+    for part in parts:
+        link, _, rel = part.partition(';')
+        link, rel = link.strip(), rel.strip()
+        assert link.startswith('<') and link.endswith('>'), link
+        assert rel.startswith('rel="') and rel.endswith('"'), rel
+        link, rel = link[1:-1], rel[len('rel="'):-1]
+        ret[rel] = link
+    return ret
+
+
+def _req(*args, **kwargs):
+    resp = urllib.request.urlopen(urllib.request.Request(*args, **kwargs))
+    return json.loads(resp.read()), _parse_link_header(resp.headers['link'])
+
+
 def _get_all(url: str, **kwargs) -> List[dict]:
     ret = []
-    resp = requests.get(url, **kwargs)
-    ret.extend(resp.json())
-    while 'next' in resp.links:
-        url = resp.links['next']['url']
-        resp = requests.get(url, **kwargs)
-        ret.extend(resp.json())
+    resp, links = _req(url, **kwargs)
+    ret.extend(resp)
+    while 'next' in links:
+        resp, links = _req(links['next'], **kwargs)
+        ret.extend(resp)
     return ret
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
     repos = _get_all(
         'https://api.github.com/user/repos?per_page=100',
-        auth=requests.auth.HTTPBasicAuth(settings.username, settings.api_key),
+        headers={'Authorization': f'token {settings.api_key}'},
     )
     return {
         repo['full_name']: 'git@github.com:{}'.format(repo['full_name'])

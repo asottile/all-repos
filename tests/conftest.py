@@ -1,9 +1,9 @@
 import json
 import sys
+import urllib.request
 from unittest import mock
 
 import pytest
-import requests
 
 from all_repos import clone
 from testing.auto_namedtuple import auto_namedtuple
@@ -12,10 +12,9 @@ from testing.git import write_file_commit
 
 
 @pytest.fixture
-def mock_requests():
-    with mock.patch.object(requests, 'get') as get_mock:
-        with mock.patch.object(requests, 'post') as post_mock:
-            yield auto_namedtuple(get=get_mock, post=post_mock)
+def mock_urlopen():
+    with mock.patch.object(urllib.request, 'urlopen') as mck:
+        yield mck
 
 
 @pytest.fixture
