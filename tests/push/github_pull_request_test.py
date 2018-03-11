@@ -27,7 +27,10 @@ def fake_github_repo(tmpdir):
     return auto_namedtuple(src=src, dest=dest, settings=settings)
 
 
-def test_github_pull_request(mock_requests, fake_github_repo):
+def test_github_pull_request(mock_urlopen, fake_github_repo):
+    resp = {'html_url': 'https://example/com'}
+    mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
+
     with fake_github_repo.dest.as_cwd():
         github_pull_request.push(fake_github_repo.settings, 'feature')
 
@@ -38,10 +41,10 @@ def test_github_pull_request(mock_requests, fake_github_repo):
     assert out == '  feature\n* master\n'
 
     # Pull request should have been made with the commit data
-    args, kwargs = mock_requests.post.call_args
-    url, = args
-    assert url == 'https://api.github.com/repos/user/slug/pulls'
-    data = json.loads(kwargs['data'])
+    (req,), _ = mock_urlopen.call_args
+    assert req.get_full_url() == 'https://api.github.com/repos/user/slug/pulls'
+    assert req.method == 'POST'
+    data = json.loads(req.data)
     assert data['title'] == 'This is a commit message'
     assert data['body'] == 'Here is some more information!'
     assert data['head'] == 'feature'
@@ -57,10 +60,10 @@ def fake_github_repo_fork(tmpdir, fake_github_repo):
     return auto_namedtuple(**dct)
 
 
-def test_github_pull_request_with_fork(mock_requests, fake_github_repo_fork):
+def test_github_pull_request_with_fork(mock_urlopen, fake_github_repo_fork):
     # this is a mishmash of both of the requests (satisfies both)
     resp = {'full_name': 'u2/slug', 'html_url': 'https://example/com'}
-    mock_requests.post.return_value.json.return_value = resp
+    mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
 
     with fake_github_repo_fork.dest.as_cwd():
         github_pull_request.push(fake_github_repo_fork.settings, 'feature')
@@ -75,8 +78,7 @@ def test_github_pull_request_with_fork(mock_requests, fake_github_repo_fork):
     )).decode()
     assert out == '  feature\n* master\n'
 
-    args, kwargs = mock_requests.post.call_args
-    url, = args
-    assert url == 'https://api.github.com/repos/user/slug/pulls'
-    data = json.loads(kwargs['data'])
+    (req,), _ = mock_urlopen.call_args
+    assert req.get_full_url() == 'https://api.github.com/repos/user/slug/pulls'
+    data = json.loads(req.data)
     assert data['head'] == 'u2:feature'

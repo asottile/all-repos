@@ -1,8 +1,7 @@
 import collections
 import json
 import subprocess
-
-import requests
+import urllib.request
 
 from all_repos import autofix_lib
 from all_repos import git
@@ -13,17 +12,17 @@ Settings.__new__.__defaults__ = (False,)
 
 
 def push(settings: Settings, branch_name: str) -> None:
-    auth = requests.auth.HTTPBasicAuth(settings.username, settings.api_key)
+    headers = {'Authorization': f'token {settings.api_key}'}
 
     remote_url = git.remote('.')
     _, _, repo_slug = remote_url.rpartition(':')
 
     if settings.fork:
-        resp = requests.post(
+        resp = urllib.request.urlopen(urllib.request.Request(
             f'https://api.github.com/repos/{repo_slug}/forks',
-            auth=auth,
-        )
-        new_slug = resp.json()['full_name']
+            headers=headers, method='POST',
+        ))
+        new_slug = json.loads(resp.read())['full_name']
         new_remote = remote_url.replace(repo_slug, new_slug)
         autofix_lib.run('git', 'remote', 'add', 'fork', new_remote)
         remote = 'fork'
@@ -42,12 +41,12 @@ def push(settings: Settings, branch_name: str) -> None:
         'body': body.decode().strip(),
         'base': 'master',
         'head': head,
-    })
+    }).encode()
 
-    resp = requests.post(
+    resp = urllib.request.urlopen(urllib.request.Request(
         f'https://api.github.com/repos/{repo_slug}/pulls',
-        data=data, auth=auth,
-    )
+        data=data, headers=headers, method='POST',
+    ))
 
-    url = resp.json()['html_url']
+    url = json.loads(resp.read())['html_url']
     print(f'Pull request created at {url}')
