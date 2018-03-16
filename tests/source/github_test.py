@@ -49,7 +49,7 @@ class FakeResponse(io.BytesIO):
     def __init__(self, body, *, next_link=None):
         super().__init__(body)
         if next_link is None:
-            self.headers = {'link': '<https://example.com>; rel="example"'}
+            self.headers = {'link': None}
         else:
             self.headers = {'link': f'<{next_link}>; rel="next"'}
 
