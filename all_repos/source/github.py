@@ -12,6 +12,9 @@ Settings.__new__.__defaults__ = (False, False, False)
 
 
 def _parse_link_header(lnk):
+    if lnk is None:
+        return {}
+
     ret = {}
     parts = lnk.split(',')
     for part in parts:
