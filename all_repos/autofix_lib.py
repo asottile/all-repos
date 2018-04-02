@@ -143,7 +143,7 @@ def repo_context(repo, *, use_color):
             run('git', 'clone', '--quiet', repo, tmpdir)
             with cwd(tmpdir):
                 run('git', 'remote', 'set-url', 'origin', remote)
-                run('git', 'fetch', '--prune')
+                run('git', 'fetch', '--prune', '--quiet')
                 yield
     except Exception:
         print(color.fmt(f'***Errored', color.RED_H, use_color=use_color))
