@@ -37,7 +37,8 @@ eval "$(all-repos-complete -C ~/.../all-repos.json --bash)"
 
 ### `all-repos-clone [options]`
 
-Clone all the repositories into the `output_dir`.
+Clone all the repositories into the `output_dir`.  If run again, this command
+will update existing repositories.
 
 Options:
 
