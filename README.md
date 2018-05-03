@@ -436,3 +436,8 @@ You can find some more involved examples in [all_repos/autofix](https://github.c
   for travis-ci / appveyor for pre-commit 1.x.
 - `all_repos.autofix.pre_commit_migrate_config`: runs
   `pre-commit migrate-config`.
+
+## Testing
+
+Run the tests via `tox`.
+_note_: this assumes GNU sed; please see note re: GNU sed under `all-repos-sed`.
