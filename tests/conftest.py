@@ -1,3 +1,4 @@
+import builtins
 import json
 import sys
 import urllib.request
@@ -60,3 +61,28 @@ def file_config_files(file_config):
 def not_a_tty():
     with mock.patch.object(sys.stdout, 'isatty', return_value=False) as mck:
         yield mck
+
+
+@pytest.fixture
+def mock_input():
+    class MockInput:
+        def __init__(self, mck):
+            self.mck = mck
+
+        def set_side_effect(self, *inputs):
+            it = iter(inputs)
+
+            def side_effect(s):
+                print(s, end='')
+                ret = next(it)
+                if ret in (EOFError, KeyboardInterrupt):
+                    print({EOFError: '^D', KeyboardInterrupt: '^C'}[ret])
+                    raise ret
+                else:
+                    print(f'<<{ret}')
+                    return ret
+
+            self.mck.side_effect = side_effect
+
+    with mock.patch.object(builtins, 'input') as mck:
+        yield MockInput(mck)

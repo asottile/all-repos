@@ -150,6 +150,12 @@ def repo_context(repo, *, use_color):
         traceback.print_exc()
 
 
+def shell():
+    print('Opening an interactive shell, type `exit` to continue.')
+    print('Any modifications will be committed.')
+    subprocess.call(os.environ.get('SHELL', 'bash'))
+
+
 def _interactive_check(*, use_color):
     def _quit():
         print('Goodbye!')
@@ -170,9 +176,7 @@ def _interactive_check(*, use_color):
         elif s in {'n', 'no'}:
             return False
         elif s in {'s', 'shell'}:
-            print('Opening an interactive shell, type `exit` to continue.')
-            print('Any modifications will be committed.')
-            subprocess.call(os.environ.get('SHELL', 'bash'))
+            shell()
         elif s in {'q', 'quit'}:
             _quit()
         else:
