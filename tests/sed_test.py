@@ -5,7 +5,6 @@ from testing.git import write_file_commit
 
 
 def test_main(file_config_files):
-    clone.main(('--config-filename', str(file_config_files.cfg)))
     assert not main((
         '--config-filename', str(file_config_files.cfg),
         's/HAI/BAI/g', '*',

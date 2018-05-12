@@ -1,4 +1,3 @@
-import builtins
 import os
 import subprocess
 from unittest import mock
@@ -92,29 +91,8 @@ def test_repo_context_errors(file_config_files, capsys):
     assert 'assert False' in err
 
 
-def _get_input_side_effect(*inputs):
-    it = iter(inputs)
-
-    def side_effect(s):
-        print(s, end='')
-        ret = next(it)
-        if ret in (EOFError, KeyboardInterrupt):
-            print({EOFError: '^D', KeyboardInterrupt: '^C'}[ret])
-            raise ret
-        else:
-            print(f'<<{ret}')
-            return ret
-    return side_effect
-
-
-@pytest.fixture
-def mock_input():
-    with mock.patch.object(builtins, 'input') as mck:
-        yield mck
-
-
 def test_interactive_control_c(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect(KeyboardInterrupt)
+    mock_input.set_side_effect(KeyboardInterrupt)
     with pytest.raises(SystemExit):
         autofix_lib._interactive_check(use_color=False)
     out, _ = capfd.readouterr()
@@ -125,7 +103,7 @@ def test_interactive_control_c(mock_input, capfd):
 
 
 def test_interactive_eof(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect(EOFError)
+    mock_input.set_side_effect(EOFError)
     with pytest.raises(SystemExit):
         autofix_lib._interactive_check(use_color=False)
     out, _ = capfd.readouterr()
@@ -136,7 +114,7 @@ def test_interactive_eof(mock_input, capfd):
 
 
 def test_interactive_quit(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('q')
+    mock_input.set_side_effect('q')
     with pytest.raises(SystemExit):
         autofix_lib._interactive_check(use_color=False)
     out, _ = capfd.readouterr()
@@ -147,21 +125,21 @@ def test_interactive_quit(mock_input, capfd):
 
 
 def test_interactive_yes(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('y')
+    mock_input.set_side_effect('y')
     assert autofix_lib._interactive_check(use_color=False) is True
     out, _ = capfd.readouterr()
     assert out == '***Looks good [y,n,s,q,?]? <<y\n'
 
 
 def test_interactive_no(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('n')
+    mock_input.set_side_effect('n')
     assert autofix_lib._interactive_check(use_color=False) is False
     out, _ = capfd.readouterr()
     assert out == '***Looks good [y,n,s,q,?]? <<n\n'
 
 
 def test_interactive_shell(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('s', 'n')
+    mock_input.set_side_effect('s', 'n')
     with mock.patch.dict(os.environ, {'SHELL': 'echo'}):
         assert autofix_lib._interactive_check(use_color=False) is False
     out, _ = capfd.readouterr()
@@ -176,7 +154,7 @@ def test_interactive_shell(mock_input, capfd):
 
 
 def test_interactive_help(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('?', 'n')
+    mock_input.set_side_effect('?', 'n')
     assert autofix_lib._interactive_check(use_color=False) is False
     out, _ = capfd.readouterr()
     assert out == (
@@ -191,7 +169,7 @@ def test_interactive_help(mock_input, capfd):
 
 
 def test_interactive_garbage(mock_input, capfd):
-    mock_input.side_effect = _get_input_side_effect('garbage', 'n')
+    mock_input.set_side_effect('garbage', 'n')
     assert autofix_lib._interactive_check(use_color=False) is False
     out, _ = capfd.readouterr()
     assert out == (
@@ -265,7 +243,7 @@ def test_fix_with_limit(file_config_files, capfd):
 
 
 def test_fix_interactive(file_config_files, capfd, mock_input):
-    mock_input.side_effect = _get_input_side_effect('y', 'n')
+    mock_input.set_side_effect('y', 'n')
     autofix_lib.fix(
         (
             str(file_config_files.output_dir.join('repo1')),

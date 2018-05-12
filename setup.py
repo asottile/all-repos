@@ -22,6 +22,7 @@ setup(
             'all-repos-find-files=all_repos.find_files:main',
             'all-repos-grep=all_repos.grep:main',
             'all-repos-list-repos=all_repos.list_repos:main',
+            'all-repos-manual=all_repos.manual:main',
             'all-repos-sed=all_repos.sed:main',
         ],
     },

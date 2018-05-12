@@ -90,6 +90,22 @@ Sample invocations:
 
 List all cloned repository names.
 
+### `all-repos-manual [options]`
+
+Interactively apply a manual change across repos.
+
+_note_: `all-repos-manual` will always run in `--interactive` autofixing mode.
+_note_: `all-repos-manual` _requires_ the `--repos` autofixer option.
+
+Options:
+
+- [autofix options](#all_reposautofix_libadd_fixer_args): `all-repos-manual` is
+  an autofixer and supports all of the autofixer options.
+- `--branch-name BRANCH_NAME`: override the autofixer branch name (default
+  `all-repos-manual`).
+- `--commit-msg COMMIT_MSG` (required): set the autofixer commit message.
+
+
 ### `all-repos-sed [options] EXPRESSION FILENAMES`
 
 Similar to a distributed
@@ -111,7 +127,7 @@ Options:
   See `man sed` for further details.
 - `--branch-name BRANCH_NAME` override the autofixer branch name (default
   `all-repos-sed`).
-- `--commit-msg` override the autofixer commit message.  (default
+- `--commit-msg COMMIT_MSG` override the autofixer commit message.  (default
   `git ls-files -z -- FILENAMES | xargs -0 sed -i ... EXPRESSION`).
 
 Sample invocations:
@@ -352,7 +368,7 @@ Options:
 - `--limit LIMIT`: maximum number of repos to process (default: unlimited).
 - `--author AUTHOR`: override commit author.  This is passed directly to
   `git commit`.  An example: `--author='Herp Derp <herp.derp@umich.edu>'`.
-- `--repos [REPOS [REPOS ...]]: run against specific repositories instead.
+- `--repos [REPOS [REPOS ...]]`: run against specific repositories instead.
   This is especially useful with `xargs autofixer ... --repos`.  This can be
   used to specify repositories which are not managed by `all-repos`.
 
