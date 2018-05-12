@@ -95,6 +95,7 @@ List all cloned repository names.
 Interactively apply a manual change across repos.
 
 _note_: `all-repos-manual` will always run in `--interactive` autofixing mode.
+
 _note_: `all-repos-manual` _requires_ the `--repos` autofixer option.
 
 Options:
