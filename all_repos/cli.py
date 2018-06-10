@@ -1,9 +1,14 @@
+import argparse
 import multiprocessing
 import os
 import sys
+from typing import Union
 
 
-def jobs_type(s):
+ParserType = Union[argparse.ArgumentParser, argparse._MutuallyExclusiveGroup]
+
+
+def jobs_type(s: str) -> int:
     jobs = int(s)
     if jobs <= 0:
         return multiprocessing.cpu_count()
@@ -11,7 +16,7 @@ def jobs_type(s):
         return jobs
 
 
-def add_jobs_arg(parser, default=8):
+def add_jobs_arg(parser: ParserType, default: int = 8) -> None:
     parser.add_argument(
         '-j', '--jobs', type=jobs_type, default=default,
         help=(
@@ -25,7 +30,7 @@ def add_jobs_arg(parser, default=8):
 COLOR_CHOICES = ('auto', 'always', 'never')
 
 
-def use_color(setting):
+def use_color(setting: str) -> bool:
     if setting not in COLOR_CHOICES:
         raise ValueError(setting)
     return (
@@ -34,7 +39,7 @@ def use_color(setting):
     )
 
 
-def add_common_args(parser):
+def add_common_args(parser: ParserType) -> None:
     parser.add_argument(
         '-C', '--config-filename',
         default=os.getenv('ALL_REPOS_CONFIG_FILENAME') or 'all-repos.json',
@@ -47,14 +52,14 @@ def add_common_args(parser):
     )
 
 
-def add_repos_with_matches_arg(parser):
+def add_repos_with_matches_arg(parser: ParserType) -> None:
     parser.add_argument(
         '--repos-with-matches', action='store_true',
         help='only print repositories with matches.',
     )
 
 
-def add_output_paths_arg(parser):
+def add_output_paths_arg(parser: ParserType) -> None:
     parser.add_argument(
         '--output-paths', action='store_true',
         help=(

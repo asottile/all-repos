@@ -13,6 +13,16 @@ def test_main(file_config_files):
     assert file_config_files.dir2.join('f').read() == 'OHELLO\n'
 
 
+def test_main_extended_regexes(file_config_files):
+    assert not main((
+        '--config-filename', str(file_config_files.cfg),
+        '--regexp-extended',
+        's/H(A)I/BAI/g', '*',
+    ))
+    assert file_config_files.dir1.join('f').read() == 'OBAI\n'
+    assert file_config_files.dir2.join('f').read() == 'OHELLO\n'
+
+
 def test_main_ignores_non_files(file_config_files):
     file_config_files.dir1.join('s').mksymlinkto('doesnt_exist')
     commit(file_config_files.dir1)

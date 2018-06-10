@@ -4,6 +4,10 @@ import os.path
 import shutil
 import subprocess
 from typing import Dict
+from typing import Generator
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
 
 from all_repos import cli
 from all_repos import mapper
@@ -16,7 +20,9 @@ def _git_remote(path: str) -> str:
     )).decode().strip()
 
 
-def _get_current_state_helper(path):
+def _get_current_state_helper(
+        path: str,
+) -> Generator[Tuple[str, str], None, None]:
     if not os.path.exists(path):
         return
 
@@ -31,7 +37,7 @@ def _get_current_state_helper(path):
         yield path, _git_remote(path)
     else:
         for pth in pths:
-            yield from _get_current_state_helper(pth)
+            yield from _get_current_state_helper(os.fspath(pth))
 
 
 def _get_current_state(path: str) -> Dict[str, str]:
@@ -72,7 +78,7 @@ def _fetch_reset(path: str) -> None:
         print(f'Error fetching {path}')
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Clone all the repositories into the `output_dir`.  If '
@@ -118,6 +124,7 @@ def main(argv=None):
         f.write(json.dumps(repos))
     with open(config.repos_filtered_path, 'w') as f:
         f.write(json.dumps(repos_filtered))
+    return 0
 
 
 if __name__ == '__main__':

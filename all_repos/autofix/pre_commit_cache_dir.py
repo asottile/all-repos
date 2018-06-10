@@ -1,7 +1,11 @@
 import argparse
 import os.path
+from typing import Optional
+from typing import Sequence
+from typing import Set
 
 from all_repos import autofix_lib
+from all_repos.config import Config
 from all_repos.grep import repos_matching
 
 
@@ -9,14 +13,14 @@ APPVEYOR = 'appveyor.yml'
 TRAVIS = '.travis.yml'
 
 
-def find_repos(config):
+def find_repos(config: Config) -> Set[str]:
     return (
         repos_matching(config, ('$HOME/.pre-commit', '--', TRAVIS)) |
         repos_matching(config, (r'%USERPROFILE%\\.pre-commit', '--', APPVEYOR))
     )
 
 
-def _replace_if_exists(filename, s1, s2):
+def _replace_if_exists(filename: str, s1: str, s2: str) -> None:
     if os.path.exists(filename):
         with open(filename) as f:
             contents = f.read()
@@ -25,7 +29,7 @@ def _replace_if_exists(filename, s1, s2):
             f.write(contents)
 
 
-def apply_fix():
+def apply_fix() -> None:
     _replace_if_exists(TRAVIS, '$HOME/.pre-commit', '$HOME/.cache/pre-commit')
     _replace_if_exists(
         APPVEYOR,
@@ -33,7 +37,7 @@ def apply_fix():
     )
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
@@ -52,6 +56,7 @@ def main(argv=None):
         commit=commit,
         autofix_settings=autofix_settings,
     )
+    return 0
 
 
 if __name__ == '__main__':

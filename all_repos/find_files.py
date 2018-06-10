@@ -3,14 +3,20 @@ import os.path
 import re
 import subprocess
 import sys
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
 
 from all_repos import cli
 from all_repos import color
+from all_repos.config import Config
 from all_repos.config import load_config
 from all_repos.util import zsplit
 
 
-def ls_files(config, repo):
+def ls_files(config: Config, repo: str) -> Tuple[str, List[bytes]]:
     path = os.path.join(config.output_dir, repo)
     ret = subprocess.run(
         ('git', '-C', path, 'ls-files', '-z'),
@@ -19,7 +25,7 @@ def ls_files(config, repo):
     return path, zsplit(ret.stdout)
 
 
-def find_files(config, pattern):
+def find_files(config: Config, pattern: str) -> Dict[str, List[bytes]]:
     regex = re.compile(pattern.encode())
     repos = config.get_cloned_repos()
     ret = {}
@@ -31,14 +37,24 @@ def find_files(config, pattern):
     return ret
 
 
-def find_files_repos_cli(config, pattern, *, use_color):
+def find_files_repos_cli(
+        config: Config, pattern: str,
+        *,
+        use_color: bool,
+) -> int:
     repo_files = find_files(config, pattern)
     for repo in repo_files:
         print(repo)
     return not repo_files
 
 
-def find_files_cli(config, pattern, *, output_paths, use_color):
+def find_files_cli(
+        config: Config,
+        pattern: str,
+        *,
+        output_paths: bool,
+        use_color: bool,
+) -> int:
     sep = os.sep.encode() if output_paths else b':'
     repo_files = find_files(config, pattern)
     for repo, matching in repo_files.items():
@@ -51,7 +67,7 @@ def find_files_cli(config, pattern, *, output_paths, use_color):
     return not repo_files
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Similar to a distributed `git ls-files | grep -P PATTERN`.'
