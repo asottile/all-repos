@@ -6,14 +6,14 @@ TURQUOISE_H = '\033[46;30m'
 NORMAL = '\033[m'
 
 
-def fmt(text, color, *, use_color):
+def fmt(text: str, color: str, *, use_color: bool) -> str:
     if use_color:
         return f'{color}{text}{NORMAL}'
     else:
         return text
 
 
-def fmtb(bs, color, *, use_color):
+def fmtb(bs: bytes, color: str, *, use_color: bool) -> bytes:
     if use_color:
         return b'%s%s%s' % (color.encode(), bs, NORMAL.encode())
     else:

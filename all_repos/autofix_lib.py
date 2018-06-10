@@ -1,4 +1,4 @@
-import collections
+import argparse
 import contextlib
 import functools
 import os
@@ -6,6 +6,14 @@ import pipes
 import subprocess
 import tempfile
 import traceback
+from typing import Any
+from typing import Callable
+from typing import Generator
+from typing import Iterable
+from typing import NamedTuple
+from typing import NoReturn
+from typing import Optional
+from typing import Tuple
 
 import pkg_resources
 
@@ -17,7 +25,7 @@ from all_repos.config import Config
 from all_repos.config import load_config
 
 
-def add_fixer_args(parser):
+def add_fixer_args(parser: argparse.ArgumentParser) -> None:
     cli.add_common_args(parser)
 
     mutex = parser.add_mutually_exclusive_group()
@@ -53,48 +61,55 @@ def add_fixer_args(parser):
     )
 
 
-class Commit(collections.namedtuple(
-        'Commit', ('msg', 'branch_name', 'author'),
-)):
-    __slots__ = ()
+class Commit(NamedTuple):
+    msg: str
+    branch_name: str
+    author: str
+
+
+class AutofixSettings(NamedTuple):
+    jobs: int
+    color: bool
+    limit: int
+    dry_run: bool
+    interactive: bool
 
     @classmethod
-    def from_cli(cls, args, *, msg, branch_name):
-        return cls(msg=msg, branch_name=branch_name, author=args.author)
-
-
-class AutofixSettings(collections.namedtuple(
-        'AutofixSettings',
-        ('jobs', 'color', 'limit', 'dry_run', 'interactive'),
-)):
-    __slots__ = ()
-
-    @classmethod
-    def from_cli(cls, args):
+    def from_cli(cls, args: Any) -> 'AutofixSettings':
         return cls(
             jobs=args.jobs, color=args.color, limit=args.limit,
             dry_run=args.dry_run, interactive=args.interactive,
         )
 
 
-def filter_repos(config, cli_repos, find_repos):
+def filter_repos(
+        config: Config,
+        cli_repos: Optional[Iterable[str]],
+        find_repos: Callable[[Config], Iterable[str]],
+) -> Iterable[str]:
     if cli_repos is not None:
         return cli_repos
     else:
         return find_repos(config)
 
 
-def from_cli(args, *, find_repos, msg, branch_name):
+def from_cli(
+        args: Any,
+        *,
+        find_repos: Callable[[Config], Iterable[str]],
+        msg: str,
+        branch_name: str,
+) -> Tuple[Iterable[str], Config, Commit, AutofixSettings]:
     config = load_config(args.config_filename)
     return (
         filter_repos(config, args.repos, find_repos),
         config,
-        Commit.from_cli(args, msg=msg, branch_name=branch_name),
+        Commit(msg=msg, branch_name=branch_name, author=args.author),
         AutofixSettings.from_cli(args),
     )
 
 
-def run(*cmd, **kwargs):
+def run(*cmd: str, **kwargs: Any) -> subprocess.CompletedProcess:
     cmdstr = ' '.join(pipes.quote(arg) for arg in cmd)
     print(f'$ {cmdstr}', flush=True)
     kwargs.setdefault('check', True)
@@ -102,7 +117,7 @@ def run(*cmd, **kwargs):
 
 
 @contextlib.contextmanager
-def cwd(path):
+def cwd(path: str) -> Generator[None, None, None]:
     pwd = os.getcwd()
     os.chdir(path)
     try:
@@ -135,7 +150,7 @@ def require_version_gte(pkg_name: str, version: str) -> None:
 
 
 @contextlib.contextmanager
-def repo_context(repo, *, use_color):
+def repo_context(repo: str, *, use_color: bool) -> Generator[None, None, None]:
     print(color.fmt(f'***{repo}', color.TURQUOISE_H, use_color=use_color))
     try:
         remote = git.remote(repo)
@@ -150,14 +165,14 @@ def repo_context(repo, *, use_color):
         traceback.print_exc()
 
 
-def shell():
+def shell() -> None:
     print('Opening an interactive shell, type `exit` to continue.')
     print('Any modifications will be committed.')
     subprocess.call(os.environ.get('SHELL', 'bash'))
 
 
-def _interactive_check(*, use_color):
-    def _quit():
+def _interactive_check(*, use_color: bool) -> bool:
+    def _quit() -> NoReturn:
         print('Goodbye!')
         raise SystemExit()
 
@@ -191,7 +206,14 @@ def _interactive_check(*, use_color):
             print('? (help): show this help message.')
 
 
-def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
+def _fix_inner(
+        repo: str,
+        apply_fix: Callable[[], None],
+        check_fix: Callable[[], None],
+        config: Config,
+        commit: Commit,
+        autofix_settings: AutofixSettings,
+) -> None:
     with repo_context(repo, use_color=autofix_settings.color):
         branch_name = f'all-repos_autofix_{commit.branch_name}'
         run('git', 'checkout', '--quiet', 'origin/master', '-b', branch_name)
@@ -214,7 +236,9 @@ def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
             f'{commit.msg}\n\n'
             f'Committed via https://github.com/asottile/all-repos'
         )
-        commit_cmd = ('git', 'commit', '--quiet', '-a', '-m', commit_message)
+        commit_cmd: Tuple[str, ...] = (
+            'git', 'commit', '--quiet', '-a', '-m', commit_message,
+        )
         if commit.author:
             commit_cmd += ('--author', commit.author)
 
@@ -226,18 +250,19 @@ def _fix_inner(repo, apply_fix, check_fix, config, commit, autofix_settings):
         config.push(config.push_settings, branch_name)
 
 
-def _noop_check_fix():
+def _noop_check_fix() -> None:
     """A lambda is not pickleable, this must be a module-level function"""
 
 
 def fix(
-        repos, *,
-        apply_fix,
-        check_fix=_noop_check_fix,
+        repos: Iterable[str],
+        *,
+        apply_fix: Callable[[], None],
+        check_fix: Callable[[], None] = _noop_check_fix,
         config: Config,
         commit: Commit,
         autofix_settings: AutofixSettings,
-):
+) -> None:
     assert not autofix_settings.interactive or autofix_settings.jobs == 1
     repos = tuple(repos)[:autofix_settings.limit]
     func = functools.partial(

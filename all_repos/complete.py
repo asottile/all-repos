@@ -1,4 +1,6 @@
 import argparse
+from typing import Optional
+from typing import Sequence
 
 from all_repos import cli
 from all_repos.config import load_config
@@ -60,7 +62,7 @@ __git_remote_repositories() {
 '''
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Add git-clone tab completion for all-repos repositories.\n\n'
@@ -85,6 +87,7 @@ def main(argv=None):
         print(ZSH)
     else:
         raise NotImplementedError()
+    return 0
 
 
 if __name__ == '__main__':

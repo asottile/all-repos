@@ -1,9 +1,10 @@
-import collections
 import json
 from typing import Dict
+from typing import NamedTuple
 
 
-Settings = collections.namedtuple('Settings', ('filename',))
+class Settings(NamedTuple):
+    filename: str
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:

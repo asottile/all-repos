@@ -3,14 +3,23 @@ import functools
 import os.path
 import shlex
 import subprocess
+from typing import Generator
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
 
 from identify.identify import tags_from_path
 
 from all_repos import autofix_lib
+from all_repos.config import Config
 from all_repos.util import zsplit
 
 
-def find_repos(config, *, ls_files_cmd):
+def find_repos(
+        config: Config,
+        *,
+        ls_files_cmd: Sequence[str],
+) -> Generator[str, None, None]:
     for repo in config.get_cloned_repos():
         repo_dir = os.path.join(config.output_dir, repo)
         if subprocess.run(
@@ -20,18 +29,22 @@ def find_repos(config, *, ls_files_cmd):
             yield repo_dir
 
 
-def apply_fix(*, ls_files_cmd, sed_cmd):
-    filenames = zsplit(subprocess.check_output(ls_files_cmd))
-    filenames = [f.decode() for f in filenames]
+def apply_fix(
+        *,
+        ls_files_cmd: Sequence[str],
+        sed_cmd: Sequence[str],
+) -> None:
+    filenames_b = zsplit(subprocess.check_output(ls_files_cmd))
+    filenames = [f.decode() for f in filenames_b]
     filenames = [f for f in filenames if tags_from_path(f) & {'file', 'text'}]
     autofix_lib.run(*sed_cmd, *filenames)
 
 
-def _quote_cmd(cmd):
+def _quote_cmd(cmd: Tuple[str, ...]) -> str:
     return ' '.join(shlex.quote(arg) for arg in cmd)
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Similar to a distributed '
@@ -64,7 +77,12 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
 
-    dash_r = ('-r',) if args.regexp_extended else ()
+    # https://github.com/python/mypy/issues/4975
+    dash_r: Tuple[str, ...]
+    if args.regexp_extended:
+        dash_r = ('-r',)
+    else:
+        dash_r = ()
     sed_cmd = ('sed', '-i', *dash_r, args.expression)
     ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
 
@@ -84,6 +102,7 @@ def main(argv=None):
         ),
         config=config, commit=commit, autofix_settings=autofix_settings,
     )
+    return 0
 
 
 if __name__ == '__main__':

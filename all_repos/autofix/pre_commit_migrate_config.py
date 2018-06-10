@@ -1,6 +1,9 @@
 import argparse
 import os.path
 import sys
+from typing import Optional
+from typing import Sequence
+from typing import Set
 
 import yaml
 from pre_commit.constants import CONFIG_FILE
@@ -9,23 +12,24 @@ from all_repos import autofix_lib
 from all_repos.autofix.pre_commit_autoupdate import check_fix
 from all_repos.autofix.pre_commit_autoupdate import find_repos as _find_repos
 from all_repos.autofix.pre_commit_autoupdate import tmp_pre_commit_home
+from all_repos.config import Config
 
 
-def apply_fix():
+def apply_fix() -> None:
     autofix_lib.run(sys.executable, '-m', 'pre_commit', 'migrate-config')
 
 
-def _has_legacy_config(repo_dir):
+def _has_legacy_config(repo_dir: str) -> bool:
     with open(os.path.join(repo_dir, CONFIG_FILE)) as f:
         contents = yaml.load(f.read())
     return isinstance(contents, list)
 
 
-def find_repos(config):
+def find_repos(config: Config) -> Set[str]:
     return {repo for repo in _find_repos(config) if _has_legacy_config(repo)}
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
@@ -52,6 +56,7 @@ def main(argv=None):
             commit=commit,
             autofix_settings=autofix_settings,
         )
+    return 0
 
 
 if __name__ == '__main__':

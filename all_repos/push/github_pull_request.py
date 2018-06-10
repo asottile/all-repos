@@ -1,14 +1,16 @@
-import collections
 import json
 import subprocess
 import urllib.request
+from typing import NamedTuple
 
 from all_repos import autofix_lib
 from all_repos import git
 
 
-Settings = collections.namedtuple('Settings', ('api_key', 'username', 'fork'))
-Settings.__new__.__defaults__ = (False,)
+class Settings(NamedTuple):
+    api_key: str
+    username: str
+    fork: bool = False  # noqa: E701 fixed in flake8>=3.6
 
 
 def push(settings: Settings, branch_name: str) -> None:

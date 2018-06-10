@@ -3,51 +3,57 @@ import contextlib
 import os
 import sys
 import tempfile
+from typing import Any
+from typing import Generator
+from typing import Optional
+from typing import Sequence
+from typing import Set
 
 from all_repos import autofix_lib
+from all_repos.config import Config
 from all_repos.grep import repos_matching
 
 
 @contextlib.contextmanager
-def tmp_pre_commit_home(*, _absent=object()):
+def tmp_pre_commit_home() -> Generator[None, None, None]:
     """During lots of autoupdates, many repositories will be cloned into the
     pre-commit directory.  This prevents leaving many MB/GB of repositories
     behind due to this autofixer.  This context creates a temporary directory
     so these many repositories are automatically cleaned up.
     """
-    before = os.environ.get('PRE_COMMIT_HOME', _absent)
+    before = os.environ.get('PRE_COMMIT_HOME')
     with tempfile.TemporaryDirectory() as tmpdir:
         os.environ['PRE_COMMIT_HOME'] = tmpdir
         try:
             yield
         finally:
-            if before is _absent:
+            if before is None:
                 os.environ.pop('PRE_COMMIT_HOME', None)
             else:
                 os.environ['PRE_COMMIT_HOME'] = before
 
 
-def _run_all_files(**kwargs):
+def _run_all_files(**kwargs: Any) -> None:
     autofix_lib.run(
         sys.executable, '-m', 'pre_commit', 'run', '--all-files', **kwargs,
     )
 
 
-def find_repos(config):
+def find_repos(config: Config) -> Set[str]:
     return repos_matching(config, ('', '--', '.pre-commit-config.yaml'))
 
 
-def apply_fix():
+def apply_fix() -> None:
     autofix_lib.run(sys.executable, '-m', 'pre_commit', 'autoupdate')
     # This may return nonzero for fixes, that's ok!
     _run_all_files(check=False)
 
 
-def check_fix():
+def check_fix() -> None:
     _run_all_files()
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)
@@ -75,6 +81,7 @@ def main(argv=None):
             commit=commit,
             autofix_settings=autofix_settings,
         )
+    return 0
 
 
 if __name__ == '__main__':

@@ -1,31 +1,34 @@
-import collections
 import json
 import os
 import re
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import NamedTuple
+from typing import Pattern
 
 
-class Config(collections.namedtuple(
-        'Config',
-        (
-            'output_dir', 'include', 'exclude',
-            'list_repos', 'source_settings',
-            'push', 'push_settings',
-        ),
-)):
-    __slots__ = ()
+class Config(NamedTuple):
+    output_dir: str
+    include: Pattern[str]
+    exclude: Pattern[str]
+    list_repos: Callable[[Any], Dict[str, str]]
+    source_settings: Any
+    push: Callable[[Any, str], None]
+    push_settings: Any
 
-    def _path(self, *paths):
+    def _path(self, *paths: str) -> str:
         return os.path.abspath(os.path.join(self.output_dir, *paths))
 
     @property
-    def repos_path(self):
+    def repos_path(self) -> str:
         return self._path('repos.json')
 
     @property
-    def repos_filtered_path(self):
+    def repos_filtered_path(self) -> str:
         return self._path('repos_filtered.json')
 
-    def get_cloned_repos(self):
+    def get_cloned_repos(self) -> Dict[str, str]:
         with open(self.repos_filtered_path) as f:
             return json.load(f)
 

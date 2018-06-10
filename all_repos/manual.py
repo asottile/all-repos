@@ -1,13 +1,17 @@
 import argparse
+from typing import List
+from typing import Optional
+from typing import Sequence
 
 from all_repos import autofix_lib
+from all_repos.config import Config
 
 
-def find_repos(_):
+def find_repos(_: Config) -> List[str]:
     raise AssertionError('--repos is required')
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description='Interactively apply a manual change across repos.',
         usage='%(prog)s [options]',
@@ -40,6 +44,7 @@ def main(argv=None):
         commit=commit,
         autofix_settings=autofix_settings,
     )
+    return 0
 
 
 if __name__ == '__main__':
