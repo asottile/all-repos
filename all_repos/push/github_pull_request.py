@@ -1,10 +1,10 @@
 import json
 import subprocess
-import urllib.request
 from typing import NamedTuple
 
 from all_repos import autofix_lib
 from all_repos import git
+from all_repos import github_api
 
 
 class Settings(NamedTuple):
@@ -20,11 +20,11 @@ def push(settings: Settings, branch_name: str) -> None:
     _, _, repo_slug = remote_url.rpartition(':')
 
     if settings.fork:
-        resp = urllib.request.urlopen(urllib.request.Request(
+        resp = github_api.req(
             f'https://api.github.com/repos/{repo_slug}/forks',
             headers=headers, method='POST',
-        ))
-        new_slug = json.loads(resp.read())['full_name']
+        )
+        new_slug = resp.json['full_name']
         new_remote = remote_url.replace(repo_slug, new_slug)
         autofix_lib.run('git', 'remote', 'add', 'fork', new_remote)
         remote = 'fork'
@@ -45,10 +45,10 @@ def push(settings: Settings, branch_name: str) -> None:
         'head': head,
     }).encode()
 
-    resp = urllib.request.urlopen(urllib.request.Request(
+    resp = github_api.req(
         f'https://api.github.com/repos/{repo_slug}/pulls',
         data=data, headers=headers, method='POST',
-    ))
+    )
 
-    url = json.loads(resp.read())['html_url']
+    url = resp.json['html_url']
     print(f'Pull request created at {url}')
