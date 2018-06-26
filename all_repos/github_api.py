@@ -47,6 +47,21 @@ def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
     return ret
 
 
+def filter_repos(
+        repos: List[Dict[str, Any]], *,
+        forks: bool, private: bool, collaborator: bool,
+) -> Dict[str, str]:
+    return {
+        repo['full_name']: 'git@github.com:{}'.format(repo['full_name'])
+        for repo in repos
+        if (
+            (forks or not repo['fork']) and
+            (private or not repo['private']) and
+            (collaborator or repo['permissions']['admin'])
+        )
+    }
+
+
 T = TypeVar('T', List[Any], Dict[str, Any], Any)
 
 

@@ -40,7 +40,7 @@ def repos_response(mock_urlopen):
         ({}, {'asottile/git-code-debt'}),
         (
             {'collaborator': True},
-            {'asottile/git-code-debt', 'dahlia/libsass-python'},
+            {'asottile/git-code-debt', 'sass/libsass-python'},
         ),
         ({'forks': True}, {'asottile/git-code-debt', 'asottile/tox'}),
         ({'private': True}, {'asottile/git-code-debt', 'asottile/eecs381-p4'}),

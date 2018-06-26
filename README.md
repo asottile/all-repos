@@ -232,6 +232,31 @@ output/
     +--- {repo3}/
 ```
 
+### `all_repos.source.github_org`
+
+Clones all repositories from an organization / user on github.
+
+#### Required `source_settings`
+
+- `api_key`: the api key which the user will log in as.
+    - Use [the settings tab](//github.com/settings/tokens/new) to create a
+      personal access token.
+    - The minimum scope required to function is `public_repo`, though you'll
+      need `repo` to access private repositories.
+- `org`: the organization / username to clone from
+
+#### Optional `source_settings`
+
+- `collaborator` (default `true`): whether to include repositories which are
+  not owned but can be contributed to as a collaborator.
+- `forks` (default `false`): whether to include repositories which are forks.
+- `private` (default `false`): whether to include private repositories.
+
+#### Directory location
+
+See the directory structure for
+[`all_repos.source.github`](#all_repossourcegithub).
+
 ### `all_repos.source.gitolite`
 
 Clones all repositories available to a user on a
