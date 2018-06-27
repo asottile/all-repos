@@ -234,7 +234,7 @@ output/
 
 ### `all_repos.source.github_org`
 
-Clones all repositories from an organization / user on github.
+Clones all repositories from an organization on github.
 
 #### Required `source_settings`
 
@@ -243,7 +243,7 @@ Clones all repositories from an organization / user on github.
       personal access token.
     - The minimum scope required to function is `public_repo`, though you'll
       need `repo` to access private repositories.
-- `org`: the organization / username to clone from
+- `org`: the organization to clone from
 
 #### Optional `source_settings`
 
