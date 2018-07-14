@@ -31,10 +31,10 @@ def _parse_link(lnk: Optional[str]) -> Dict[str, str]:
 
 def req(url: str, **kwargs: Any) -> Response:
     resp = urllib.request.urlopen(urllib.request.Request(url, **kwargs))
-    # TODO: mypy 620 should fix this
+    # TODO: https://github.com/python/typeshed/issues/2333
     from typing import cast
     resp = cast(urllib.response.addinfourl, resp)
-    return Response(json.loads(resp.read()), _parse_link(resp.headers['link']))
+    return Response(json.load(resp), _parse_link(resp.headers['link']))
 
 
 def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
