@@ -9,10 +9,10 @@ from typing import TypeVar
 
 
 T = TypeVar('T')
-MapCallable = Callable[[Callable[..., T], Iterable[Any]], Iterable[T]]
+MapCallable = Callable[[Callable[..., Any], Iterable[Any]], Iterable[Any]]
 
 
-def exhaust(gen: Iterable) -> None:
+def exhaust(gen: Iterable[T]) -> None:
     for _ in gen:
         pass
 
