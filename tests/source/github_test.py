@@ -8,7 +8,7 @@ from testing.mock_http import FakeResponse
 from testing.mock_http import urlopen_side_effect
 
 
-def _resource_json(repo_name: str) -> dict:
+def _resource_json(repo_name):
     with open(f'testing/resources/github/{repo_name}.json') as f:
         return json.load(f)
 

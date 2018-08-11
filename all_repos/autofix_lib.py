@@ -64,13 +64,13 @@ def add_fixer_args(parser: argparse.ArgumentParser) -> None:
 class Commit(NamedTuple):
     msg: str
     branch_name: str
-    author: str
+    author: Optional[str]
 
 
 class AutofixSettings(NamedTuple):
     jobs: int
     color: bool
-    limit: int
+    limit: Optional[int]
     dry_run: bool
     interactive: bool
 
