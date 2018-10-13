@@ -474,7 +474,13 @@ if __name__ == '__main__':
 
 You can find some more involved examples in [all_repos/autofix](https://github.com/asottile/all-repos/tree/master/all_repos/autofix):
 - `all_repos.autofix.pre_commit_autoupdate`: runs `pre-commit autoupdate`.
+- `all_repos.autofix.pre_commit_autopep8_migrate`: migrates `autopep8-wrapper`
+  from [pre-commit/pre-commit-hooks][pre-commit-hooks] to
+  [mirrors-autopep8][mirrors-autopep8].
 - `all_repos.autofix.pre_commit_cache_dir`: updates the cache directory
   for travis-ci / appveyor for pre-commit 1.x.
 - `all_repos.autofix.pre_commit_migrate_config`: runs
   `pre-commit migrate-config`.
+
+[pre-commit-hooks]: https://github.com/pre-commit/pre-commit-hooks
+[mirrors-autopep8]: https://github.com/pre-commit/mirrors-autopep8

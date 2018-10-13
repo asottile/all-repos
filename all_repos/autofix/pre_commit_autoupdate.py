@@ -33,7 +33,7 @@ def tmp_pre_commit_home() -> Generator[None, None, None]:
                 os.environ['PRE_COMMIT_HOME'] = before
 
 
-def _run_all_files(**kwargs: Any) -> None:
+def check_fix(**kwargs: Any) -> None:
     autofix_lib.run(
         sys.executable, '-m', 'pre_commit', 'run', '--all-files', **kwargs,
     )
@@ -46,11 +46,7 @@ def find_repos(config: Config) -> Set[str]:
 def apply_fix() -> None:
     autofix_lib.run(sys.executable, '-m', 'pre_commit', 'autoupdate')
     # This may return nonzero for fixes, that's ok!
-    _run_all_files(check=False)
-
-
-def check_fix() -> None:
-    _run_all_files()
+    check_fix(check=False)
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
