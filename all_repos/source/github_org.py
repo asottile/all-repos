@@ -8,7 +8,7 @@ class Settings(NamedTuple):
     api_key: str
     org: str
     collaborator: bool = True
-    forks: bool = False  # noqa: E701 fixed in flake8>=3.6
+    forks: bool = False
     private: bool = False
 
 

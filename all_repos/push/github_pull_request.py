@@ -10,7 +10,7 @@ from all_repos import github_api
 class Settings(NamedTuple):
     api_key: str
     username: str
-    fork: bool = False  # noqa: E701 fixed in flake8>=3.6
+    fork: bool = False
 
 
 def push(settings: Settings, branch_name: str) -> None:
