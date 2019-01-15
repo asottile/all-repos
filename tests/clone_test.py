@@ -73,3 +73,18 @@ def test_it_continues_on_unclonable_repositories(file_config, capsys):
 
     out, err = capsys.readouterr()
     assert 'Error fetching ' in out
+
+
+def test_it_can_clone_non_master_default_branch(file_config):
+    subprocess.check_call((
+        'git', '-C', file_config.dir1, 'branch', '--move', 'm2',
+    ))
+    subprocess.check_call((
+        'git', '-C', file_config.dir1, 'symbolic-ref', 'HEAD', 'refs/heads/m2',
+    ))
+    assert not main(('--config-file', str(file_config.cfg), '-j1'))
+
+    out = subprocess.check_output((
+        'git', '-C', file_config.output_dir.join('repo1'), 'branch',
+    )).strip().decode()
+    assert out == '* m2'
