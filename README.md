@@ -114,10 +114,10 @@ Similar to a distributed
 
 _note_: this assumes GNU sed. If you're on macOS, install `gnu-sed` with Homebrew:
 
-```
+```bash
 brew install gnu-sed
 
-# Add to .bashrc/.zshrc
+# Add to .bashrc / .zshrc
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
