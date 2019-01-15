@@ -10,14 +10,9 @@ from typing import Sequence
 from typing import Tuple
 
 from all_repos import cli
+from all_repos import git
 from all_repos import mapper
 from all_repos.config import load_config
-
-
-def _git_remote(path: str) -> str:
-    return subprocess.check_output((
-        'git', '-C', path, 'config', 'remote.origin.url',
-    )).decode().strip()
 
 
 def _get_current_state_helper(
@@ -34,7 +29,7 @@ def _get_current_state_helper(
         elif direntry.is_dir():  # pragma: no branch (defensive)
             pths.append(direntry)
     if seen_git:
-        yield path, _git_remote(path)
+        yield path, git.remote(path)
     else:
         for pth in pths:
             yield from _get_current_state_helper(os.fspath(pth))
@@ -62,17 +57,29 @@ def _init(dest: str, path: str, remote: str) -> None:
     os.makedirs(path, exist_ok=True)
     subprocess.check_call(('git', 'init', path))
     subprocess.check_output((
-        'git', '-C', path, 'remote', 'add',
-        'origin', remote, '--track', 'master',
+        'git', '-C', path, 'remote', 'add', 'origin', remote,
     ))
 
 
+def _default_branch(remote: str) -> str:
+    cmd = ('git', 'ls-remote', '--symref', remote, 'HEAD')
+    out = subprocess.check_output(cmd, encoding='UTF-8')
+    line = out.splitlines()[0]
+    start, end = 'ref: refs/heads/', '\tHEAD'
+    assert line.startswith(start) and line.endswith(end), line
+    return line[len(start):-1 * len(end)]
+
+
 def _fetch_reset(path: str) -> None:
+    def _git(*cmd: str) -> None:
+        subprocess.check_call(('git', '-C', path, *cmd))
+
     try:
-        subprocess.check_call(('git', '-C', path, 'fetch'))
-        subprocess.check_call((
-            'git', '-C', path, 'reset', '--hard', 'origin/master',
-        ))
+        branch = _default_branch(git.remote(path))
+        _git('remote', 'set-branches', 'origin', branch)
+        _git('fetch', 'origin', branch)
+        _git('checkout', branch)
+        _git('reset', '--hard', f'origin/{branch}')
     except subprocess.CalledProcessError:
         # TODO: color / tty
         print(f'Error fetching {path}')
