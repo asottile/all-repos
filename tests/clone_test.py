@@ -82,3 +82,12 @@ def test_it_can_clone_non_master_default_branch(file_config_non_default):
     cmd = ('git', '-C', repo, 'branch')
     out = subprocess.check_output(cmd).strip().decode()
     assert out == '* m2'
+
+
+def test_no_crash_repo_without_branch(file_config):
+    file_config.dir1.remove()
+    # this repo does not have a default branch, or any for that matter
+    subprocess.check_call(('git', 'init', file_config.dir1))
+
+    # should not crash
+    assert not main(('--config-filename', str(file_config.cfg)))
