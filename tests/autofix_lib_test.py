@@ -7,6 +7,7 @@ from pre_commit.constants import VERSION as PRE_COMMIT_VERSION
 
 import testing.git
 from all_repos import autofix_lib
+from all_repos import clone
 from all_repos import git
 from all_repos.config import load_config
 
@@ -329,7 +330,7 @@ def test_fix_failing_check_no_changes(file_config_files, capfd):
     assert file_config_files.dir2.join('f').read() == 'OHELLO\n'
 
 
-def test_noop_does_not_commit(file_config_files, capfd):
+def test_noop_does_not_commit(file_config_files):
     rev_before1 = testing.git.revparse(file_config_files.dir1)
     rev_before2 = testing.git.revparse(file_config_files.dir2)
     autofix_lib.fix(
@@ -347,3 +348,21 @@ def test_noop_does_not_commit(file_config_files, capfd):
     rev_after1 = testing.git.revparse(file_config_files.dir1)
     rev_after2 = testing.git.revparse(file_config_files.dir2)
     assert (rev_before1, rev_before2) == (rev_after1, rev_after2)
+
+
+def test_fix_non_default_branch(file_config_non_default):
+    clone.main(('--config-filename', str(file_config_non_default.cfg)))
+
+    autofix_lib.fix(
+        (
+            str(file_config_non_default.output_dir.join('repo1')),
+        ),
+        apply_fix=lower_case_f,
+        config=load_config(file_config_non_default.cfg),
+        commit=autofix_lib.Commit('message!', 'test-branch', 'A B <a@a.a>'),
+        autofix_settings=autofix_lib.AutofixSettings(
+            jobs=1, color=False, limit=None, dry_run=False, interactive=False,
+        ),
+    )
+
+    assert file_config_non_default.dir1.join('f').read() == 'ohai\n'

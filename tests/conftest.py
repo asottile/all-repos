@@ -1,5 +1,6 @@
 import builtins
 import json
+import subprocess
 import sys
 import urllib.request
 from unittest import mock
@@ -46,6 +47,18 @@ def file_config(tmpdir):
         rev1=rev1,
         rev2=rev2,
     )
+
+
+@pytest.fixture
+def file_config_non_default(file_config):
+    subprocess.check_call((
+        'git', '-C', file_config.dir1, 'branch', '--move', 'm2',
+    ))
+    subprocess.check_call((
+        'git', '-C', file_config.dir1, 'symbolic-ref', 'HEAD', 'refs/heads/m2',
+    ))
+    write_file_commit(file_config.dir1, 'f', 'OHAI\n')
+    return file_config
 
 
 @pytest.fixture
