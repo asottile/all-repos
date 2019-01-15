@@ -362,6 +362,14 @@ branch.
   to the upstream repository.
 
 
+### `all_repos.push.readonly`
+
+Does nothing.
+
+#### `push_settings`
+
+There are no configurable settings for `readonly`.
+
 ## Writing your own push module
 
 First create a module.  This module must have the following api:
