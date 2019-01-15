@@ -149,6 +149,13 @@ def require_version_gte(pkg_name: str, version: str) -> None:
         )
 
 
+def target_branch() -> str:
+    cmd = ('git', 'rev-parse', '--abbrev-ref', '--symbolic', '@{u}')
+    out = subprocess.check_output(cmd).strip().decode()
+    assert out.startswith('origin/')
+    return out[len('origin/'):]
+
+
 @contextlib.contextmanager
 def repo_context(repo: str, *, use_color: bool) -> Generator[None, None, None]:
     print(color.fmt(f'***{repo}', color.TURQUOISE_H, use_color=use_color))
@@ -216,11 +223,11 @@ def _fix_inner(
 ) -> None:
     with repo_context(repo, use_color=autofix_settings.color):
         branch_name = f'all-repos_autofix_{commit.branch_name}'
-        run('git', 'checkout', '--quiet', 'origin/master', '-b', branch_name)
+        run('git', 'checkout', '--quiet', 'origin/HEAD', '-b', branch_name)
 
         apply_fix()
 
-        diff = run('git', 'diff', 'origin/master', '--exit-code', check=False)
+        diff = run('git', 'diff', 'origin/HEAD', '--exit-code', check=False)
         if not diff.returncode:
             return
 

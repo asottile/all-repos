@@ -41,7 +41,7 @@ def push(settings: Settings, branch_name: str) -> None:
     data = json.dumps({
         'title': title.decode().strip(),
         'body': body.decode().strip(),
-        'base': 'master',
+        'base': autofix_lib.target_branch(),
         'head': head,
     }).encode()
 
