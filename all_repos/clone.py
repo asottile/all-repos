@@ -62,7 +62,7 @@ def _init(dest: str, path: str, remote: str) -> None:
 
 
 def _default_branch(remote: str) -> str:
-    cmd = ('git', 'ls-remote', '--symref', remote, 'HEAD')
+    cmd = ('git', 'ls-remote', '--exit-code', '--symref', remote, 'HEAD')
     out = subprocess.check_output(cmd, encoding='UTF-8')
     line = out.splitlines()[0]
     start, end = 'ref: refs/heads/', '\tHEAD'
