@@ -112,8 +112,14 @@ Options:
 Similar to a distributed
 `git ls-files -z -- FILENAMES | xargs -0 sed -i EXPRESSION`.
 
-_note_: this assumes GNU sed, if you're on osx
-[use `brew install gnu-sed --with-default-names`](https://stackoverflow.com/a/27595785/812183).
+_note_: this assumes GNU sed. If you're on macOS, install `gnu-sed` with Homebrew:
+
+```bash
+brew install gnu-sed
+
+# Add to .bashrc / .zshrc
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+```
 
 Arguments:
 
