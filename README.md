@@ -337,9 +337,10 @@ git merge --no-ff $BRANCH
 git push origin HEAD
 ```
 
-#### `push_settings`
+#### Optional `push_settings`
 
-There are no configurable settings for `merge_to_master`.
+- `fast_forward` (default: `false`): if `true`, perform a fast-forward
+    merge (`--ff-only`). If `false`, create a merge commit (`--no-ff`).
 
 ### `all_repos.push.github_pull_request`
 
