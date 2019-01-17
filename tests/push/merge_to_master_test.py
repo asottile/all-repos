@@ -25,7 +25,7 @@ def cloned(tmpdir):
 
 
 @pytest.mark.parametrize(
-    ("settings", "expected_commit_message"),
+    ('settings', 'expected_commit_message'),
     [
         (
             merge_to_master.Settings(),
