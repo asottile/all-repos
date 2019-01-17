@@ -24,8 +24,24 @@ def cloned(tmpdir):
     return auto_namedtuple(src=src, dest=dest)
 
 
-def test_merge_to_master(cloned):
-    settings = merge_to_master.Settings()
+@pytest.mark.parametrize(
+    ("settings", "expected_commit_message"),
+    [
+        (
+            merge_to_master.Settings(),
+            "Merge branch 'feature'",
+        ),
+        (
+            merge_to_master.Settings(fast_forward=False),
+            "Merge branch 'feature'",
+        ),
+        (
+            merge_to_master.Settings(fast_forward=True),
+            'This is a commit message\n\nHere is some more information!',
+        ),
+    ],
+)
+def test_merge_to_master(cloned, settings, expected_commit_message):
     with cloned.dest.as_cwd():
         merge_to_master.push(settings, 'feature')
     # master is checked out
@@ -34,8 +50,8 @@ def test_merge_to_master(cloned):
     )).decode()
     assert out == '  feature\n* master\n'
 
-    # latest commit is merge commit
+    # check latest commit message
     out = subprocess.check_output((
         'git', '-C', cloned.dest, 'log', '-1', '--pretty=%B',
     )).decode().strip()
-    assert out == "Merge branch 'feature'"
+    assert out == expected_commit_message
