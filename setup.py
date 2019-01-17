@@ -5,7 +5,7 @@ setup(
     name='all_repos',
     description='Clone all your repositories and apply sweeping changes.',
     url='https://github.com/asottile/all-repos',
-    version='1.8.0',
+    version='1.9.0',
     author='Anthony Sottile',
     author_email='asottile@umich.edu',
     classifiers=[
