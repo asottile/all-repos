@@ -45,7 +45,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
         find_repos=find_repos,
-        msg='Update pre-commit cache directory.',
+        msg='Update pre-commit cache directory',
         branch_name='pre-commit-cache-dir',
     )
 
