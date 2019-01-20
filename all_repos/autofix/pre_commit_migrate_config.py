@@ -43,7 +43,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
         find_repos=find_repos,
-        msg='Ran pre-commit migrate-config.',
+        msg='Run pre-commit migrate-config',
         branch_name='pre-commit-migrate-config',
     )
 

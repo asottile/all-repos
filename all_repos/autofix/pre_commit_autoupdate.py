@@ -65,7 +65,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
         find_repos=find_repos,
-        msg='Ran pre-commit autoupdate.', branch_name='pre-commit-autoupdate',
+        msg='Run pre-commit autoupdate', branch_name='pre-commit-autoupdate',
     )
 
     with tmp_pre_commit_home():
