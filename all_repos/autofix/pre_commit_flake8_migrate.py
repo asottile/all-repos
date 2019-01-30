@@ -13,17 +13,22 @@ from all_repos.grep import repos_matching
 
 
 def find_repos(config: Config) -> Set[str]:
-    return repos_matching(
-        config, ('autopep8-wrapper', '--', '.pre-commit-config.yaml'),
+    return (
+        repos_matching(
+            config, ('flake8', '--', '.pre-commit-config.yaml'),
+        ) -
+        repos_matching(
+            config, ('pycqa/flake8', '--', '.pre-commit-config.yaml'),
+        )
     )
 
 
 apply_fix = functools.partial(
     apply_fix_fn,
-    prev_hook='autopep8-wrapper',
-    repo='https://github.com/pre-commit/mirrors-autopep8',
-    rev='v1.4',
-    hook='autopep8',
+    prev_hook='flake8',
+    repo='https://gitlab.com/pycqa/flake8',
+    rev='3.7.0',
+    hook='flake8',
 )
 
 
@@ -38,8 +43,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
         args,
         find_repos=find_repos,
-        msg='Migrate from autopep8-wrapper to mirrors-autopep8',
-        branch_name='pre-commit-autopep8-migrate',
+        msg='Migrate to official pycqa/flake8 hooks repo',
+        branch_name='pre-commit-flake8-migrate',
     )
 
     with tmp_pre_commit_home():
