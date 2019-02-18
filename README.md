@@ -497,7 +497,10 @@ You can find some more involved examples in [all_repos/autofix](https://github.c
   [pre-commit/pre-commit-hooks] to [pycqa/flake8].
 - `all_repos.autofix.pre_commit_migrate_config`: runs
   `pre-commit migrate-config`.
+- `all_repos.autofix.setup_py_upgrade`: runs [setup-py-upgrade] and then
+  tidies up the metadata fields and adds a few missing ones.
 
 [pre-commit/pre-commit-hooks]: https://github.com/pre-commit/pre-commit-hooks
 [mirrors-autopep8]: https://github.com/pre-commit/mirrors-autopep8
 [pycqa/flake8]: https://gitlab.com/pycqa/flake8
+[setup-py-upgrade]: https://github.com/asottile/setup-py-upgrade

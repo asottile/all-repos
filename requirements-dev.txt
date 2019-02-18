@@ -3,3 +3,4 @@ flake8
 pre-commit
 pytest
 pytest-env
+setup-py-upgrade>=0.0.4
