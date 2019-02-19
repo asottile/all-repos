@@ -48,7 +48,7 @@ def test_basic_rewrite(file_config, setup_py_repo):
     )
 
 
-def test_rewrite_with_readme(file_config, setup_py_repo):
+def test_rewrite_setup_cfg_fmt(file_config, setup_py_repo):
     write_file_commit(setup_py_repo.src_repo, 'README.md', 'my project!')
     ret = main((
         '--config-filename', str(file_config.cfg),
@@ -65,58 +65,6 @@ def test_rewrite_with_readme(file_config, setup_py_repo):
         'version = 1.0\n'
         'long_description = file: README.md\n'
         'long_description_content_type = text/markdown\n'
-        '\n'
-        '[bdist_wheel]\n'
-        'universal = true\n'
-    )
-
-
-def test_rewrite_with_license(file_config, setup_py_repo):
-    with open('LICENSE') as f:
-        contents = f.read()
-    write_file_commit(setup_py_repo.src_repo, 'LICENSE', contents)
-    ret = main((
-        '--config-filename', str(file_config.cfg),
-        '--repos', str(setup_py_repo.update_repo),
-    ))
-    assert not ret
-
-    setup_py = setup_py_repo.src_repo.join('setup.py').read()
-    assert setup_py == 'from setuptools import setup\nsetup()\n'
-    setup_cfg = setup_py_repo.src_repo.join('setup.cfg').read()
-    assert setup_cfg == (
-        '[metadata]\n'
-        'name = pkg\n'
-        'version = 1.0\n'
-        'license = MIT\n'
-        'license_file = LICENSE\n'
-        'classifiers =\n'
-        '    License :: OSI Approved :: MIT License\n'
-        '\n'
-        '[bdist_wheel]\n'
-        'universal = true\n'
-    )
-
-
-def test_rewrite_with_unknown_license(file_config, setup_py_repo):
-    write_file_commit(
-        setup_py_repo.src_repo, 'LICENSE',
-        'Copyright (C) asottile, definitely not a real license',
-    )
-    ret = main((
-        '--config-filename', str(file_config.cfg),
-        '--repos', str(setup_py_repo.update_repo),
-    ))
-    assert not ret
-
-    setup_py = setup_py_repo.src_repo.join('setup.py').read()
-    assert setup_py == 'from setuptools import setup\nsetup()\n'
-    setup_cfg = setup_py_repo.src_repo.join('setup.cfg').read()
-    assert setup_cfg == (
-        '[metadata]\n'
-        'name = pkg\n'
-        'version = 1.0\n'
-        'license_file = LICENSE\n'
         '\n'
         '[bdist_wheel]\n'
         'universal = true\n'
