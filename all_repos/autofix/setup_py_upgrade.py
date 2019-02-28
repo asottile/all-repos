@@ -15,10 +15,9 @@ def find_repos(config: Config) -> Set[str]:
 
 def apply_fix() -> None:
     autofix_lib.run(sys.executable, '-m', 'setup_py_upgrade', '.')
-    ret = autofix_lib.run(
+    autofix_lib.run(
         sys.executable, '-m', 'setup_cfg_fmt', 'setup.cfg', check=False,
     )
-    assert ret.returncode in (0, 1), ret.returncode
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
