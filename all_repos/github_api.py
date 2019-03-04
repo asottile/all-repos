@@ -49,7 +49,7 @@ def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
 
 def filter_repos(
         repos: List[Dict[str, Any]], *,
-        forks: bool, private: bool, collaborator: bool,
+        forks: bool, private: bool, collaborator: bool, archived: bool,
 ) -> Dict[str, str]:
     return {
         repo['full_name']: 'git@github.com:{}'.format(repo['full_name'])
@@ -57,7 +57,8 @@ def filter_repos(
         if (
             (forks or not repo['fork']) and
             (private or not repo['private']) and
-            (collaborator or repo['permissions']['admin'])
+            (collaborator or repo['permissions']['admin']) and
+            (archived or not repo['archived'])
         )
     }
 

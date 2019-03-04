@@ -24,6 +24,8 @@ def repos_response(mock_urlopen):
         _resource_json('tox'),
         # A private repo
         _resource_json('eecs381-p4'),
+        # An archived repo
+        _resource_json('poi-map'),
     ]
     mock_urlopen.side_effect = urlopen_side_effect({
         'https://api.github.com/user/repos?per_page=100': FakeResponse(
@@ -44,6 +46,10 @@ def repos_response(mock_urlopen):
         ),
         ({'forks': True}, {'asottile/git-code-debt', 'asottile/tox'}),
         ({'private': True}, {'asottile/git-code-debt', 'asottile/eecs381-p4'}),
+        (
+            {'archived': True},
+            {'asottile/git-code-debt', 'asottile-archive/poi-map'},
+        ),
     ),
 )
 def test_list_repos(settings, expected_repo_names):
