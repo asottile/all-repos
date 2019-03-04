@@ -10,6 +10,7 @@ class Settings(NamedTuple):
     collaborator: bool = True
     forks: bool = False
     private: bool = False
+    archived: bool = False
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
@@ -22,4 +23,5 @@ def list_repos(settings: Settings) -> Dict[str, str]:
         forks=settings.forks,
         private=settings.private,
         collaborator=settings.collaborator,
+        archived=settings.archived,
     )
