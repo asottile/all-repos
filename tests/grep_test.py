@@ -122,4 +122,7 @@ def test_grep_error(file_config_files, capfd, args):
     assert ret == 128
     out, err = capfd.readouterr()
     assert out == ''
-    assert err == 'fatal: no pattern given.\n'
+    assert err in {
+        'fatal: no pattern given.\n',  # git < v2.19.0-rc0
+        'fatal: no pattern given\n',  # git >= v2.19.0-rc0
+    }
