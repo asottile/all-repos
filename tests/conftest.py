@@ -30,13 +30,15 @@ def file_config(tmpdir):
     repos_json.write(json.dumps({'repo1': str(dir1), 'repo2': str(dir2)}))
 
     cfg = tmpdir.join('config.json')
-    cfg.write(json.dumps({
-        'output_dir': 'output',
-        'source': 'all_repos.source.json_file',
-        'source_settings': {'filename': str(repos_json)},
-        'push': 'all_repos.push.merge_to_master',
-        'push_settings': {},
-    }))
+    cfg.write(
+        json.dumps({
+            'output_dir': 'output',
+            'source': 'all_repos.source.json_file',
+            'source_settings': {'filename': str(repos_json)},
+            'push': 'all_repos.push.merge_to_master',
+            'push_settings': {},
+        }),
+    )
     cfg.chmod(0o600)
     return auto_namedtuple(
         output_dir=tmpdir.join('output'),

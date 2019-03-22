@@ -185,10 +185,12 @@ def _interactive_check(*, use_color: bool) -> bool:
 
     while True:
         try:
-            s = input(color.fmt(
-                '***Looks good [y,n,s,q,?]? ',
-                color.BLUE_B, use_color=use_color,
-            ))
+            s = input(
+                color.fmt(
+                    '***Looks good [y,n,s,q,?]? ',
+                    color.BLUE_B, use_color=use_color,
+                ),
+            )
         except (EOFError, KeyboardInterrupt):
             _quit()
 
@@ -203,9 +205,12 @@ def _interactive_check(*, use_color: bool) -> bool:
             _quit()
         else:
             if s not in {'?', 'help'}:
-                print(color.fmt(
-                    f'Unexpected input: {s}', color.RED, use_color=use_color,
-                ))
+                print(
+                    color.fmt(
+                        f'Unexpected input: {s}',
+                        color.RED, use_color=use_color,
+                    ),
+                )
             print('y (yes): yes it looks good, commit and continue.')
             print('n (no): no, do not commit this repository.')
             print('s (shell): open an interactive shell in the repo.')

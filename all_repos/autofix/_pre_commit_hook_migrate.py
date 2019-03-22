@@ -28,9 +28,11 @@ def apply_fix_fn(*, prev_hook: str, repo: str, rev: str, hook: str) -> None:
     opt_lines: List[str] = []
 
     def add_new_repo() -> None:
-        new_lines.extend(NEW_REPO.format(
-            i1=i1, i2=i2, i3=i3, i4=i4, repo=repo, rev=rev, hook=hook,
-        ))
+        new_lines.extend(
+            NEW_REPO.format(
+                i1=i1, i2=i2, i3=i3, i4=i4, repo=repo, rev=rev, hook=hook,
+            ),
+        )
         new_lines.extend(opt_lines)
 
     for line in lines:
