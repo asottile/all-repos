@@ -168,7 +168,7 @@ def repo_context(repo: str, *, use_color: bool) -> Generator[None, None, None]:
                 run('git', 'fetch', '--prune', '--quiet')
                 yield
     except Exception:
-        print(color.fmt(f'***Errored', color.RED_H, use_color=use_color))
+        print(color.fmt('***Errored', color.RED_H, use_color=use_color))
         traceback.print_exc()
 
 
