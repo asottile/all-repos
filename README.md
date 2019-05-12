@@ -139,7 +139,7 @@ Options:
 
 Sample invocations:
 
-- `all-repos-sed 's/foo/bar' -- '*'`: replace `foo` with `bar` in all files.
+- `all-repos-sed 's/foo/bar/g' -- '*'`: replace `foo` with `bar` in all files.
 
 ## Configuring
 
