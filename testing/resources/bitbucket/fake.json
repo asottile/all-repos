@@ -1,0 +1,108 @@
+{
+  "values": [
+    {
+      "scm": "git",
+      "website": "",
+      "has_wiki": false,
+      "uuid": "{69765507-c17b-49c4-8757-5c2c2e46a50a}",
+      "links": {
+        "watchers": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/watchers"
+        },
+        "branches": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/refs/branches"
+        },
+        "tags": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/refs/tags"
+        },
+        "commits": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/commits"
+        },
+        "clone": [
+          {
+            "href": "https://fake_user@bitbucket.org/fake_org/fake_repo.git",
+            "name": "https"
+          },
+          {
+            "href": "git@bitbucket.org:fake_org/fake_repo.git",
+            "name": "ssh"
+          }
+        ],
+        "self": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo"
+        },
+        "source": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/src"
+        },
+        "html": {
+          "href": "https://bitbucket.org/fake_org/fake_repo"
+        },
+        "avatar": {
+          "href": "https://bytebucket.org/ravatar/%7B69765507-c17b-49c4-8757-5c2c2e46a50a%7D?ts=2023780"
+        },
+        "hooks": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/hooks"
+        },
+        "forks": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/forks"
+        },
+        "downloads": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/downloads"
+        },
+        "pullrequests": {
+          "href": "https://api.bitbucket.org/2.0/repositories/fake_org/fake_repo/pullrequests"
+        }
+      },
+      "fork_policy": "no_forks",
+      "name": "fake_repo",
+      "project": {
+        "key": "THING",
+        "type": "project",
+        "uuid": "{c6ddbeb2-88c0-40cb-b9ef-8bd7f4a412d3}",
+        "links": {
+          "self": {
+            "href": "https://api.bitbucket.org/2.0/teams/fake_org/projects/THING"
+          },
+          "html": {
+            "href": "https://bitbucket.org/account/user/fake_org/projects/THING"
+          },
+          "avatar": {
+            "href": "https://bitbucket.org/account/user/fake_org/projects/THING/avatar/32"
+          }
+        },
+        "name": "Name"
+      },
+      "language": "typescript",
+      "created_on": "2018-10-30T04:53:12.095941+00:00",
+      "mainbranch": {
+        "type": "branch",
+        "name": "master"
+      },
+      "full_name": "fake_org/fake_repo",
+      "has_issues": false,
+      "owner": {
+        "username": "fake_org",
+        "display_name": "Fake",
+        "type": "team",
+        "uuid": "{b1c3e4cf-8873-4a42-a275-102c52a2a24e}",
+        "links": {
+          "self": {
+            "href": "https://api.bitbucket.org/2.0/teams/%7Bb1c3e4cf-8873-4a42-a275-102c52a2a24e%7D"
+          },
+          "html": {
+            "href": "https://bitbucket.org/%7Bb1c3e4cf-8873-4a42-a275-102c52a2a24e%7D/"
+          },
+          "avatar": {
+            "href": "https://bitbucket.org/account/fake_org/avatar/"
+          }
+        }
+      },
+      "updated_on": "2019-04-10T14:30:40.087251+00:00",
+      "size": 2759672,
+      "type": "repository",
+      "slug": "fake_repo",
+      "is_private": true,
+      "description": ""
+    }
+  ]
+}
