@@ -297,6 +297,31 @@ output/
 +--- {repo_name3}.git/
 ```
 
+
+### `all_repos.source.bitbucket`
+
+Clones all repositories available to a user on Bitbucket.
+
+#### Required `source_settings`
+
+- `username`: the Bitbucket username you will log in as.
+- `app_password`: the authentication method for the above user to login with
+    - Create an application password within your [account settings](https://bitbucket.org/account/admin/app-passwords).
+    - We need the scope: Repositories -> Read
+
+#### Directory location
+
+```
+output/
++--- repos.json
++--- repos_filtered.json
++--- {username1}/
+    +--- {repo1}/
+    +--- {repo2}/
++--- {username2}/
+    +--- {repo3}/
+```
+
 ## Writing your own source
 
 First create a module.  This module must have the following api:
