@@ -11,7 +11,7 @@ class Settings(NamedTuple):
 
     def b64_encode_username_password(self) -> str:
         value = f'{self.username}:{self.app_password}'
-        return base64.b64encode(bytes(value, 'utf-8')).decode('ascii')
+        return base64.b64encode(value.encode('utf-8')).decode('ascii')
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
