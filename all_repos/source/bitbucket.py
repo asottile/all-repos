@@ -16,8 +16,8 @@ class Settings(NamedTuple):
 
 def list_repos(settings: Settings) -> Dict[str, str]:
     repos = bitbucket_api.get_all(
-        'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member',  # noqa: E501,E261
-        headers={'Authorization': f'Basic {settings.b64_encode_username_password()}'},  # noqa: E501,E261
+        'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member',  # noqa: E501
+        headers={'Authorization': f'Basic {settings.b64_encode_username_password()}'},  # noqa: E501
     )
 
     return {
