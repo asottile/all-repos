@@ -51,7 +51,7 @@ def fake_info_response():
         'USER': 'git@somehost',
         'GL_USER': 'someuser',
         'git_version': '1.2.3',
-    }).encode('UTF-8')
+    }).encode()
 
     side_effect = {
         ('ssh', 'git@git.mycompany.com', 'info', '-json'): response,

@@ -21,7 +21,7 @@ def apply_fix() -> None:
 
 def _has_legacy_config(repo_dir: str) -> bool:
     with open(os.path.join(repo_dir, CONFIG_FILE)) as f:
-        contents = yaml.load(f.read())
+        contents = yaml.safe_load(f.read())
     return isinstance(contents, list)
 
 
