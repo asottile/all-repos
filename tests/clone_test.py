@@ -91,3 +91,34 @@ def test_no_crash_repo_without_branch(file_config):
 
     # should not crash
     assert not main(('--config-filename', str(file_config.cfg)))
+
+
+def test_clones_all_branches_true(file_config):
+    subprocess.check_call((
+        'git', '-C', str(file_config.dir1), 'checkout', 'master', '-b', 'b2',
+    ))
+    subprocess.check_call((
+        'git', '-C', str(file_config.dir1), 'checkout', 'master',
+    ))
+
+    assert not main(('--config-file', str(file_config.cfg)))
+
+    # initially we should not see multiple branches
+    branch_out = subprocess.check_output((
+        'git', '-C', str(file_config.output_dir.join('repo1')),
+        'branch', '--remote',
+    )).decode()
+    assert branch_out == '  origin/master\n'
+
+    # set that we want to clone all branches
+    cfg_contents = json.loads(file_config.cfg.read())
+    cfg_contents['all_branches'] = True
+    file_config.cfg.write(json.dumps(cfg_contents))
+
+    assert not main(('--config-file', str(file_config.cfg)))
+
+    branch_out = subprocess.check_output((
+        'git', '-C', str(file_config.output_dir.join('repo1')),
+        'branch', '--remote',
+    )).decode()
+    assert branch_out == '  origin/b2\n  origin/master\n'

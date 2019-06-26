@@ -1,4 +1,5 @@
 import argparse
+import functools
 import json
 import os.path
 import shutil
@@ -70,14 +71,20 @@ def _default_branch(remote: str) -> str:
     return line[len(start):-1 * len(end)]
 
 
-def _fetch_reset(path: str) -> None:
+def _fetch_reset(path: str, *, all_branches: bool) -> None:
     def _git(*cmd: str) -> None:
         subprocess.check_call(('git', '-C', path, *cmd))
 
     try:
         branch = _default_branch(git.remote(path))
-        _git('remote', 'set-branches', 'origin', branch)
-        _git('fetch', 'origin', branch)
+        if all_branches:
+            _git(
+                'config', 'remote.origin.fetch',
+                '+refs/heads/*:refs/remotes/origin/*',
+            )
+        else:
+            _git('remote', 'set-branches', 'origin', branch)
+        _git('fetch', 'origin')
         _git('checkout', branch)
         _git('reset', '--hard', f'origin/{branch}')
     except subprocess.CalledProcessError:
@@ -121,9 +128,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     for path, remote in filtered_repos - current_repos:
         _init(config.output_dir, path, remote)
 
+    fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
     todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
     with mapper.thread_mapper(args.jobs) as do_map:
-        mapper.exhaust(do_map(_fetch_reset, todo))
+        mapper.exhaust(do_map(fn, todo))
 
     # write these last
     os.makedirs(config.output_dir, exist_ok=True)
