@@ -175,6 +175,8 @@ A configuration file looks roughly like this:
   repository names which match this regex will be included.
 - `exclude` (default `"^$"`): python regex for excluding repositories.
   Repository names which match this regex will be excluded.
+- `all_branches` (default `false`): whether to clone all of the branches or
+  just the default upstream branch.
 
 ## Source modules
 
