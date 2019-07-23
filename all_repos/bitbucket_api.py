@@ -14,7 +14,7 @@ class Response(NamedTuple):
 def req(url: str, **kwargs: Any) -> Response:
     resp = urllib.request.urlopen(urllib.request.Request(url, **kwargs))
     obj = json.load(resp)
-    return Response(obj['values'], obj['next'] if 'next' in obj else None)
+    return Response(obj['values'], obj.get('next'))
 
 
 def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
