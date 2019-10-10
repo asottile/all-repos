@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/asottile/all-repos.svg?branch=master)](https://travis-ci.org/asottile/all-repos)
-[![Coverage Status](https://coveralls.io/repos/github/asottile/all-repos/badge.svg?branch=master)](https://coveralls.io/github/asottile/all-repos?branch=master)
+[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.all-repos?branchName=master)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=master)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/33/master.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=master)
 
 all-repos
 =========
