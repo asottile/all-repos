@@ -10,7 +10,5 @@ def urlopen_side_effect(url_mapping):
 class FakeResponse(io.BytesIO):
     def __init__(self, body, *, next_link=None):
         super().__init__(body)
-        if next_link is None:
-            self.headers = {'link': None}
-        else:
-            self.headers = {'link': f'<{next_link}>; rel="next"'}
+        link = None if next_link is None else f'<{next_link}>; rel="next"'
+        self.headers = {'link': link}

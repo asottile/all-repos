@@ -50,9 +50,9 @@ def load_config(filename: str) -> Config:
 
     output_dir = os.path.join(filename, '..', contents['output_dir'])
     output_dir = os.path.normpath(output_dir)
-    source_module = __import__(contents['source'], fromlist=['__trash'])
+    source_module: Any = __import__(contents['source'], fromlist=['__trash'])
     source_settings = source_module.Settings(**contents['source_settings'])
-    push_module = __import__(contents['push'], fromlist=['__trash'])
+    push_module: Any = __import__(contents['push'], fromlist=['__trash'])
     push_settings = push_module.Settings(**contents['push_settings'])
     include = re.compile(contents.get('include', ''))
     exclude = re.compile(contents.get('exclude', '^$'))

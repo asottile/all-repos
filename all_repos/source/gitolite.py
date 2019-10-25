@@ -22,8 +22,8 @@ def _repo_names_from_source(settings: Settings) -> Set[str]:
     info = subprocess.check_output(
         ('ssh', f'{settings.username}@{settings.hostname}', 'info', '-json'),
     )
-    info = json.loads(info.decode('UTF-8'))
-    return set(info['repos'])
+    info_d = json.loads(info.decode('UTF-8'))
+    return set(info_d['repos'])
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
