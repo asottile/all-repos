@@ -6,6 +6,7 @@ all-repos
 
 Clone all your repositories and apply sweeping changes.
 
+
 ## Installation
 
 `pip install all-repos`
@@ -177,6 +178,8 @@ A configuration file looks roughly like this:
   Repository names which match this regex will be excluded.
 - `all_branches` (default `false`): whether to clone all of the branches or
   just the default upstream branch.
+- `delete_all` (default `true`): whether to delete repositories no longer available 
+  when running all-repos-clone
 
 ## Source modules
 

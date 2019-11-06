@@ -122,8 +122,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     filtered_repos = set(repos_filtered.items())
 
     # Remove old no longer cloned repositories
-    for path, _ in current_repos - filtered_repos:
-        _remove(config.output_dir, path)
+    if config.delete_old:
+        for path, _ in current_repos - filtered_repos:
+            _remove(config.output_dir, path)
 
     for path, remote in filtered_repos - current_repos:
         _init(config.output_dir, path, remote)
@@ -144,3 +145,4 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == '__main__':
     exit(main())
+
