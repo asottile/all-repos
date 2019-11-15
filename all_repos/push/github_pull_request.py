@@ -11,6 +11,7 @@ class Settings(NamedTuple):
     api_key: str
     username: str
     fork: bool = False
+    base_url: str = 'https://api.github.com'
 
 
 def push(settings: Settings, branch_name: str) -> None:
@@ -21,7 +22,7 @@ def push(settings: Settings, branch_name: str) -> None:
 
     if settings.fork:
         resp = github_api.req(
-            f'https://api.github.com/repos/{repo_slug}/forks',
+            f'{settings.base_url}/repos/{repo_slug}/forks',
             headers=headers, method='POST',
         )
         new_slug = resp.json['full_name']
@@ -46,7 +47,7 @@ def push(settings: Settings, branch_name: str) -> None:
     }).encode()
 
     resp = github_api.req(
-        f'https://api.github.com/repos/{repo_slug}/pulls',
+        f'{settings.base_url}/repos/{repo_slug}/pulls',
         data=data, headers=headers, method='POST',
     )
 
