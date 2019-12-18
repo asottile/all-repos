@@ -226,6 +226,8 @@ Clones all repositories available to a user on github.
   not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
+- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
 
 #### Directory location
 
@@ -259,6 +261,8 @@ Clones all repositories from an organization on github.
   not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
+- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
 
 #### Directory location
 
@@ -388,7 +392,8 @@ branch.
 - `fork` (default: `false`): (if applicable) a fork will be created and pushed
   to instead of the upstream repository.  The pull request will then be made
   to the upstream repository.
-
+- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
 
 ### `all_repos.push.readonly`
 
