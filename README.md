@@ -44,6 +44,7 @@ Options:
 
 - `-j JOBS` / `--jobs JOBS`: how many concurrent jobs will be used to complete
   the operation.  Specify 0 or -1 to match the number of cpus.  (default `8`).
+- `-d DELAY_MILLISECONDS` / `--delay DELAY_MILLISECONDS`: how long the program will wait before starting a new job (milliseconds). (default `0`).
 
 Sample invocations:
 
