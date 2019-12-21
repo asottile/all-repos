@@ -1,8 +1,13 @@
+**/.activate.sh*
 *.egg-info
 *.pyc
 /.mypy_cache
 /.pytest_cache
 /.coverage
 /.tox
+**/.idea
 /venv*
 .vscode
+build/
+dist/
+all-repos.json

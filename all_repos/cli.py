@@ -16,6 +16,14 @@ def jobs_type(s: str) -> int:
         return jobs
 
 
+def delay_type(s: str) -> int:
+    delay = int(s)
+    if delay <= 0:
+        return 0
+    else:
+        return delay
+
+
 def add_jobs_arg(parser: ParserType, default: int = 8) -> None:
     parser.add_argument(
         '-j', '--jobs', type=jobs_type, default=default,
@@ -65,5 +73,15 @@ def add_output_paths_arg(parser: ParserType) -> None:
         help=(
             f'Use `{os.sep}` as a separator instead of `:` in outputs (often '
             f'helpful for scripting).'
+        ),
+    )
+
+
+def add_delay_arg(parser: ParserType, default: int = 0) -> None:
+    parser.add_argument(
+        '-d', '--delay', type=delay_type, default=default,
+        help=(
+            'How long the program will wait before starting a new job (milliseconds) '
+            '(default `%(default)s`).'
         ),
     )

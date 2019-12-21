@@ -1,9 +1,34 @@
+"""
+Copyright (c) 2017 Anthony Sottile
+Co-authored by CodingSpiderFox: 2019
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+"""
+
 import argparse
 import functools
 import json
 import os.path
 import shutil
 import subprocess
+import time
+from multiprocessing.pool import ThreadPool
 from typing import Dict
 from typing import Generator
 from typing import Optional
@@ -12,8 +37,18 @@ from typing import Tuple
 
 from all_repos import cli
 from all_repos import git
-from all_repos import mapper
 from all_repos.config import load_config
+from functools import wraps
+
+
+def delayed(func):
+    # CC-BY-SA 4.0
+    # Contributed by Darkonaut on stackoverflow: https://stackoverflow.com/questions/52623178/how-to-delay-execution-within-threadpool
+    @wraps(func)
+    def wrapper(delay, *args, **kwargs):
+        time.sleep(delay/1000)
+        return func(*args, **kwargs)
+    return wrapper
 
 
 def _get_current_state_helper(
@@ -71,6 +106,7 @@ def _default_branch(remote: str) -> str:
     return line[len(start):-1 * len(end)]
 
 
+@delayed
 def _fetch_reset(path: str, *, all_branches: bool) -> None:
     def _git(*cmd: str) -> None:
         subprocess.check_call(('git', '-C', path, *cmd))
@@ -102,6 +138,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     cli.add_common_args(parser)
     cli.add_jobs_arg(parser)
+    cli.add_delay_arg(parser)
     args = parser.parse_args(argv)
 
     config = load_config(args.config_filename)
@@ -130,8 +167,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
     todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
-    with mapper.thread_mapper(args.jobs) as do_map:
-        mapper.exhaust(do_map(fn, todo))
+
+    # CC-BY-SA 4.0
+    # Contributed by Darkonaut on stackoverflow: https://stackoverflow.com/questions/52623178/how-to-delay-execution-within-threadpool
+    delays = (x * args.delay for x in range(0, len(todo)))
+    arguments = zip(delays, todo)
+
+    with ThreadPool(args.jobs) as pool:
+        result = pool.starmap(fn, arguments)
 
     # write these last
     os.makedirs(config.output_dir, exist_ok=True)
