@@ -520,6 +520,8 @@ if __name__ == '__main__':
 ```
 
 You can find some more involved examples in [all_repos/autofix](https://github.com/asottile/all-repos/tree/master/all_repos/autofix):
+- `all_repos.autofix.azure_pipelines_autoupdate`: upgrade pinned azure
+  pipelines template repository references.
 - `all_repos.autofix.pre_commit_autoupdate`: runs `pre-commit autoupdate`.
 - `all_repos.autofix.pre_commit_autopep8_migrate`: migrates `autopep8-wrapper`
   from [pre-commit/pre-commit-hooks] to [mirrors-autopep8].
@@ -530,9 +532,10 @@ You can find some more involved examples in [all_repos/autofix](https://github.c
 - `all_repos.autofix.pre_commit_migrate_config`: runs
   `pre-commit migrate-config`.
 - `all_repos.autofix.setup_py_upgrade`: runs [setup-py-upgrade] and then
-  tidies up the metadata fields and adds a few missing ones.
+  [setup-cfg-fmt] to migrate `setup.py` to `setup.cfg`.
 
 [pre-commit/pre-commit-hooks]: https://github.com/pre-commit/pre-commit-hooks
 [mirrors-autopep8]: https://github.com/pre-commit/mirrors-autopep8
 [pycqa/flake8]: https://gitlab.com/pycqa/flake8
 [setup-py-upgrade]: https://github.com/asottile/setup-py-upgrade
+[setup-cfg-fmt]: https://github.com/asottile/setup-cfg-fmt
