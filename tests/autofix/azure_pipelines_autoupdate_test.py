@@ -39,6 +39,11 @@ resources:
       # formatting comment
       name: asottile/azure-pipeline-templates
       ref: refs/tags/v0.0.1  # line comment
+    - repository: asottile
+      type: github
+      endpoint: github
+      name: asottile/azure-pipeline-templates
+      ref: refs/tags/v0.0.1
 jobs:
 - template: job--pre-commit.yml@asottile
 '''
@@ -83,6 +88,11 @@ resources:
       # formatting comment
       name: asottile/azure-pipeline-templates
       ref: refs/tags/v1.0.0  # line comment
+    - repository: asottile
+      type: github
+      endpoint: github
+      name: asottile/azure-pipeline-templates
+      ref: refs/tags/v1.0.0
 jobs:
 - template: job--pre-commit.yml@asottile
 '''

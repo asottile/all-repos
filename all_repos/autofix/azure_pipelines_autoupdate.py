@@ -13,7 +13,7 @@ from all_repos import autofix_lib
 from all_repos.config import Config
 from all_repos.grep import repos_matching
 
-REF_RE = re.compile('^( +)ref:( *)refs/tags/[^ #]+(.*)$', re.DOTALL)
+REF_RE = re.compile('^( +)ref:( *)refs/tags/[^ #\r\n]+(.*)$', re.DOTALL)
 FMT = '{}ref:{}refs/tags/{}{}'
 
 
