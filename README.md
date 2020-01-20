@@ -226,6 +226,7 @@ Clones all repositories available to a user on github.
   not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
+- `archived` (default: `false`): whether to include archived repositories.
 - ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
 
