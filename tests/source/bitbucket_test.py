@@ -9,7 +9,7 @@ from testing.mock_http import urlopen_side_effect
 
 
 def _resource_json():
-    with open(f'testing/resources/bitbucket/fake.json') as f:
+    with open('testing/resources/bitbucket/fake.json') as f:
         return json.load(f)
 
 

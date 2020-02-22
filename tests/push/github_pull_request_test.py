@@ -27,6 +27,36 @@ def fake_github_repo(tmpdir):
     return auto_namedtuple(src=src, dest=dest, settings=settings)
 
 
+@pytest.fixture
+def fake_github_repo_https(tmpdir):
+    src = tmpdir.join(r'repo:/user/slug')
+    init_repo(src)
+
+    dest = tmpdir.join('dest')
+    subprocess.check_call(('git', 'clone', src, dest))
+
+    subprocess.check_call((
+        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
+    ))
+    subprocess.check_call((
+        'git', '-C', dest, 'commit', '--allow-empty',
+        '-m', 'This is a commit message\n\nHere is some more information!',
+    ))
+    subprocess.check_call((
+        'git', '-C', dest, 'remote', 'set-url', 'origin',
+        'https://github.com/user/slug',
+    ))
+    subprocess.check_call((
+        'git', '-C', dest, 'remote', 'add', 'fake_origin', src,
+    ))
+
+    settings = github_pull_request.Settings(
+        api_key='fake', username='user',
+        push='fake_origin',
+    )
+    return auto_namedtuple(src=src, dest=dest, settings=settings)
+
+
 def test_github_pull_request(mock_urlopen, fake_github_repo):
     resp = {'html_url': 'https://example/com'}
     mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
@@ -37,6 +67,29 @@ def test_github_pull_request(mock_urlopen, fake_github_repo):
     # Should have pushed the branch to origin
     out = subprocess.check_output((
         'git', '-C', fake_github_repo.src, 'branch',
+    )).decode()
+    assert out == '  feature\n* master\n'
+
+    # Pull request should have been made with the commit data
+    (req,), _ = mock_urlopen.call_args
+    assert req.get_full_url() == 'https://api.github.com/repos/user/slug/pulls'
+    assert req.method == 'POST'
+    data = json.loads(req.data)
+    assert data['title'] == 'This is a commit message'
+    assert data['body'] == 'Here is some more information!'
+    assert data['head'] == 'feature'
+
+
+def test_github_pull_request_https(mock_urlopen, fake_github_repo_https):
+    resp = {'html_url': 'https://example/com'}
+    mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
+
+    with fake_github_repo_https.dest.as_cwd():
+        github_pull_request.push(fake_github_repo_https.settings, 'feature')
+
+    # Should have pushed the branch to origin
+    out = subprocess.check_output((
+        'git', '-C', fake_github_repo_https.src, 'branch',
     )).decode()
     assert out == '  feature\n* master\n'
 
