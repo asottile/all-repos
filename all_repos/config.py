@@ -18,20 +18,36 @@ class Config(NamedTuple):
     push_settings: Any
     all_branches: bool
 
-    def _path(self, *paths: str) -> str:
-        return os.path.abspath(os.path.join(self.output_dir, *paths))
 
-    @property
-    def repos_path(self) -> str:
-        return self._path('repos.json')
+def _path(self, *paths: str) -> str:
+    return os.path.abspath(os.path.join(self.output_dir, *paths))
 
-    @property
-    def repos_filtered_path(self) -> str:
-        return self._path('repos_filtered.json')
 
-    def get_cloned_repos(self) -> Dict[str, str]:
-        with open(self.repos_filtered_path) as f:
-            return json.load(f)
+Config._path = _path
+
+
+@property
+def repos_path(self) -> str:
+    return self._path('repos.json')
+
+
+Config.repos_path = repos_path
+
+
+@property
+def repos_filtered_path(self) -> str:
+    return self._path('repos_filtered.json')
+
+
+Config.repos_filtered_path = repos_filtered_path
+
+
+def get_cloned_repos(self) -> Dict[str, str]:
+    with open(self.repos_filtered_path) as f:
+        return json.load(f)
+
+
+Config.get_cloned_repos = get_cloned_repos
 
 
 def _check_permissions(filename: str) -> None:

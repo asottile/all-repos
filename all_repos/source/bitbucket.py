@@ -9,10 +9,14 @@ class Settings(NamedTuple):
     username: str
     app_password: str
 
-    @property
-    def auth(self) -> str:
-        value = f'{self.username}:{self.app_password}'
-        return base64.b64encode(value.encode()).decode()
+
+@property
+def auth(self) -> str:
+    value = f'{self.username}:{self.app_password}'
+    return base64.b64encode(value.encode()).decode()
+
+
+Settings.auth = auth
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
