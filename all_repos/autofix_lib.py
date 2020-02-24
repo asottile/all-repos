@@ -77,16 +77,12 @@ class AutofixSettings(NamedTuple):
     dry_run: bool
     interactive: bool
 
-
-@classmethod
-def from_cli(cls, args: Any) -> 'AutofixSettings':
-    return cls(
-        jobs=args.jobs, color=args.color, limit=args.limit,
-        dry_run=args.dry_run, interactive=args.interactive,
-    )
-
-
-AutofixSettings.from_cli = from_cli
+    @classmethod
+    def from_cli(cls, args: Any) -> 'AutofixSettings':
+        return cls(
+            jobs=args.jobs, color=args.color, limit=args.limit,
+            dry_run=args.dry_run, interactive=args.interactive,
+        )
 
 
 def filter_repos(

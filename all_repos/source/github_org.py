@@ -7,16 +7,11 @@ from all_repos import github_api
 class Settings(NamedTuple):
     api_key: str
     org: str
-    collaborator: bool
-    forks: bool
-    private: bool
-    archived: bool
-    base_url: str
-
-
-Settings.__new__.__defaults__ = (
-    True, False, False, False, 'https://api.github.com',
-)
+    collaborator: bool = True
+    forks: bool = False
+    private: bool = False
+    archived: bool = False
+    base_url: str = 'https://api.github.com'
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:

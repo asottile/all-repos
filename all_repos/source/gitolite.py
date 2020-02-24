@@ -9,20 +9,13 @@ from typing import Set
 class Settings(NamedTuple):
     username: str
     hostname: str
-    mirror_path: Optional[str]
+    mirror_path: Optional[str] = None
 
-
-Settings.__new__.__defaults__ = (None,)
-
-
-def clone_url(self, repo_name: str) -> str:
-    return (
-        self.mirror_path or
-        f'{self.username}@{self.hostname}:{{repo_name}}'
-    ).format(repo_name=repo_name)
-
-
-Settings.clone_url = clone_url
+    def clone_url(self, repo_name: str) -> str:
+        return (
+            self.mirror_path or
+            f'{self.username}@{self.hostname}:{{repo_name}}'
+        ).format(repo_name=repo_name)
 
 
 def _repo_names_from_source(settings: Settings) -> Set[str]:

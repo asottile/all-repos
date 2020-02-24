@@ -10,11 +10,8 @@ from all_repos import github_api
 class Settings(NamedTuple):
     api_key: str
     username: str
-    fork: bool
-    base_url: str
-
-
-Settings.__new__.__defaults__ = (False, 'https://api.github.com')
+    fork: bool = False
+    base_url: str = 'https://api.github.com'
 
 
 def push(settings: Settings, branch_name: str) -> None:
