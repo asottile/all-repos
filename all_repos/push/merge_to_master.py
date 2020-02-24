@@ -4,7 +4,10 @@ from all_repos import autofix_lib
 
 
 class Settings(NamedTuple):
-    fast_forward: bool = False
+    fast_forward: bool
+
+
+Settings.__new__.__defaults__ = (False,)
 
 
 def push(settings: Settings, branch_name: str) -> None:

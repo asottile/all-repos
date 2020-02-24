@@ -11,9 +11,9 @@ from typing import Callable
 from typing import Generator
 from typing import Iterable
 from typing import NamedTuple
-from typing import NoReturn
 from typing import Optional
 from typing import Tuple
+from typing import TYPE_CHECKING
 
 import pkg_resources
 
@@ -23,6 +23,9 @@ from all_repos import git
 from all_repos import mapper
 from all_repos.config import Config
 from all_repos.config import load_config
+
+if TYPE_CHECKING:
+    from typing import NoReturn
 
 
 def add_fixer_args(parser: argparse.ArgumentParser) -> None:
@@ -74,12 +77,16 @@ class AutofixSettings(NamedTuple):
     dry_run: bool
     interactive: bool
 
-    @classmethod
-    def from_cli(cls, args: Any) -> 'AutofixSettings':
-        return cls(
-            jobs=args.jobs, color=args.color, limit=args.limit,
-            dry_run=args.dry_run, interactive=args.interactive,
-        )
+
+@classmethod
+def from_cli(cls, args: Any) -> 'AutofixSettings':
+    return cls(
+        jobs=args.jobs, color=args.color, limit=args.limit,
+        dry_run=args.dry_run, interactive=args.interactive,
+    )
+
+
+AutofixSettings.from_cli = from_cli
 
 
 def filter_repos(
@@ -179,7 +186,7 @@ def shell() -> None:
 
 
 def _interactive_check(*, use_color: bool) -> bool:
-    def _quit() -> NoReturn:
+    def _quit() -> 'NoReturn':
         print('Goodbye!')
         raise SystemExit()
 
