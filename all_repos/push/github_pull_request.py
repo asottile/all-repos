@@ -14,7 +14,10 @@ class Settings(NamedTuple):
     base_url: str = 'https://api.github.com'
 
 
-def push(settings: Settings, branch_name: str) -> None:
+def make_pull_request(
+        settings: Settings,
+        branch_name: str,
+) -> github_api.Response:
     headers = {'Authorization': f'token {settings.api_key}'}
 
     remote_url = git.remote('.')
@@ -46,10 +49,13 @@ def push(settings: Settings, branch_name: str) -> None:
         'head': head,
     }).encode()
 
-    resp = github_api.req(
+    return github_api.req(
         f'{settings.base_url}/repos/{repo_slug}/pulls',
         data=data, headers=headers, method='POST',
     )
 
+
+def push(settings: Settings, branch_name: str) -> None:
+    resp = make_pull_request(settings, branch_name)
     url = resp.json['html_url']
     print(f'Pull request created at {url}')
