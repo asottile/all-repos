@@ -227,8 +227,8 @@ Clones all repositories available to a user on github.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 - `archived` (default: `false`): whether to include archived repositories.
-- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
-  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
+- `base_url` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 
 #### Directory location
 
@@ -262,8 +262,8 @@ Clones all repositories forked from a repository on github.
 - `forks` (default `true`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 - `archived` (default: `false`): whether to include archived repositories.
-- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
-  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
+- `base_url` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 
 #### Directory location
 
@@ -291,8 +291,8 @@ Clones all repositories from an organization on github.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 - `archived` (default: `false`): whether to include archived repositories.
-- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
-  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
+- `base_url` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 
 #### Directory location
 
@@ -422,8 +422,8 @@ branch.
 - `fork` (default: `false`): (if applicable) a fork will be created and pushed
   to instead of the upstream repository.  The pull request will then be made
   to the upstream repository.
-- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
-  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
+- `base_url` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 
 ### `all_repos.push.readonly`
 
