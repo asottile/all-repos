@@ -26,3 +26,10 @@ def commit(git):
 def write_file_commit(git, filename, contents):
     git.join(filename).write(contents)
     commit(git)
+
+
+def merge_msgs(branch_name):
+    return {
+        f'Merge branch {branch_name!r}',  # git 2.25.1
+        f'Merge branch {branch_name!r} into master',  # git 2.28.0
+    }
