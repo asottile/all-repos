@@ -289,8 +289,9 @@ def test_autofix_makes_commits(file_config_files, capfd):
     last_commit_msg = subprocess.check_output((
         'git', '-C', file_config_files.dir1, 'log',
         '--format=%s', '--first-parent', '-1',
-    )).decode()
-    assert last_commit_msg == "Merge branch 'all-repos_autofix_test-branch'\n"
+    )).strip().decode()
+    potential_msgs = testing.git.merge_msgs('all-repos_autofix_test-branch')
+    assert last_commit_msg in potential_msgs
 
     # We should see a commit from the autofix change we made
     commit = subprocess.check_output((
