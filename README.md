@@ -243,6 +243,34 @@ output/
     +--- {repo3}/
 ```
 
+### `all_repos.source.github_forks`
+
+Clones all repositories forked from a repository on github.
+
+#### Required `source_settings`
+
+- `api_key`: the api key which the user will log in as.
+    - Use [the settings tab](//github.com/settings/tokens/new) to create a
+      personal access token.
+    - The minimum scope required to function is `public_repo`.
+- `repo`: the repo which has forks
+
+#### Optional `source_settings`
+
+- `collaborator` (default `true`): whether to include repositories which are
+  not owned but can be contributed to as a collaborator.
+- `forks` (default `true`): whether to include repositories which are forks.
+- `private` (default `false`): whether to include private repositories.
+- `archived` (default: `false`): whether to include archived repositories.
+- ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
+
+#### Directory location
+
+See the directory structure for
+[`all_repos.source.github`](#all_repossourcegithub).
+
+
 ### `all_repos.source.github_org`
 
 Clones all repositories from an organization on github.
@@ -262,6 +290,7 @@ Clones all repositories from an organization on github.
   not owned but can be contributed to as a collaborator.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
+- `archived` (default: `false`): whether to include archived repositories.
 - ``base_url`` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to ``https://{your_domain}/api/v3``).
 
