@@ -44,12 +44,19 @@ def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
     return ret
 
 
+def _strip_trailing_dot_git(ssh_url: str) -> str:
+    if ssh_url.endswith('.git'):
+        return ssh_url[:-1 * len('.git')]
+    else:
+        return ssh_url
+
+
 def filter_repos(
         repos: List[Dict[str, Any]], *,
         forks: bool, private: bool, collaborator: bool, archived: bool,
 ) -> Dict[str, str]:
     return {
-        repo['full_name']: 'git@github.com:{}'.format(repo['full_name'])
+        repo['full_name']: _strip_trailing_dot_git(repo['ssh_url'])
         for repo in repos
         if (
             (forks or not repo['fork']) and
