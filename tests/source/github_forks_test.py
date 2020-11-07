@@ -34,3 +34,17 @@ def test_list_repos(repos_response):
         'rkm/reorder_python_imports',
     }
     assert set(ret) == expected
+
+
+def test_settings_repr():
+    assert repr(Settings('api_key', 'asottile/foo')) == (
+        'Settings(\n'
+        '    api_key=...,\n'
+        "    repo='asottile/foo',\n"
+        '    collaborator=True,\n'
+        '    forks=True,\n'
+        '    private=False,\n'
+        '    archived=False,\n'
+        "    base_url='https://api.github.com',\n"
+        ')'
+    )
