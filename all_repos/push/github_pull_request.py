@@ -5,6 +5,7 @@ from typing import NamedTuple
 from all_repos import autofix_lib
 from all_repos import git
 from all_repos import github_api
+from all_repos.util import hide_api_key_repr
 
 
 class Settings(NamedTuple):
@@ -12,6 +13,10 @@ class Settings(NamedTuple):
     username: str
     fork: bool = False
     base_url: str = 'https://api.github.com'
+
+    # TODO: https://github.com/python/mypy/issues/8543
+    def __repr__(self) -> str:
+        return hide_api_key_repr(self)
 
 
 def make_pull_request(

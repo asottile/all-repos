@@ -82,3 +82,14 @@ def test_github_pull_request_with_fork(mock_urlopen, fake_github_repo_fork):
     assert req.get_full_url() == 'https://api.github.com/repos/user/slug/pulls'
     data = json.loads(req.data)
     assert data['head'] == 'u2:feature'
+
+
+def test_settings_repr():
+    assert repr(github_pull_request.Settings('secret', 'username')) == (
+        'Settings(\n'
+        '    api_key=...,\n'
+        "    username='username',\n"
+        '    fork=False,\n'
+        "    base_url='https://api.github.com',\n"
+        ')'
+    )
