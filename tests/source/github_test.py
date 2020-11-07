@@ -56,3 +56,19 @@ def test_list_repos(settings, expected_repo_names):
     settings = Settings('key', 'user', **settings)
     ret = list_repos(settings)
     assert set(ret) == expected_repo_names
+
+
+def test_settings_repr():
+    settings = Settings('api_key', 'user')
+
+    assert repr(settings) == (
+        'Settings(\n'
+        '    api_key=...,\n'
+        "    username='user',\n"
+        '    collaborator=False,\n'
+        '    forks=False,\n'
+        '    private=False,\n'
+        '    archived=False,\n'
+        "    base_url='https://api.github.com',\n"
+        ')'
+    )

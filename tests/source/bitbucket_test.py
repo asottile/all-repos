@@ -28,3 +28,12 @@ def test_list_repos():
     assert ret == {
         'fake_org/fake_repo': 'git@bitbucket.org:fake_org/fake_repo.git',
     }
+
+
+def test_settings_repr():
+    assert repr(Settings('cool_user', 'app_password')) == (
+        'Settings(\n'
+        "    username='cool_user',\n"
+        '    app_password=...,\n'
+        ')'
+    )

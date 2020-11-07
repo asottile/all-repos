@@ -23,3 +23,17 @@ def test_list_repos(repos_response):
     ret = list_repos(settings)
     expected = {'sass/libsass-python': 'git@github.com:sass/libsass-python'}
     assert ret == expected
+
+
+def test_settings_repr():
+    assert repr(Settings('key', 'sass')) == (
+        'Settings(\n'
+        '    api_key=...,\n'
+        "    org='sass',\n"
+        '    collaborator=True,\n'
+        '    forks=False,\n'
+        '    private=False,\n'
+        '    archived=False,\n'
+        "    base_url='https://api.github.com',\n"
+        ')'
+    )
