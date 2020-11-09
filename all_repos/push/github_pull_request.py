@@ -19,6 +19,12 @@ class Settings(NamedTuple):
         return hide_api_key_repr(self)
 
 
+def get_github_repo_slug() -> str:
+    remote_url = git.remote('.')
+    _, _, repo_slug = remote_url.rpartition(':')
+    return repo_slug
+
+
 def make_pull_request(
         settings: Settings,
         branch_name: str,
@@ -26,8 +32,7 @@ def make_pull_request(
     headers = {'Authorization': f'token {settings.api_key}'}
 
     remote_url = git.remote('.')
-    _, _, repo_slug = remote_url.rpartition(':')
-
+    repo_slug = get_github_repo_slug()
     if settings.fork:
         resp = github_api.req(
             f'{settings.base_url}/repos/{repo_slug}/forks',
