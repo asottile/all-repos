@@ -2,6 +2,7 @@ from typing import Dict
 from typing import NamedTuple
 
 from all_repos import github_api
+from all_repos.util import get_all
 from all_repos.util import hide_api_key_repr
 
 
@@ -25,7 +26,7 @@ def list_repos(settings: Settings) -> Dict[str, str]:
 
     while to_search:
         slug = to_search.pop()
-        res = github_api.get_all(
+        res = get_all(
             f'{settings.base_url}/repos/{slug}/forks?per_page=100',
             headers={'Authorization': f'token {settings.api_key}'},
         )

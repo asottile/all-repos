@@ -2,6 +2,7 @@ from typing import Dict
 from typing import NamedTuple
 
 from all_repos import gitlab_api
+from all_repos.util import get_all
 from all_repos.util import hide_api_key_repr
 
 
@@ -22,7 +23,7 @@ LIST_REPOS_URL = (
 
 
 def list_repos(settings: Settings) -> Dict[str, str]:
-    repos = gitlab_api.get_all(
+    repos = get_all(
         LIST_REPOS_URL.format(settings=settings),
         headers={'Private-Token': settings.api_key},
     )

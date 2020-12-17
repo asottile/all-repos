@@ -2,7 +2,7 @@ import pytest
 
 from all_repos.github_api import _strip_trailing_dot_git
 from all_repos.github_api import better_repr
-from all_repos.github_api import get_all
+from all_repos.util import get_all
 from testing.mock_http import FakeResponse
 from testing.mock_http import urlopen_side_effect
 

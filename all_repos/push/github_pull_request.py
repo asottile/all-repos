@@ -4,8 +4,9 @@ from typing import NamedTuple
 
 from all_repos import autofix_lib
 from all_repos import git
-from all_repos import github_api
 from all_repos.util import hide_api_key_repr
+from all_repos.util import req
+from all_repos.util import Response
 
 
 class Settings(NamedTuple):
@@ -22,14 +23,14 @@ class Settings(NamedTuple):
 def make_pull_request(
         settings: Settings,
         branch_name: str,
-) -> github_api.Response:
+) -> Response:
     headers = {'Authorization': f'token {settings.api_key}'}
 
     remote_url = git.remote('.')
     _, _, repo_slug = remote_url.rpartition(':')
 
     if settings.fork:
-        resp = github_api.req(
+        resp = req(
             f'{settings.base_url}/repos/{repo_slug}/forks',
             headers=headers, method='POST',
         )
@@ -54,7 +55,7 @@ def make_pull_request(
         'head': head,
     }).encode()
 
-    return github_api.req(
+    return req(
         f'{settings.base_url}/repos/{repo_slug}/pulls',
         data=data, headers=headers, method='POST',
     )

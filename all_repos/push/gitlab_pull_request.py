@@ -5,9 +5,9 @@ from typing import NamedTuple
 
 from all_repos import autofix_lib
 from all_repos import git
-from all_repos import gitlab_api
 from all_repos.github_api import _strip_trailing_dot_git
 from all_repos.util import hide_api_key_repr
+from all_repos.util import req
 
 
 class Settings(NamedTuple):
@@ -50,7 +50,7 @@ def push(settings: Settings, branch_name: str) -> None:
         'description': body.decode().strip(),
     }).encode()
 
-    resp = gitlab_api.req(
+    resp = req(
         f'{settings.base_url}/projects/{repo_slug}/merge_requests',
         data=data, headers=headers, method='POST',
     )
