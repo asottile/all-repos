@@ -1,0 +1,52 @@
+{
+    "size": 1,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        {
+            "slug": "fake_repo",
+            "id": 1,
+            "name": "My repo",
+            "description": "My repo description",
+            "hierarchyId": "9fsf9qwr2fs",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "statusMessage": "Available",
+            "forkable": true,
+            "project": {
+                "key": "fake_proj",
+                "id": 1,
+                "name": "My Cool Project",
+                "description": "The description for my cool project.",
+                "public": true,
+                "type": "NORMAL",
+                "links": {
+                    "self": [
+                        {
+                            "href": "https://bitbucket.domain.com/fake_proj"
+                        }
+                    ]
+                }
+            },
+            "public": true,
+            "links": {
+                "clone": [
+                    {
+                        "href": "ssh://git@bitbucket.domain.com/fake_proj/fake_repo.git",
+                        "name": "ssh"
+                    },
+                    {
+                        "href": "https://bitbucket.domain.com/scm/fake_proj/fake_repo.git",
+                        "name": "http"
+                    }
+                ],
+                "self": [
+                    {
+                        "href": "https://bitbucket.domain.com/fake_proj/fake_repo"
+                    }
+                ]
+            }
+        }
+    ],
+    "start": 0
+}
