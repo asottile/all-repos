@@ -337,7 +337,7 @@ output/
 
 ### `all_repos.source.bitbucket`
 
-Clones all repositories available to a user on Bitbucket.
+Clones all repositories available to a user on Bitbucket Cloud.
 
 #### Required `source_settings`
 
@@ -345,6 +345,24 @@ Clones all repositories available to a user on Bitbucket.
 - `app_password`: the authentication method for the above user to login with
     - Create an application password within your [account settings](https://bitbucket.org/account/admin/app-passwords).
     - We need the scope: Repositories -> Read
+
+
+### `all_repos.source.bitbucket_server`
+
+Clones all repositories available to a user on Bitbucket Server.
+
+#### Required `source_settings`
+
+- `base_url`: the bitbucket server URL (eg `bitbucket.domain.com`)
+- `username`: the Bitbucket username you will log in as.
+- `app_password`: the authentication method for the above user to login with
+    - Create an application password within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
+    - We need the scope: Repositories -> Read
+
+#### Optional `source_settings`
+
+- `project` (default `None`): an optional project to restrict the search for repositories.
+
 
 #### Directory location
 
@@ -425,6 +443,18 @@ branch.
   to the upstream repository.
 - `base_url` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
+
+### `all_repos.push.bitbucket_server_pull_request`
+
+Pushes the branch to `origin` and then creates a Bitbucket pull request for the branch.
+
+#### Required `push_settings`
+
+- `base_url`: the Bitbucket server URL (eg `bitbucket.domain.com`)
+- `username`: the Bitbucket username you will log in as.
+- `app_password`: the authentication method for the above user to login with
+    - Create an application password within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
+    - We need the scope: Repositories -> Read
 
 ### `all_repos.push.readonly`
 

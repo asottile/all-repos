@@ -1,0 +1,133 @@
+{
+    "id": 1,
+    "version": 1,
+    "title": "This is a commit message",
+    "description": "Here is some more information!",
+    "state": "OPEN",
+    "open": true,
+    "closed": false,
+    "createdDate": 1617357307,
+    "updatedDate": 1617357307,
+    "fromRef": {
+        "id": "refs/heads/feature",
+        "displayId": "feature",
+        "latestCommit": "bacfabcfabcd",
+        "repository": {
+            "slug": "slug",
+            "id": 1,
+            "name": "My repo",
+            "description": "My repo description",
+            "hierarchyId": "fds9fds79f99",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "statusMessage": "Available",
+            "forkable": true,
+            "project": {
+                "key": "proj",
+                "id": 1,
+                "name": "My Project",
+                "description": "The description for my project.",
+                "public": true,
+                "type": "NORMAL",
+                "links": {
+                    "self": [
+                        {
+                            "href": "https://bitbucket.domain.com/proj"
+                        }
+                    ]
+                }
+            },
+            "public": true,
+            "links": {
+                "clone": [
+                    {
+                        "href": "ssh://git@bitbucket.domain.com/proj/repos/slug.git",
+                        "name": "ssh"
+                    },
+                    {
+                        "href": "https://bitbucket.domain.com/scm/proj/repos/slug.git",
+                        "name": "http"
+                    }
+                ],
+                "self": [
+                    {
+                        "href": "https://bitbucket.domain.com/proj/repos/slug"
+                    }
+                ]
+            }
+        }
+    },
+    "toRef": {
+        "id": "refs/heads/master",
+        "displayId": "master",
+        "latestCommit": "cafebabecafebabecafebabecafebabecafebabe",
+        "repository": {
+            "slug": "slug",
+            "id": 1,
+            "name": "My repo",
+            "description": "My repo description",
+            "hierarchyId": "fds9fds79f99",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "statusMessage": "Available",
+            "forkable": true,
+            "project": {
+                "key": "proj",
+                "id": 1,
+                "name": "My Project",
+                "description": "The description for my project.",
+                "public": true,
+                "type": "NORMAL",
+                "links": {
+                    "self": [
+                        {
+                            "href": "https://bitbucket.domain.com/proj"
+                        }
+                    ]
+                }
+            },
+            "public": true,
+            "links": {
+                "clone": [
+                    {
+                        "href": "ssh://git@bitbucket.domain.com/proj/repos/slug.git",
+                        "name": "ssh"
+                    },
+                    {
+                        "href": "https://bitbucket.domain.com/scm/proj/repos/slug/slug.git",
+                        "name": "http"
+                    }
+                ],
+                "self": [
+                    {
+                        "href": "https://bitbucket.domain.com/proj/repos/slug"
+                    }
+                ]
+            }
+        }
+    },
+    "locked": false,
+    "author": {
+        "user": {
+            "name": "user",
+            "emailAddress": "user@example.com",
+            "id": 24242,
+            "displayName": "User",
+            "active": true,
+            "slug": "user",
+            "type": "NORMAL"
+        },
+        "role": "PARTICIPANT",
+        "approved": false,
+        "status": "UNAPPROVED"
+    },
+    "reviewers": [],
+    "participants": [],
+    "links": {
+        "self": [
+            {
+                "href": "https://bitbucket.domain.com/proj/repos/slug/pull-requests/1"
+            }
+        ]
+    }
+}
