@@ -70,9 +70,13 @@ Sample invocations:
 - `all-repos-find-files --repos setup.py`: find all repositories containing
   a `setup.py`.
 
-### `all-repos-grep [options] [GIT_GREP_OPTIONS]`
+### `all-repos-grep [options] [GIT_GREP_OPTIONS] FILENAMES`
 
 Similar to a distributed `git grep ...`.
+
+Arguments:
+
+- `FILENAMES`: filenames glob (passed to `git ls-files`).
 
 Options:
 
