@@ -122,3 +122,20 @@ def test_clones_all_branches_true(file_config):
         'branch', '--remote',
     )).decode()
     assert branch_out == '  origin/b2\n  origin/master\n'
+
+
+def test_it_sorts_filtered_repos(file_config):
+    # make the repos json out of order
+    contents = json.loads(file_config.repos_json.read())
+    # TODO: in python3.8+ this can use `reversed(contents.items())`
+    new_contents = json.dumps({
+        k: contents[k]
+        for k in reversed(tuple(contents))
+    })
+    file_config.repos_json.write(new_contents)
+
+    assert not main(('--config-file', str(file_config.cfg)))
+
+    repos_filtered = file_config.output_dir.join('repos_filtered.json')
+    repos_filtered = json.loads(repos_filtered.read())
+    assert sorted(repos_filtered) == list(repos_filtered)

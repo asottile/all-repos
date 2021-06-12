@@ -108,7 +108,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     repos = config.list_repos(config.source_settings)
     repos_filtered = {
-        k: v for k, v in repos.items()
+        k: v for k, v in sorted(repos.items())
         if config.include.search(k) and not config.exclude.search(k)
     }
 
