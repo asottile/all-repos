@@ -27,7 +27,10 @@ def _get_current_state_helper(
     for direntry in os.scandir(path):
         if direntry.name == '.git':
             seen_git = True
-        elif direntry.is_dir():  # pragma: no branch (defensive)
+        elif (
+            direntry.is_dir() and
+            not direntry.name.startswith('.')
+        ):  # pragma: no branch (defensive)
             pths.append(direntry)
     if seen_git:
         yield path, git.remote(path)
