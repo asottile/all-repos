@@ -3,6 +3,7 @@ import functools
 import os.path
 import shlex
 import subprocess
+import sys
 from typing import Generator
 from typing import Optional
 from typing import Sequence
@@ -83,7 +84,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         dash_r = ('-r',)
     else:
         dash_r = ()
-    sed_cmd = ('sed', '-i', *dash_r, args.expression)
+
+    inplace_ext: Tuple[str, ...]
+    if sys.platform == 'darwin':  # pragma: no cover
+        inplace_ext = ('',)
+    else:
+        inplace_ext = ()
+
+    sed_cmd = ('sed', '-i', *inplace_ext, *dash_r, args.expression)
     ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
 
     msg = f'{_quote_cmd(ls_files_cmd)} | xargs -0 {_quote_cmd(sed_cmd)}'
