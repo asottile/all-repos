@@ -16,8 +16,8 @@ def _resource_json(name):
 @pytest.fixture
 def repos_response(mock_urlopen):
     mock_urlopen.side_effect = urlopen_side_effect({
-        'https://gitlab.com/api/v4/groups/ronny-test/'
-        'projects?with_shared=False': FakeResponse(
+        'https://gitlab.com/api/v4/groups/ronny-test/projects'
+        '?with_shared=False&include_subgroups=False': FakeResponse(
             json.dumps(_resource_json('org-listing')).encode(),
         ),
     })
@@ -39,5 +39,7 @@ def test_settings_repr():
         "    org='sass',\n"
         "    base_url='https://gitlab.com/api/v4',\n"
         '    archived=False,\n'
+        '    with_shared=False,\n'
+        '    include_subgroups=False,\n'
         ')'
     )
