@@ -577,7 +577,7 @@ def main(argv=None):
     )
 
 if __name__ == '__main__':
-    exit(main())
+    raise SystemExit(main())
 ```
 
 You can find some more involved examples in [all_repos/autofix](https://github.com/asottile/all-repos/tree/master/all_repos/autofix):
