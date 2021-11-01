@@ -9,8 +9,15 @@ Clone all your repositories and apply sweeping changes.
 
 ## Installation
 
+### Windows and MacOS
+
 `pip install all-repos`
 
+### Linux
+
+When installing with pip (which can be installed with `sudo apt install python3-pip`) the `all-repos` command is not added to your bin file by default, so a prefix is required to allow you to easily utilize the tool from your command line.
+
+`sudo pip install --prefix /usr/local all-repos`
 
 ## CLI
 
