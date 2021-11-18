@@ -1,4 +1,5 @@
 import json
+from typing import Dict
 
 import pytest
 
@@ -25,6 +26,20 @@ def test_list_repos(repos_response):
     assert ret == expected
 
 
+def test_list_repos_by_topics_no_match(repos_response):
+    settings = Settings('key', 'sass', topics=['java'])
+    ret = list_repos(settings)
+    expected: Dict[str, str] = {}
+    assert ret == expected
+
+
+def test_list_repos_by_topics_match(repos_response):
+    settings = Settings('key', 'sass', topics=['scss'])
+    ret = list_repos(settings)
+    expected = {'sass/libsass-python': 'git@github.com:sass/libsass-python'}
+    assert ret == expected
+
+
 def test_settings_repr():
     assert repr(Settings('key', 'sass')) == (
         'Settings(\n'
@@ -34,6 +49,7 @@ def test_settings_repr():
         '    forks=False,\n'
         '    private=False,\n'
         '    archived=False,\n'
+        '    topics=[],\n'
         "    base_url='https://api.github.com',\n"
         ')'
     )

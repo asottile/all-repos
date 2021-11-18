@@ -292,6 +292,7 @@ Clones all repositories from an organization on github.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 - `archived` (default: `false`): whether to include archived repositories.
+- `topics` (default: `[]`): If specified, will only include repositories that have one or more of the topics listed.
 - `base_url` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 

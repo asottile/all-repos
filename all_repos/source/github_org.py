@@ -12,6 +12,7 @@ class Settings(NamedTuple):
     forks: bool = False
     private: bool = False
     archived: bool = False
+    topics: list[str] = []
     base_url: str = 'https://api.github.com'
 
     # TODO: https://github.com/python/mypy/issues/8543
@@ -30,4 +31,5 @@ def list_repos(settings: Settings) -> Dict[str, str]:
         private=settings.private,
         collaborator=settings.collaborator,
         archived=settings.archived,
+        topics=settings.topics,
     )
