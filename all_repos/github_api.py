@@ -54,7 +54,7 @@ def _strip_trailing_dot_git(ssh_url: str) -> str:
 def filter_repos(
         repos: List[Dict[str, Any]], *,
         forks: bool, private: bool, collaborator: bool, archived: bool,
-        topics: list[str] = [],
+        topics: List[str] = [],
 ) -> Dict[str, str]:
     return {
         repo['full_name']: _strip_trailing_dot_git(repo['ssh_url'])

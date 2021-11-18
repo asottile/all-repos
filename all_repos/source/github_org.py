@@ -1,4 +1,5 @@
 from typing import Dict
+from typing import List
 from typing import NamedTuple
 
 from all_repos import github_api
@@ -12,7 +13,7 @@ class Settings(NamedTuple):
     forks: bool = False
     private: bool = False
     archived: bool = False
-    topics: list[str] = []
+    topics: List[str] = []
     base_url: str = 'https://api.github.com'
 
     # TODO: https://github.com/python/mypy/issues/8543
