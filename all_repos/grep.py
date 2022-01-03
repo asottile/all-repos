@@ -86,6 +86,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description='Similar to a distributed `git grep ...`.',
         usage='%(prog)s [options] [GIT_GREP_OPTIONS]',
+        add_help=False,
+    )
+    # Handle --help like normal, pass -h through to git grep
+    parser.add_argument(
+        '--help', action='help', help='show this help message and exit',
     )
     cli.add_common_args(parser)
     cli.add_repos_with_matches_arg(parser)
