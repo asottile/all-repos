@@ -82,6 +82,14 @@ def test_grep_cli(file_config_files, capsys):
     out, _ = capsys.readouterr()
     assert out == ''
 
+    ret = main(('-C', str(file_config_files.cfg), '-h', '^OH'))
+    assert ret == 0
+    out, _ = capsys.readouterr()
+    assert out == '{}:OHAI\n{}:OHELLO\n'.format(
+        file_config_files.output_dir.join('repo1'),
+        file_config_files.output_dir.join('repo2'),
+    )
+
 
 def test_grep_cli_output_paths(file_config_files, capsys):
     cmd = ('-C', str(file_config_files.cfg), '-l', '^OH', '--output-paths')
