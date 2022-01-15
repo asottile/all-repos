@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from all_repos import clone
 from all_repos.autofix.pre_commit_cache_dir import main
 from testing.git import write_file_commit

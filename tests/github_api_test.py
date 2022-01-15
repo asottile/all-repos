@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 from all_repos.github_api import _strip_trailing_dot_git

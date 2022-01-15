@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import base64
-from typing import Dict
 from typing import NamedTuple
 
 from all_repos import bitbucket_api
@@ -20,7 +21,7 @@ class Settings(NamedTuple):
         return hide_api_key_repr(self, key='app_password')
 
 
-def list_repos(settings: Settings) -> Dict[str, str]:
+def list_repos(settings: Settings) -> dict[str, str]:
     repos = bitbucket_api.get_all(
         'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member',
         headers={'Authorization': f'Basic {settings.auth}'},

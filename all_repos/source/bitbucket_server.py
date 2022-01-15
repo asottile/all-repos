@@ -1,7 +1,7 @@
+from __future__ import annotations
+
 import base64
-from typing import Dict
 from typing import NamedTuple
-from typing import Optional
 
 from all_repos import bitbucket_server_api
 from all_repos.util import hide_api_key_repr
@@ -11,7 +11,7 @@ class Settings(NamedTuple):
     username: str
     app_password: str
     base_url: str
-    project: Optional[str] = None
+    project: str | None = None
 
     @property
     def auth(self) -> str:
@@ -22,7 +22,7 @@ class Settings(NamedTuple):
         return hide_api_key_repr(self, key='app_password')
 
 
-def list_repos(settings: Settings) -> Dict[str, str]:
+def list_repos(settings: Settings) -> dict[str, str]:
     if settings.project:
         end_point = f'rest/api/1.0/projects/{settings.project}/repos'
     else:

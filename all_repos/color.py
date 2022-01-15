@@ -1,3 +1,4 @@
+from __future__ import annotations
 BLUE_B = '\033[1;34m'
 RED = '\033[31m'
 RED_H = '\033[41m'

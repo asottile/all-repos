@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from all_repos.push import readonly
 
 

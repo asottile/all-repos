@@ -1,12 +1,12 @@
+from __future__ import annotations
+
 import argparse
 import functools
 import os.path
 import shlex
 import subprocess
 from typing import Generator
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 from identify.identify import tags_from_path
 
@@ -40,11 +40,11 @@ def apply_fix(
     autofix_lib.run(*sed_cmd, *filenames)
 
 
-def _quote_cmd(cmd: Tuple[str, ...]) -> str:
+def _quote_cmd(cmd: tuple[str, ...]) -> str:
     return ' '.join(shlex.quote(arg) for arg in cmd)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Similar to a distributed '
@@ -78,7 +78,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     # https://github.com/python/mypy/issues/4975
-    dash_r: Tuple[str, ...]
+    dash_r: tuple[str, ...]
     if args.regexp_extended:
         dash_r = ('-r',)
     else:

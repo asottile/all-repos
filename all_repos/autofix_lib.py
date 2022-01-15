@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import contextlib
 import functools
@@ -11,8 +13,6 @@ from typing import Callable
 from typing import Generator
 from typing import Iterable
 from typing import NamedTuple
-from typing import Optional
-from typing import Tuple
 from typing import TYPE_CHECKING
 
 import pkg_resources
@@ -67,18 +67,18 @@ def add_fixer_args(parser: argparse.ArgumentParser) -> None:
 class Commit(NamedTuple):
     msg: str
     branch_name: str
-    author: Optional[str]
+    author: str | None
 
 
 class AutofixSettings(NamedTuple):
     jobs: int
     color: bool
-    limit: Optional[int]
+    limit: int | None
     dry_run: bool
     interactive: bool
 
     @classmethod
-    def from_cli(cls, args: Any) -> 'AutofixSettings':
+    def from_cli(cls, args: Any) -> AutofixSettings:
         return cls(
             jobs=args.jobs, color=args.color, limit=args.limit,
             dry_run=args.dry_run, interactive=args.interactive,
@@ -87,7 +87,7 @@ class AutofixSettings(NamedTuple):
 
 def filter_repos(
         config: Config,
-        cli_repos: Optional[Iterable[str]],
+        cli_repos: Iterable[str] | None,
         find_repos: Callable[[Config], Iterable[str]],
 ) -> Iterable[str]:
     if cli_repos is not None:
@@ -102,7 +102,7 @@ def from_cli(
         find_repos: Callable[[Config], Iterable[str]],
         msg: str,
         branch_name: str,
-) -> Tuple[Iterable[str], Config, Commit, AutofixSettings]:
+) -> tuple[Iterable[str], Config, Commit, AutofixSettings]:
     config = load_config(args.config_filename)
     return (
         filter_repos(config, args.repos, find_repos),
@@ -112,7 +112,7 @@ def from_cli(
     )
 
 
-def run(*cmd: str, **kwargs: Any) -> 'subprocess.CompletedProcess[str]':
+def run(*cmd: str, **kwargs: Any) -> subprocess.CompletedProcess[str]:
     cmdstr = ' '.join(shlex.quote(arg) for arg in cmd)
     print(f'$ {cmdstr}', flush=True)
     kwargs.setdefault('check', True)
@@ -182,7 +182,7 @@ def shell() -> None:
 
 
 def _interactive_check(*, use_color: bool) -> bool:
-    def _quit() -> 'NoReturn':
+    def _quit() -> NoReturn:
         print('Goodbye!')
         raise SystemExit()
 
@@ -251,7 +251,7 @@ def _fix_inner(
             f'{commit.msg}\n\n'
             f'Committed via https://github.com/asottile/all-repos'
         )
-        commit_cmd: Tuple[str, ...] = (
+        commit_cmd: tuple[str, ...] = (
             'git', 'commit', '--quiet', '-a', '-m', commit_message,
         )
         if commit.author:

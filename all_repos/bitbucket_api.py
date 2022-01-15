@@ -1,8 +1,8 @@
+from __future__ import annotations
+
 import json
 import urllib.request
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import NamedTuple
 
 
@@ -17,8 +17,8 @@ def req(url: str, **kwargs: Any) -> Response:
     return Response(obj['values'], obj.get('next'))
 
 
-def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
-    ret: List[Dict[str, Any]] = []
+def get_all(url: str, **kwargs: Any) -> list[dict[str, Any]]:
+    ret: list[dict[str, Any]] = []
     resp = req(url, **kwargs)
     ret.extend(resp.values)
     while resp.next is not None:

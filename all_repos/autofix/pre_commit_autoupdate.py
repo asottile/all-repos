@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import contextlib
 import os
@@ -5,9 +7,7 @@ import sys
 import tempfile
 from typing import Any
 from typing import Generator
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 from all_repos import autofix_lib
 from all_repos.config import Config
@@ -39,7 +39,7 @@ def check_fix(**kwargs: Any) -> None:
     )
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     return repos_matching(config, ('', '--', '.pre-commit-config.yaml'))
 
 
@@ -49,7 +49,7 @@ def apply_fix() -> None:
     check_fix(check=False)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from all_repos.bitbucket_server_api import get_all
 from testing.mock_http import FakeResponse
 from testing.mock_http import urlopen_side_effect

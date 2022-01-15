@@ -1,15 +1,14 @@
+from __future__ import annotations
+
 import json
 import subprocess
-from typing import Dict
 from typing import NamedTuple
-from typing import Optional
-from typing import Set
 
 
 class Settings(NamedTuple):
     username: str
     hostname: str
-    mirror_path: Optional[str] = None
+    mirror_path: str | None = None
 
     def clone_url(self, repo_name: str) -> str:
         return (
@@ -18,7 +17,7 @@ class Settings(NamedTuple):
         ).format(repo_name=repo_name)
 
 
-def _repo_names_from_source(settings: Settings) -> Set[str]:
+def _repo_names_from_source(settings: Settings) -> set[str]:
     info = subprocess.check_output(
         ('ssh', f'{settings.username}@{settings.hostname}', 'info', '-json'),
     )
@@ -26,7 +25,7 @@ def _repo_names_from_source(settings: Settings) -> Set[str]:
     return set(info_d['repos'])
 
 
-def list_repos(settings: Settings) -> Dict[str, str]:
+def list_repos(settings: Settings) -> dict[str, str]:
     return {
         # Repo names have ".git" appended to avoid naming conflicts between
         # repos and directories in the gitolite hierarchy (a path could

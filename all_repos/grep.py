@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import argparse
 import os.path
 import subprocess
 import sys
-from typing import Dict
-from typing import Optional
 from typing import Sequence
-from typing import Set
-from typing import Tuple
 
 from all_repos import cli
 from all_repos import color
@@ -22,7 +20,7 @@ def grep_result(
         config: Config,
         repo: str,
         args: Sequence[str],
-) -> Tuple[str, int, bytes]:
+) -> tuple[str, int, bytes]:
     path = os.path.join(config.output_dir, repo)
     ret = subprocess.run(
         ('git', '-C', path, 'grep', *args), stdout=subprocess.PIPE,
@@ -30,7 +28,7 @@ def grep_result(
     return path, ret.returncode, ret.stdout
 
 
-def grep(config: Config, grep_args: Sequence[str]) -> Dict[str, bytes]:
+def grep(config: Config, grep_args: Sequence[str]) -> dict[str, bytes]:
     repos = config.get_cloned_repos()
     ret = {}
     for repo in repos:
@@ -42,7 +40,7 @@ def grep(config: Config, grep_args: Sequence[str]) -> Dict[str, bytes]:
     return ret
 
 
-def repos_matching(config: Config, grep_args: Sequence[str]) -> Set[str]:
+def repos_matching(config: Config, grep_args: Sequence[str]) -> set[str]:
     return set(grep(config, ('--quiet', *grep_args)))
 
 
@@ -82,7 +80,7 @@ def grep_cli(
     return int(not matching)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description='Similar to a distributed `git grep ...`.',
         usage='%(prog)s [options] [GIT_GREP_OPTIONS]',
