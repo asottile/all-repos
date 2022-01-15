@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import re
-from typing import List
 
 from all_repos.autofix.pre_commit_autoupdate import apply_fix as autoupdate
 
@@ -22,10 +23,10 @@ def apply_fix_fn(*, prev_hook: str, repo: str, rev: str, hook: str) -> None:
     i1 = i4 = ' ' * 3
     i2 = i3 = ' ' * 4
 
-    new_lines: List[str] = []
+    new_lines: list[str] = []
     seen_hook = False
     in_opts = False
-    opt_lines: List[str] = []
+    opt_lines: list[str] = []
 
     def add_new_repo() -> None:
         new_lines.extend(

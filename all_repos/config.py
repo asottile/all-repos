@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import json
 import os
 import re
 import sys
 from typing import Any
 from typing import Callable
-from typing import Dict
 from typing import NamedTuple
 from typing import Pattern
 
@@ -13,7 +14,7 @@ class Config(NamedTuple):
     output_dir: str
     include: Pattern[str]
     exclude: Pattern[str]
-    list_repos: Callable[[Any], Dict[str, str]]
+    list_repos: Callable[[Any], dict[str, str]]
     source_settings: Any
     push: Callable[[Any, str], None]
     push_settings: Any
@@ -30,7 +31,7 @@ class Config(NamedTuple):
     def repos_filtered_path(self) -> str:
         return self._path('repos_filtered.json')
 
-    def get_cloned_repos(self) -> Dict[str, str]:
+    def get_cloned_repos(self) -> dict[str, str]:
         with open(self.repos_filtered_path) as f:
             return json.load(f)
 

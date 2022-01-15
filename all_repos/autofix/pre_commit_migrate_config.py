@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 import argparse
 import os.path
 import sys
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 import yaml
 from pre_commit.constants import CONFIG_FILE
@@ -25,11 +25,11 @@ def _has_legacy_config(repo_dir: str) -> bool:
     return isinstance(contents, list)
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     return {repo for repo in _find_repos(config) if _has_legacy_config(repo)}
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

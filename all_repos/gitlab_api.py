@@ -1,18 +1,17 @@
+from __future__ import annotations
+
 import json
 import urllib.request
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import NamedTuple
-from typing import Optional
 
 
 class Response(NamedTuple):
     json: Any
-    links: Dict[str, str]
+    links: dict[str, str]
 
 
-def _parse_link(lnk: Optional[str]) -> Dict[str, str]:
+def _parse_link(lnk: str | None) -> dict[str, str]:
     if lnk is None:
         return {}
 
@@ -36,8 +35,8 @@ def req(url: str, **kwargs: Any) -> Response:
     return Response(json.load(resp), _parse_link(resp.headers['link']))
 
 
-def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
-    ret: List[Dict[str, Any]] = []
+def get_all(url: str, **kwargs: Any) -> list[dict[str, Any]]:
+    ret: list[dict[str, Any]] = []
     resp = req(url, **kwargs)
     ret.extend(resp.json)
     while 'next' in resp.links:
@@ -47,8 +46,8 @@ def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
 
 
 def filter_repos_from_settings(
-    repos: List[Dict[str, Any]], settings: Any,
-) -> Dict[str, str]:
+    repos: list[dict[str, Any]], settings: Any,
+) -> dict[str, str]:
     return filter_repos(
         repos,
         archived=settings.archived,
@@ -56,9 +55,9 @@ def filter_repos_from_settings(
 
 
 def filter_repos(
-        repos: List[Dict[str, Any]], *,
+        repos: list[dict[str, Any]], *,
         archived: bool,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     return {
         repo['path_with_namespace']: repo['ssh_url_to_repo']
         for repo in repos

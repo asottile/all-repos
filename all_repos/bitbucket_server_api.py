@@ -1,16 +1,15 @@
+from __future__ import annotations
+
 import json
 import urllib.request
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import NamedTuple
-from typing import Optional
 
 
 class Response(NamedTuple):
     values: Any
-    next: Optional[int]
-    links: Optional[Dict[str, Any]]
+    next: int | None
+    links: dict[str, Any] | None
 
 
 def req(url: str, **kwargs: Any) -> Response:
@@ -22,8 +21,8 @@ def req(url: str, **kwargs: Any) -> Response:
     return Response(obj.get('values'), next_index, obj.get('links'))
 
 
-def get_all(url: str, **kwargs: Any) -> List[Dict[str, Any]]:
-    ret: List[Dict[str, Any]] = []
+def get_all(url: str, **kwargs: Any) -> list[dict[str, Any]]:
+    ret: list[dict[str, Any]] = []
     resp = req(url, **kwargs)
     ret.extend(resp.values)
     query_start = '' if '?' in url else '?'

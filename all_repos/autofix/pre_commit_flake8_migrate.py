@@ -1,8 +1,8 @@
+from __future__ import annotations
+
 import argparse
 import functools
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 from all_repos import autofix_lib
 from all_repos.autofix._pre_commit_hook_migrate import apply_fix_fn
@@ -12,7 +12,7 @@ from all_repos.config import Config
 from all_repos.grep import repos_matching
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     return (
         repos_matching(
             config, ('flake8', '--', '.pre-commit-config.yaml'),
@@ -32,7 +32,7 @@ apply_fix = functools.partial(
 )
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

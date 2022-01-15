@@ -1,15 +1,15 @@
+from __future__ import annotations
+
 import argparse
 import sys
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 from all_repos import autofix_lib
 from all_repos.config import Config
 from all_repos.grep import repos_matching
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     return repos_matching(config, ('=', '--', 'setup.py'))
 
 
@@ -19,7 +19,7 @@ def apply_fix() -> None:
     autofix_lib.run(*setup_cfg_fmt_cmd, check=False)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

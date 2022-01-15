@@ -1,14 +1,13 @@
+from __future__ import annotations
+
 import argparse
 import functools
 import json
 import os.path
 import shutil
 import subprocess
-from typing import Dict
 from typing import Generator
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 from all_repos import cli
 from all_repos import git
@@ -18,7 +17,7 @@ from all_repos.config import load_config
 
 def _get_current_state_helper(
         path: str,
-) -> Generator[Tuple[str, str], None, None]:
+) -> Generator[tuple[str, str], None, None]:
     if not os.path.exists(path):
         return
 
@@ -36,7 +35,7 @@ def _get_current_state_helper(
             yield from _get_current_state_helper(os.fspath(pth))
 
 
-def _get_current_state(path: str) -> Dict[str, str]:
+def _get_current_state(path: str) -> dict[str, str]:
     return {
         os.path.relpath(k, path): v for k, v in _get_current_state_helper(path)
     }
@@ -92,7 +91,7 @@ def _fetch_reset(path: str, *, all_branches: bool) -> None:
         print(f'Error fetching {path}')
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Clone all the repositories into the `output_dir`.  If '

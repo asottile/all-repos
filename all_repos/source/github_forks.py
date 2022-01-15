@@ -1,4 +1,5 @@
-from typing import Dict
+from __future__ import annotations
+
 from typing import NamedTuple
 
 from all_repos import github_api
@@ -19,7 +20,7 @@ class Settings(NamedTuple):
         return hide_api_key_repr(self)
 
 
-def list_repos(settings: Settings) -> Dict[str, str]:
+def list_repos(settings: Settings) -> dict[str, str]:
     repos = []
     to_search = [settings.repo]
 

@@ -1,13 +1,11 @@
+from __future__ import annotations
+
 import argparse
 import os.path
 import re
 import subprocess
 import sys
-from typing import Dict
-from typing import List
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 from all_repos import cli
 from all_repos import color
@@ -16,7 +14,7 @@ from all_repos.config import load_config
 from all_repos.util import zsplit
 
 
-def ls_files(config: Config, repo: str) -> Tuple[str, List[bytes]]:
+def ls_files(config: Config, repo: str) -> tuple[str, list[bytes]]:
     path = os.path.join(config.output_dir, repo)
     ret = subprocess.run(
         ('git', '-C', path, 'ls-files', '-z'),
@@ -25,7 +23,7 @@ def ls_files(config: Config, repo: str) -> Tuple[str, List[bytes]]:
     return path, zsplit(ret.stdout)
 
 
-def find_files(config: Config, pattern: str) -> Dict[str, List[bytes]]:
+def find_files(config: Config, pattern: str) -> dict[str, list[bytes]]:
     regex = re.compile(pattern.encode())
     repos = config.get_cloned_repos()
     ret = {}
@@ -67,7 +65,7 @@ def find_files_cli(
     return not repo_files
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Similar to a distributed `git ls-files | grep -P PATTERN`.'

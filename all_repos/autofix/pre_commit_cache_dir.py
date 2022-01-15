@@ -1,8 +1,8 @@
+from __future__ import annotations
+
 import argparse
 import os.path
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 from all_repos import autofix_lib
 from all_repos.config import Config
@@ -13,7 +13,7 @@ APPVEYOR = 'appveyor.yml'
 TRAVIS = '.travis.yml'
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     return (
         repos_matching(config, ('$HOME/.pre-commit', '--', TRAVIS)) |
         repos_matching(config, (r'%USERPROFILE%\\.pre-commit', '--', APPVEYOR))
@@ -37,7 +37,7 @@ def apply_fix() -> None:
     )
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

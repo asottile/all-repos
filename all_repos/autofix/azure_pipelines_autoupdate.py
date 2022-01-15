@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import argparse
 import functools
 import re
 import subprocess
 import tempfile
-from typing import Optional
 from typing import Sequence
-from typing import Set
 
 import yaml
 
@@ -34,7 +34,7 @@ def _latest_tag(service: str, repo: str) -> str:
         return subprocess.check_output(cmd, cwd=tmpdir).strip().decode()
 
 
-def find_repos(config: Config) -> Set[str]:
+def find_repos(config: Config) -> set[str]:
     query = ('ref: refs/tags/', '--', 'azure-pipelines.yml')
     return repos_matching(config, query)
 
@@ -62,7 +62,7 @@ def apply_fix() -> None:
         f.write(''.join(lines))
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     autofix_lib.add_fixer_args(parser)
     args = parser.parse_args(argv)

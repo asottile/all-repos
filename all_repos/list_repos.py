@@ -1,13 +1,14 @@
+from __future__ import annotations
+
 import argparse
 import os
-from typing import Optional
 from typing import Sequence
 
 from all_repos import cli
 from all_repos.config import load_config
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description='List all cloned repository names.',
         usage='all-repos-list-repos [options]',

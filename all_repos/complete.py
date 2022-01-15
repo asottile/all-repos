@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import argparse
-from typing import Optional
 from typing import Sequence
 
 from all_repos import cli
@@ -62,7 +63,7 @@ __git_remote_repositories() {
 '''
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Add git-clone tab completion for all-repos repositories.\n\n'

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from all_repos import clone
 from all_repos.autofix.pre_commit_migrate_config import find_repos
 from all_repos.autofix.pre_commit_migrate_config import main
