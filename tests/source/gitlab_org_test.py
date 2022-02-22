@@ -19,7 +19,7 @@ def _resource_json(name):
 def repos_response(mock_urlopen):
     mock_urlopen.side_effect = urlopen_side_effect({
         'https://gitlab.com/api/v4/groups/ronny-test/'
-        'projects?with_shared=False': FakeResponse(
+        'projects?with_shared=False&include_subgroups=true': FakeResponse(
             json.dumps(_resource_json('org-listing')).encode(),
         ),
     })
