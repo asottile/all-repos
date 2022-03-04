@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import pytest
 
-from all_repos.source.bitbucket_server import list_repos
-from all_repos.source.bitbucket_server import Settings
+from all_repos.source.bitbucket_server_bearer_auth import list_repos
+from all_repos.source.bitbucket_server_bearer_auth import Settings
 
 
 @pytest.mark.usefixtures('repos_response')
 def test_list_repos():
     settings = Settings(
-        'cool_user', 'app_password', 'bitbucket.domain.com',
+        'token', 'bitbucket.domain.com',
     )
     ret = list_repos(settings)
     assert ret == {
@@ -21,7 +21,7 @@ def test_list_repos():
 @pytest.mark.usefixtures('repos_project_response')
 def test_list_repos_from_project():
     settings = Settings(
-        'cool_user', 'app_password', 'bitbucket.domain.com', 'PRJ',
+        'token', 'bitbucket.domain.com', 'PRJ',
     )
     ret = list_repos(settings)
     assert ret == {
@@ -31,11 +31,10 @@ def test_list_repos_from_project():
 
 
 def test_settings_repr():
-    settings = Settings('cool_user', 'app_password', 'bitbucket.domain.com')
+    settings = Settings('token', 'bitbucket.domain.com')
     assert repr(settings) == (
         'Settings(\n'
-        "    username='cool_user',\n"
-        '    app_password=...,\n'
+        '    token=...,\n'
         "    base_url='bitbucket.domain.com',\n"
         '    project=None,\n'
         ')'

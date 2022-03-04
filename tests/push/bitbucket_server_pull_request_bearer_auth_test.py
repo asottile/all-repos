@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 import subprocess
 
-from all_repos.push.bitbucket_server_pull_request import push
-from all_repos.push.bitbucket_server_pull_request import Settings
+from all_repos.push.bitbucket_server_pull_request_bearer_auth import push
+from all_repos.push.bitbucket_server_pull_request_bearer_auth import Settings
 
 
 def _resource_json():
@@ -12,9 +12,11 @@ def _resource_json():
         return json.load(f)
 
 
-def test_bitbucket_server_pull_request(mock_urlopen, make_fake_bitbucket_repo):
+def test_bitbucket_server_pull_request(
+        mock_urlopen, make_fake_bitbucket_repo,
+):
     fake_bitbucket_repo = make_fake_bitbucket_repo(
-        Settings('user', 'token', 'bitbucket.domain.com'),
+        Settings('token', 'bitbucket.domain.com'),
     )
     resp = _resource_json()
     mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
@@ -41,11 +43,10 @@ def test_bitbucket_server_pull_request(mock_urlopen, make_fake_bitbucket_repo):
 
 
 def test_settings_repr():
-    settings = Settings('cool_user', 'app_password', 'bitbucket.domain.com')
+    settings = Settings('token', 'bitbucket.domain.com')
     assert repr(settings) == (
         'Settings(\n'
-        "    username='cool_user',\n"
-        '    app_password=...,\n'
+        '    token=...,\n'
         "    base_url='bitbucket.domain.com',\n"
         ')'
     )

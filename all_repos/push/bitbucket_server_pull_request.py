@@ -17,21 +17,22 @@ class Settings(NamedTuple):
     base_url: str
 
     @property
-    def auth(self) -> str:
+    def auth_header(self) -> dict[str, str]:
         value = f'{self.username}:{self.app_password}'
-        return base64.b64encode(value.encode()).decode()
+        return {'Authorization': base64.b64encode(value.encode()).decode()}
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self, key='app_password')
 
 
 def make_pull_request(
-        settings: Settings,
+        base_url: str,
+        auth_header: dict[str, str],
         branch_name: str,
 ) -> bitbucket_server_api.Response:
     headers = {
-        'Authorization': f'Basic {settings.auth}',
         'Content-Type': 'application/json',
+        **auth_header,
     }
 
     remote = git.remote('.')
@@ -74,12 +75,20 @@ def make_pull_request(
 
     end_point = f'projects/{project}/repos/{repo_slug}/pull-requests'
     return bitbucket_server_api.req(
-        f'https://{settings.base_url}/rest/api/1.0/{end_point}',
+        f'https://{base_url}/rest/api/1.0/{end_point}',
         data=data, headers=headers, method='POST',
     )
 
 
-def push(settings: Settings, branch_name: str) -> None:
-    resp = make_pull_request(settings, branch_name)
+def push_and_create_pr(
+        base_url: str,
+        auth_header: dict[str, str],
+        branch_name: str,
+) -> None:
+    resp = make_pull_request(base_url, auth_header, branch_name)
     url = resp.links['self'][0]['href'] if resp.links else ''
     print(f'Pull request created at {url}')
+
+
+def push(settings: Settings, branch_name: str) -> None:
+    push_and_create_pr(settings.base_url, settings.auth_header, branch_name)

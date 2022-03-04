@@ -363,6 +363,21 @@ Clones all repositories available to a user on Bitbucket Server.
 
 - `project` (default `None`): an optional project to restrict the search for repositories.
 
+### `all_repos.source.bitbucket_server_bearer_auth`
+
+Clones all repositories available to a user on Bitbucket Server using bearer auth scheme.
+
+#### Required `source_settings`
+
+- `base_url`: the bitbucket server URL (eg `bitbucket.domain.com`)
+- `token`: the personal access token which the user will log in
+    - Create a personal access token within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
+    - We need the scope: Repositories -> Read
+
+#### Optional `source_settings`
+
+- `project` (default `None`): an optional project to restrict the search for repositories.
+
 
 #### Directory location
 
@@ -455,6 +470,17 @@ Pushes the branch to `origin` and then creates a Bitbucket pull request for the 
 - `app_password`: the authentication method for the above user to login with
     - Create an application password within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
     - We need the scope: Repositories -> Read
+
+### `all_repos.push.bitbucket_server_pull_request_bearer_auth`
+
+Pushes the branch to `origin` and then creates a Bitbucket pull request for the branch using bearer auth scheme.
+
+#### Required `push_settings`
+
+- `base_url`: the Bitbucket server URL (eg `bitbucket.domain.com`)
+- `token`: the personal access token which the user will log in
+    - Create a personal access token within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
+    - We need the scope: Repositories -> Write
 
 ### `all_repos.push.readonly`
 
