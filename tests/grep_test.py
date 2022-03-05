@@ -107,14 +107,23 @@ def _test_grep_color(file_config_files, capsys, *, args=()):
     ret = main(('-C', str(file_config_files.cfg), 'OHAI', *args))
     assert ret == 0
     out, _ = capsys.readouterr()
-    expected = (
-        '\033[1;34m{}\033[m'
-        '\033[36m:\033[m'
-        'f'
-        '\033[36m:\033[m'
-        '\033[1;31mOHAI\033[m\n'
-    ).format(file_config_files.output_dir.join('repo1'))
-    assert out == expected
+    directory = file_config_files.output_dir.join('repo1')
+    assert out in {
+        (
+            f'\033[1;34m{directory}\033[m'
+            f'\033[36m:\033[m'
+            f'\033[35mf\033[m'
+            f'\033[36m:\033[m'
+            f'\033[1;31mOHAI\033[m\n'
+        ),
+        (
+            f'\033[1;34m{directory}\033[m'
+            f'\033[36m:\033[m'
+            f'f'
+            f'\033[36m:\033[m'
+            f'\033[1;31mOHAI\033[m\n'
+        ),
+    }
 
 
 def test_grep_color_always(file_config_files, capsys):
