@@ -1,8 +1,5 @@
 *.egg-info
 *.pyc
-/.mypy_cache
-/.pytest_cache
 /.coverage
 /.tox
-/venv*
 .vscode
