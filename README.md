@@ -1,6 +1,6 @@
-[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.all-repos?branchName=master)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=master)
-[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/33/master.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=master)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/all-repos/master.svg)](https://results.pre-commit.ci/latest/github/asottile/all-repos/master)
+[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.all-repos?branchName=main)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=main)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/33/main.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/all-repos/main.svg)](https://results.pre-commit.ci/latest/github/asottile/all-repos/main)
 
 all-repos
 =========
@@ -407,11 +407,11 @@ directory name inside the `output_dir`.
 
 ### `all_repos.push.merge_to_master`
 
-Merges the branch directly to `master` and pushes.  The commands it runs look
-roughly like this:
+Merges the branch directly to the default branch and pushes.  The commands it
+runs look roughly like this:
 
 ```bash
-git checkout master
+git checkout main
 git pull
 git merge --no-ff $BRANCH
 git push origin HEAD
@@ -580,7 +580,7 @@ if __name__ == '__main__':
     raise SystemExit(main())
 ```
 
-You can find some more involved examples in [all_repos/autofix](https://github.com/asottile/all-repos/tree/master/all_repos/autofix):
+You can find some more involved examples in [all_repos/autofix](https://github.com/asottile/all-repos/tree/main/all_repos/autofix):
 - `all_repos.autofix.azure_pipelines_autoupdate`: upgrade pinned azure
   pipelines template repository references.
 - `all_repos.autofix.pre_commit_autoupdate`: runs `pre-commit autoupdate`.
