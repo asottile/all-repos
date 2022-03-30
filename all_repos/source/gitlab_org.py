@@ -18,7 +18,7 @@ class Settings(NamedTuple):
 
 LIST_REPOS_URL = (
     '{settings.base_url}/groups/'
-    '{settings.org}/projects?with_shared=False'
+    '{settings.org}/projects?with_shared=False&include_subgroups=true'
 )
 
 
