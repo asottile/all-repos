@@ -1,0 +1,24 @@
+{
+    "count": 1,
+    "value": [
+        {
+            "id": "repo-id",
+            "name": "fake-repo",
+            "url": "https://dev.azure.com/fake-organization/project-id/_apis/git/repositories/repo-id",
+            "project": {
+                "id": "project-id",
+                "name": "fake-project",
+                "url": "https://dev.azure.com/fake-organization/_apis/projects/project-id",
+                "state": "wellFormed",
+                "revision": 11,
+                "visibility": "private",
+                "lastUpdateTime": "2022-06-25T14:39:09.96Z"
+            },
+            "size": 0,
+            "remoteUrl": "https://fake-organization@dev.azure.com/fake-organization/fake-project/_git/fake-repo",
+            "sshUrl": "git@ssh.dev.azure.com:v3/fake-organization/fake-project/fake-repo",
+            "webUrl": "https://dev.azure.com/fake-organization/fake-project/_git/fake-repo",
+            "isDisabled": false
+        }
+    ]
+}
