@@ -13,7 +13,7 @@ from typing import Callable
 from typing import Generator
 from typing import Iterable
 from typing import NamedTuple
-from typing import TYPE_CHECKING
+from typing import NoReturn
 
 import pkg_resources
 
@@ -23,9 +23,6 @@ from all_repos import git
 from all_repos import mapper
 from all_repos.config import Config
 from all_repos.config import load_config
-
-if TYPE_CHECKING:
-    from typing import NoReturn
 
 
 def add_fixer_args(parser: argparse.ArgumentParser) -> None:
