@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import urllib
 
 import pytest
 
@@ -44,9 +45,10 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
 
     # Pull request should have been made with the commit data
     (req,), _ = mock_urlopen.call_args
+    repo_slug = urllib.parse.quote(fake_gitlab_repo.src.strpath[1:], safe='')
     assert req.get_full_url() == (
         'https://gitlab.com/api/v4/projects'
-        '/user%2Fslug/merge_requests'
+        f'/{repo_slug}/merge_requests'
     )
     assert req.method == 'POST'
     data = json.loads(req.data)
@@ -67,15 +69,42 @@ def fake_gitlab_repo_fork(tmpdir, fake_gitlab_repo):
 
 
 def test_gitlab_pull_request_with_fork(mock_urlopen, fake_gitlab_repo_fork):
-    # this is a mishmash of both of the requests (satisfies both)
-    resp = {'full_name': 'u2/slug', 'html_url': 'https://example/com'}
-    mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
+    resp_0 = [{'ssh_url_to_repo': fake_gitlab_repo_fork.fork.strpath}]
+    resp_1 = {'web_url': 'foo'}
+    mock_urlopen.return_value.read.side_effect = [
+        json.dumps(resp).encode() for resp in (resp_0, resp_1)
+    ]
 
     with fake_gitlab_repo_fork.dest.as_cwd():
-        with pytest.raises(NotImplementedError):
-            gitlab_pull_request.push(fake_gitlab_repo_fork.settings, 'feature')
+        gitlab_pull_request.push(fake_gitlab_repo_fork.settings, 'feature')
 
-    # TODO: replicate github impl when implementing
+    # Should have pushed the branch to the fork
+    out = subprocess.check_output((
+        'git', '-C', fake_gitlab_repo_fork.src, 'branch',
+    )).decode()
+    assert out == '* master\n'
+    out = subprocess.check_output((
+        'git', '-C', fake_gitlab_repo_fork.fork, 'branch',
+    )).decode()
+    assert out == '  feature\n* master\n'
+
+    (req,), _ = mock_urlopen.call_args
+    repo_slug = urllib.parse.quote(
+        fake_gitlab_repo_fork.src.strpath[1:],
+        safe='',
+    )
+    assert req.get_full_url() == (
+        'https://gitlab.com/api/v4/projects'
+        f'/{repo_slug}/merge_requests'
+    )
+    data = json.loads(req.data)
+    assert data == {
+        'source_branch': 'feature',
+        'target_branch': 'master',
+        'title': 'This is a commit message',
+        'description': 'Here is some more information!',
+        'remove_source_branch': True,
+    }
 
 
 def test_settings_repr():
@@ -84,5 +113,6 @@ def test_settings_repr():
         '    api_key=...,\n'
         "    base_url='https://gitlab.com/api/v4',\n"
         '    fork=False,\n'
+        '    https=False,\n'
         ')'
     )

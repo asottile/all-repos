@@ -464,6 +464,27 @@ Does nothing.
 
 There are no configurable settings for `readonly`.
 
+### `all_repos.push.gitlab_pull_request`
+
+Pushes the branch to `origin` and then creates a gitlab merge request for the
+branch.
+
+#### Required `push_settings`
+
+- `api_key`: the api key which the user will log in as.
+  Use [the settings tab](https://gitlab.com/-/profile/personal_access_tokens) to create a
+  personal access token.
+
+#### Optional `push_settings`
+
+- `fork` (default: `false`): (if applicable) a fork will be created and pushed
+  to instead of the upstream repository.  The merge request will then be made
+  to the upstream repository.
+- `base_url` (default: `https://gitlab.com/api/v4`): is the base URL to the Gitlab
+  API to use.
+- `https` (default: `false`): whether to use `https` as the git transport protocol,
+  otherwise use `ssh`.
+
 ## Writing your own push module
 
 First create a module.  This module must have the following api:

@@ -16,6 +16,7 @@ class Settings(NamedTuple):
     api_key: str
     base_url: str = 'https://gitlab.com/api/v4'
     fork: bool = False
+    https: bool = False
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self)
@@ -31,14 +32,27 @@ def push(settings: Settings, branch_name: str) -> None:
     }
 
     remote_url = git.remote('.')
-    _, _, repo_slug = remote_url.rpartition(':')
-    repo_slug = _strip_trailing_dot_git(repo_slug)
+    parsed_url = urllib.parse.urlparse(remote_url)
+    repo_slug = _strip_trailing_dot_git(parsed_url.path[1:])
     repo_slug = urllib.parse.quote(repo_slug, safe='')
+
     if settings.fork:
-        raise NotImplementedError('fork support  not yet implemented')
+        data = json.dumps({
+            'owned': True,
+            'simple': True,
+        }).encode()
+        resp = gitlab_api.req(
+            f'{settings.base_url}/projects/{repo_slug}/forks',
+            data=data, headers=headers, method='GET',
+        )
+        remote = 'fork'
+        protocol = 'https' if settings.https else 'ssh'
+        fork_url = resp.json[0][f'{protocol}_url_to_repo']
+        autofix_lib.run('git', 'remote', 'add', remote, fork_url)
     else:
         remote = 'origin'
-        head = branch_name
+
+    head = branch_name
 
     autofix_lib.run('git', 'push', remote, f'HEAD:{head}', '--quiet')
 
