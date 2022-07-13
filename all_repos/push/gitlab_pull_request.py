@@ -16,7 +16,6 @@ class Settings(NamedTuple):
     api_key: str
     base_url: str = 'https://gitlab.com/api/v4'
     fork: bool = False
-    https: bool = False
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self)
@@ -46,8 +45,7 @@ def push(settings: Settings, branch_name: str) -> None:
             data=data, headers=headers, method='GET',
         )
         remote = 'fork'
-        protocol = 'https' if settings.https else 'ssh'
-        fork_url = resp.json[0][f'{protocol}_url_to_repo']
+        fork_url = resp.json[0]['ssh_url_to_repo']
         autofix_lib.run('git', 'remote', 'add', remote, fork_url)
     else:
         remote = 'origin'

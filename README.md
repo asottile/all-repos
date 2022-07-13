@@ -482,8 +482,6 @@ branch.
   to the upstream repository.
 - `base_url` (default: `https://gitlab.com/api/v4`): is the base URL to the Gitlab
   API to use.
-- `https` (default: `false`): whether to use `https` as the git transport protocol,
-  otherwise use `ssh`.
 
 ## Writing your own push module
 

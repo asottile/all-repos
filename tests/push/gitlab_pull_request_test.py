@@ -113,6 +113,5 @@ def test_settings_repr():
         '    api_key=...,\n'
         "    base_url='https://gitlab.com/api/v4',\n"
         '    fork=False,\n'
-        '    https=False,\n'
         ')'
     )
