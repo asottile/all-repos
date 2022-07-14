@@ -45,10 +45,9 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
 
     # Pull request should have been made with the commit data
     (req,), _ = mock_urlopen.call_args
-    repo_slug = urllib.parse.quote(fake_gitlab_repo.src.strpath[1:], safe='')
     assert req.get_full_url() == (
         'https://gitlab.com/api/v4/projects'
-        f'/{repo_slug}/merge_requests'
+        '/user%2Fslug/merge_requests'
     )
     assert req.method == 'POST'
     data = json.loads(req.data)

@@ -31,8 +31,8 @@ def push(settings: Settings, branch_name: str) -> None:
     }
 
     remote_url = git.remote('.')
-    parsed_url = urllib.parse.urlparse(remote_url)
-    repo_slug = _strip_trailing_dot_git(parsed_url.path.lstrip('/'))
+    _, _, repo_slug = remote_url.rpartition(':')
+    repo_slug = _strip_trailing_dot_git(repo_slug)
     repo_slug = urllib.parse.quote(repo_slug, safe='')
 
     if settings.fork:
