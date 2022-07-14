@@ -50,24 +50,25 @@ def push(settings: Settings, branch_name: str) -> None:
     else:
         remote = 'origin'
 
-    head = branch_name
-
-    autofix_lib.run('git', 'push', remote, f'HEAD:{head}', '--quiet')
-
     title = subprocess.check_output(('git', 'log', '-1', '--format=%s'))
     body = subprocess.check_output(('git', 'log', '-1', '--format=%b'))
 
-    data = json.dumps({
-        'source_branch': head,
-        'target_branch': autofix_lib.target_branch(),
+    mr_data = {
+        'target': autofix_lib.target_branch(),
         'title': title.decode().strip(),
         'description': body.decode().strip(),
-        'remove_source_branch': True,
-    }).encode()
+    }
+    mr_options = ['create', 'remove_source_branch'] + \
+                 [f'{k}={v}' for k, v in mr_data.items()]
+    push_options = []
+    for option in mr_options:
+        push_options += ['-o', f'merge_request.{option}']
 
-    resp = gitlab_api.req(
-        f'{settings.base_url}/projects/{repo_slug}/merge_requests',
-        data=data, headers=headers, method='POST',
+    head = branch_name
+
+    autofix_lib.run(
+        'git',
+        'push', remote, f'HEAD:{head}', '--quiet', *push_options,
     )
-    url = resp.json['web_url']
-    print(f'Pull request created at {url}')
+
+    print('Pull request created')
