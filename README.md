@@ -9,7 +9,9 @@ Clone all your repositories and apply sweeping changes.
 
 ## Installation
 
-`pip install all-repos`
+```bash
+pip install all-repos
+```
 
 
 ## CLI
