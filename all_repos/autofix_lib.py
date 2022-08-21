@@ -59,6 +59,10 @@ def add_fixer_args(parser: argparse.ArgumentParser) -> None:
             'specify repositories which are not managed by `all-repos`.'
         ),
     )
+    parser.add_argument(
+        '--branch-prefix', type=str, default='all-repos_autofix_',
+        help='maximum number of repos to process (default: unlimited).',
+    )
 
 
 class Commit(NamedTuple):
@@ -73,12 +77,14 @@ class AutofixSettings(NamedTuple):
     limit: int | None
     dry_run: bool
     interactive: bool
+    branch_prefix: str
 
     @classmethod
     def from_cli(cls, args: Any) -> AutofixSettings:
         return cls(
             jobs=args.jobs, color=args.color, limit=args.limit,
             dry_run=args.dry_run, interactive=args.interactive,
+            branch_prefix=args.branch_prefix,
         )
 
 
@@ -227,7 +233,7 @@ def _fix_inner(
         autofix_settings: AutofixSettings,
 ) -> None:
     with repo_context(repo, use_color=autofix_settings.color):
-        branch_name = f'all-repos_autofix_{commit.branch_name}'
+        branch_name = f'{autofix_settings.branch_prefix}{commit.branch_name}'
         run('git', 'checkout', '--quiet', 'origin/HEAD', '-b', branch_name)
 
         apply_fix()

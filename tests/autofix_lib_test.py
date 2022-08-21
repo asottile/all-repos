@@ -210,6 +210,7 @@ def test_fix_dry_run_no_change(file_config_files, capfd):
         commit=autofix_lib.Commit('message!', 'test-branch', None),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=True, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 
@@ -236,6 +237,7 @@ def test_fix_with_limit(file_config_files, capfd):
         commit=autofix_lib.Commit('message!', 'test-branch', None),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=1, dry_run=True, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 
@@ -259,6 +261,7 @@ def test_fix_interactive(file_config_files, capfd, mock_input):
         commit=autofix_lib.Commit('message!', 'test-branch', None),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=False, interactive=True,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 
@@ -277,6 +280,7 @@ def test_autofix_makes_commits(file_config_files, capfd):
         commit=autofix_lib.Commit('message!', 'test-branch', 'A B <a@a.a>'),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=False, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 
@@ -321,6 +325,7 @@ def test_fix_failing_check_no_changes(file_config_files, capfd):
         commit=autofix_lib.Commit('message!', 'test-branch', None),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=False, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 
@@ -346,6 +351,7 @@ def test_noop_does_not_commit(file_config_files):
         commit=autofix_lib.Commit('message!', 'test-branch', None),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=False, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
     rev_after1 = testing.git.revparse(file_config_files.dir1)
@@ -365,6 +371,7 @@ def test_fix_non_default_branch(file_config_non_default):
         commit=autofix_lib.Commit('message!', 'test-branch', 'A B <a@a.a>'),
         autofix_settings=autofix_lib.AutofixSettings(
             jobs=1, color=False, limit=None, dry_run=False, interactive=False,
+            branch_prefix='all-repos_autofix_',
         ),
     )
 

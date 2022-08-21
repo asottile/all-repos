@@ -504,6 +504,7 @@ Options:
 - `--limit LIMIT`: maximum number of repos to process (default: unlimited).
 - `--author AUTHOR`: override commit author.  This is passed directly to
   `git commit`.  An example: `--author='Herp Derp <herp.derp@umich.edu>'`.
+- `--branch-prefix PREFIX`: set branch prefix (default 'all-repos_autofix_').
 - `--repos [REPOS [REPOS ...]]`: run against specific repositories instead.
   This is especially useful with `xargs autofixer ... --repos`.  This can be
   used to specify repositories which are not managed by `all-repos`.
