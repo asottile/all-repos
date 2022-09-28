@@ -9,6 +9,8 @@ from typing import Callable
 from typing import NamedTuple
 from typing import Pattern
 
+REPOS_JSON_FILES = frozenset(('repos.json', 'repos_filtered.json'))
+
 
 class Config(NamedTuple):
     output_dir: str
@@ -45,6 +47,25 @@ def _check_permissions(filename: str) -> None:
         )
 
 
+def _check_output_dir(output_dir: str) -> None:
+    if os.path.exists(output_dir):
+        contents = set(os.listdir(output_dir))
+        if not contents:  # empty dir is ok!
+            return
+
+        if not (
+                contents >= REPOS_JSON_FILES and
+                all(
+                    os.path.isdir(os.path.join(output_dir, d))
+                    for d in contents - REPOS_JSON_FILES
+                )
+        ):
+            raise SystemExit(
+                'output_dir should only contain repos.json, '
+                'repos_filtered.json, and directories',
+            )
+
+
 def load_config(filename: str) -> Config:
     _check_permissions(filename)
     with open(filename) as f:
@@ -52,6 +73,7 @@ def load_config(filename: str) -> Config:
 
     output_dir = os.path.join(filename, '..', contents['output_dir'])
     output_dir = os.path.normpath(output_dir)
+    _check_output_dir(output_dir)
     source_module: Any = __import__(contents['source'], fromlist=['__trash'])
     source_settings = source_module.Settings(**contents['source_settings'])
     push_module: Any = __import__(contents['push'], fromlist=['__trash'])

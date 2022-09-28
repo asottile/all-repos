@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import pytest
 
 import all_repos.source.json_file
@@ -21,6 +23,23 @@ def test_load_config_too_permissive(file_config):
         f'{file_config.cfg} has too-permissive permissions, Expected 0o600, '
         f'got 0o777'
     )
+
+
+def test_load_config_output_dir_contains_file(file_config):
+    os.makedirs(file_config.output_dir, exist_ok=True)
+    file_config.output_dir.join('unsupported-file.txt').write('')
+    with pytest.raises(SystemExit) as excinfo:
+        load_config(file_config.cfg)
+    msg, = excinfo.value.args
+    assert msg == (
+        'output_dir should only contain repos.json, repos_filtered.json, '
+        'and directories'
+    )
+
+
+def test_load_config_empty_directory_is_ok(file_config):
+    os.makedirs(file_config.output_dir, exist_ok=True)
+    load_config(file_config.cfg)
 
 
 def test_get_cloned_repos(file_config):
