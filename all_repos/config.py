@@ -41,7 +41,7 @@ def _check_permissions(filename: str) -> None:
     if sys.platform != 'win32' and mode != 0o600:
         raise SystemExit(
             f'{filename} has too-permissive permissions, Expected 0o600, '
-            f'got 0o{mode:o}',
+            f'got 0o{mode:o} (use chmod to fix)',
         )
 
 

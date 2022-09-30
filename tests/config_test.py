@@ -19,7 +19,7 @@ def test_load_config_too_permissive(file_config):
     msg, = excinfo.value.args
     assert msg == (
         f'{file_config.cfg} has too-permissive permissions, Expected 0o600, '
-        f'got 0o777'
+        f'got 0o777 (use chmod to fix)'
     )
 
 
