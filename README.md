@@ -379,6 +379,39 @@ output/
     +--- {repo3}/
 ```
 
+### `all_repos.source.gitlab_org`
+
+Clones all repositories from an organization on gitlab.
+
+#### Required `source_settings`
+
+- `api_key`: the api key which the user will log in as.
+    - Use the settings tab (eg https://{gitlab.domain.com}/-/profile/personal_access_tokens) to create a
+      personal access token.
+    - We need the scope: `read_api`, `read_repository`.
+- `org`: the organization to clone from
+
+#### Optional `source_settings`
+
+- `base_url`: (default `https://gitlab.com/api/v4`) the gitlab server URL
+- `archived` (default: `false`): whether to include archived repositories.
+
+#### Directory location
+
+```
+output/
++--- repos.json
++--- repos_filtered.json
++--- {org}/
+    +--- {subpgroup1}/
+        +--- {subpgroup2}/
+            +--- {repo1}/
+        +--- {repo2}/
+    +--- {repo3}/
+    +--- {repo4}/
+```
+
+
 ## Writing your own source
 
 First create a module.  This module must have the following api:
@@ -457,6 +490,18 @@ Pushes the branch to `origin` and then creates a Bitbucket pull request for the 
 - `app_password`: the authentication method for the above user to login with
     - Create an application password within your [account settings](https://bitbucket.domain.com/plugins/servlet/access-tokens/manage).
     - We need the scope: Repositories -> Read
+
+### `all_repos.push.gitlab_pull_request`
+
+Pushes the branch to `origin` and then creates a GitLab pull request for the branch.
+
+#### Required `push_settings`
+
+- `base_url`: the GitLab server URL (eg `https://{gitlab.domain.com}/api/v4`)
+- `api_key`: the api key which the user will log in as.
+    - Use the settings tab (eg https://{gitlab.domain.com}/-/profile/personal_access_tokens) to create a
+      personal access token.
+    - We need the scope: `write_repository`.
 
 ### `all_repos.push.readonly`
 
