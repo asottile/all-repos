@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import functools
+import importlib.metadata
 import os
 import shlex
 import subprocess
@@ -16,7 +17,7 @@ from typing import Iterable
 from typing import NamedTuple
 from typing import NoReturn
 
-import pkg_resources
+from packaging.version import Version
 
 from all_repos import cli
 from all_repos import color
@@ -133,14 +134,13 @@ def assert_importable(module: str, *, install: str) -> None:
 
 
 def require_version_gte(pkg_name: str, version: str) -> None:
-    pkg = pkg_resources.get_distribution(pkg_name)
-    pkg_version = pkg_resources.parse_version(pkg.version)
-    target_version = pkg_resources.parse_version(version)
+    pkg_version = Version(importlib.metadata.version(pkg_name))
+    target_version = Version(version)
     if pkg_version < target_version:
         raise SystemExit(
             f'This tool requires the `{pkg_name}` package is at least version '
             f'{version}.  '
-            f'The currently installed version is {pkg.version}.\n\n'
+            f'The currently installed version is {pkg_version}.\n\n'
             f'Try `pip install --upgrade {pkg_name}`',
         )
 
