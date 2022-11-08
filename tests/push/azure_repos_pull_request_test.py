@@ -21,7 +21,7 @@ def fake_azure_repo(tmpdir):
     dest = tmpdir.join('dest')
     subprocess.check_call(('git', 'clone', src, dest))
     subprocess.check_call((
-        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
+        'git', '-C', dest, 'checkout', 'origin/HEAD', '-b', 'feature',
     ))
     subprocess.check_call((
         'git', '-C', dest, 'commit', '--allow-empty',
@@ -57,7 +57,7 @@ def test_azure_repos_pull_request(mock_urlopen, fake_azure_repo):
     out = subprocess.check_output((
         'git', '-C', fake_azure_repo.src, 'branch',
     )).decode()
-    assert out == '  feature\n* master\n'
+    assert out == '  feature\n* main\n'
 
     # Pull request should have been made with the commit data
     (req,), _ = mock_urlopen.call_args

@@ -19,7 +19,7 @@ def fake_gitlab_repo(tmpdir):
     dest = tmpdir.join('dest')
     subprocess.check_call(('git', 'clone', src, dest))
     subprocess.check_call((
-        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
+        'git', '-C', dest, 'checkout', 'origin/HEAD', '-b', 'feature',
     ))
     subprocess.check_call((
         'git', '-C', dest, 'commit', '--allow-empty',
@@ -40,7 +40,7 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
     out = subprocess.check_output((
         'git', '-C', fake_gitlab_repo.src, 'branch',
     )).decode()
-    assert out == '  feature\n* master\n'
+    assert out == '  feature\n* main\n'
 
     # Pull request should have been made with the commit data
     (req,), _ = mock_urlopen.call_args
@@ -52,7 +52,7 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
     data = json.loads(req.data)
     assert data['title'] == 'This is a commit message'
     assert data['description'] == 'Here is some more information!'
-    assert data['target_branch'] == 'master'
+    assert data['target_branch'] == 'main'
     assert data['source_branch'] == 'feature'
 
 

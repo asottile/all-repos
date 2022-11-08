@@ -10,11 +10,11 @@ def revparse(pth):
 
 def init_repo(pth):
     subprocess.check_call(('git', 'init', pth))
+    git = ('git', '-C', pth)
+    subprocess.check_call((*git, 'branch', '-m', 'main'))
+    subprocess.check_call((*git, 'commit', '--allow-empty', '-m', pth))
     subprocess.check_call((
-        'git', '-C', pth, 'commit', '--allow-empty', '-m', pth,
-    ))
-    subprocess.check_call((
-        'git', '-C', pth, 'config',
+        *git, 'config',
         'receive.denyCurrentBranch', 'updateInstead',
     ))
     return revparse(pth)
@@ -33,5 +33,5 @@ def write_file_commit(git, filename, contents):
 def merge_msgs(branch_name):
     return {
         f'Merge branch {branch_name!r}',  # git 2.25.1
-        f'Merge branch {branch_name!r} into master',  # git 2.28.0
+        f'Merge branch {branch_name!r} into main',  # git 2.28.0
     }

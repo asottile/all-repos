@@ -25,7 +25,7 @@ def fake_bitbucket_repo(tmpdir):
     dest = tmpdir.join('dest')
     subprocess.check_call(('git', 'clone', src, dest))
     subprocess.check_call((
-        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
+        'git', '-C', dest, 'checkout', 'origin/HEAD', '-b', 'feature',
     ))
     subprocess.check_call((
         'git', '-C', dest, 'commit', '--allow-empty',
@@ -46,7 +46,7 @@ def test_bitbucket_server_pull_request(mock_urlopen, fake_bitbucket_repo):
     out = subprocess.check_output((
         'git', '-C', fake_bitbucket_repo.src, 'branch',
     )).decode()
-    assert out == '  feature\n* master\n'
+    assert out == '  feature\n* main\n'
 
     expected_url = 'https://bitbucket.domain.com/rest/api/1.0/' \
         + 'projects/proj/repos/slug/pull-requests'

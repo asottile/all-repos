@@ -58,8 +58,8 @@
         }
     },
     "toRef": {
-        "id": "refs/heads/master",
-        "displayId": "master",
+        "id": "refs/heads/main",
+        "displayId": "main",
         "latestCommit": "cafebabecafebabecafebabecafebabecafebabe",
         "repository": {
             "slug": "slug",
