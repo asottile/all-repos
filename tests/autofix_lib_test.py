@@ -67,13 +67,6 @@ def test_run(capfd):
     )
 
 
-def test_cwd(tmpdir):
-    orig = os.getcwd()
-    with autofix_lib.cwd(tmpdir):
-        assert os.getcwd() == tmpdir
-    assert os.getcwd() == orig
-
-
 def test_repo_context_success(file_config_files, capsys):
     expected_rev = testing.git.revparse(file_config_files.dir1)
     with autofix_lib.repo_context(
