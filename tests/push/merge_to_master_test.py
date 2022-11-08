@@ -17,7 +17,7 @@ def cloned(tmpdir):
     dest = tmpdir.join('dest')
     subprocess.check_call(('git', 'clone', src, dest))
     subprocess.check_call((
-        'git', '-C', dest, 'checkout', 'origin/master', '-b', 'feature',
+        'git', '-C', dest, 'checkout', 'origin/HEAD', '-b', 'feature',
     ))
     subprocess.check_call((
         'git', '-C', dest, 'commit', '--allow-empty',
@@ -46,10 +46,10 @@ def cloned(tmpdir):
 def test_merge_to_master(cloned, settings, possible_commit_msgs):
     with cloned.dest.as_cwd():
         merge_to_master.push(settings, 'feature')
-    # master is checked out
+    # main is checked out
     branch_cmd = ('git', '-C', cloned.dest, 'branch')
     out = subprocess.check_output(branch_cmd).decode()
-    assert out == '  feature\n* master\n'
+    assert out == '  feature\n* main\n'
 
     # check latest commit message
     msg_cmd = ('git', '-C', cloned.dest, 'log', '-1', '--pretty=%B')

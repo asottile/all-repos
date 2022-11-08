@@ -77,7 +77,7 @@ def test_it_continues_on_unclonable_repositories(file_config, capsys):
     assert 'Error fetching ' in out
 
 
-def test_it_can_clone_non_master_default_branch(file_config_non_default):
+def test_it_can_clone_non_main_default_branch(file_config_non_default):
     assert not main(('--config-file', str(file_config_non_default.cfg)))
 
     repo = file_config_non_default.output_dir.join('repo1')
@@ -97,10 +97,10 @@ def test_no_crash_repo_without_branch(file_config):
 
 def test_clones_all_branches_true(file_config):
     subprocess.check_call((
-        'git', '-C', str(file_config.dir1), 'checkout', 'master', '-b', 'b2',
+        'git', '-C', str(file_config.dir1), 'checkout', 'main', '-b', 'b2',
     ))
     subprocess.check_call((
-        'git', '-C', str(file_config.dir1), 'checkout', 'master',
+        'git', '-C', str(file_config.dir1), 'checkout', 'main',
     ))
 
     assert not main(('--config-file', str(file_config.cfg)))
@@ -110,7 +110,7 @@ def test_clones_all_branches_true(file_config):
         'git', '-C', str(file_config.output_dir.join('repo1')),
         'branch', '--remote',
     )).decode()
-    assert branch_out == '  origin/master\n'
+    assert branch_out == '  origin/main\n'
 
     # set that we want to clone all branches
     cfg_contents = json.loads(file_config.cfg.read())
@@ -123,7 +123,7 @@ def test_clones_all_branches_true(file_config):
         'git', '-C', str(file_config.output_dir.join('repo1')),
         'branch', '--remote',
     )).decode()
-    assert branch_out == '  origin/b2\n  origin/master\n'
+    assert branch_out == '  origin/b2\n  origin/main\n'
 
 
 def test_it_sorts_filtered_repos(file_config):
