@@ -1,5 +1,4 @@
-[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.all-repos?branchName=main)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=main)
-[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/33/main.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=33&branchName=main)
+[![build status](https://github.com/asottile/all-repos/actions/workflows/main.yml/badge.svg)](https://github.com/asottile/all-repos/actions/workflows/main.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/all-repos/main.svg)](https://results.pre-commit.ci/latest/github/asottile/all-repos/main)
 
 all-repos
