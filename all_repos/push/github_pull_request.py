@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from typing import NamedTuple
+from typing import Pattern
 
 from all_repos import autofix_lib
 from all_repos import git
@@ -15,6 +17,8 @@ class Settings(NamedTuple):
     username: str
     fork: bool = False
     base_url: str = 'https://api.github.com'
+    git_https_re: Pattern[str] = re.compile(r'https?://[^/]+/(.*)$')
+    push: str = 'origin'
 
     # TODO: https://github.com/python/mypy/issues/8543
     def __repr__(self) -> str:
@@ -28,7 +32,11 @@ def make_pull_request(
     headers = {'Authorization': f'token {settings.api_key}'}
 
     remote_url = git.remote('.')
-    _, _, repo_slug = remote_url.rpartition(':')
+    matched = settings.git_https_re.match(remote_url)
+    if matched:
+        repo_slug = matched.group(1)
+    else:
+        _, _, repo_slug = remote_url.rpartition(':')
 
     if settings.fork:
         resp = github_api.req(
@@ -41,7 +49,7 @@ def make_pull_request(
         remote = 'fork'
         head = f'{settings.username}:{branch_name}'
     else:
-        remote = 'origin'
+        remote = settings.push
         head = branch_name
 
     autofix_lib.run('git', 'push', remote, f'HEAD:{branch_name}', '--quiet')
