@@ -28,7 +28,7 @@ def repos_response(mock_urlopen):
 
 
 def test_list_repos(repos_response):
-    settings = Settings('key', 'asottile/reorder_python_imports')
+    settings = Settings(api_key='key', repo='asottile/reorder_python_imports')
     ret = list_repos(settings)
     expected = {
         'chriskuehl/reorder_python_imports',
@@ -39,14 +39,15 @@ def test_list_repos(repos_response):
 
 
 def test_settings_repr():
-    assert repr(Settings('api_key', 'asottile/foo')) == (
+    assert repr(Settings(api_key='api_key', repo='asottile/foo')) == (
         'Settings(\n'
-        '    api_key=...,\n'
         "    repo='asottile/foo',\n"
         '    collaborator=True,\n'
         '    forks=True,\n'
         '    private=False,\n'
         '    archived=False,\n'
         "    base_url='https://api.github.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )

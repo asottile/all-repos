@@ -22,12 +22,15 @@ def test_zsplit(bs, expected):
 
 
 def test_hide_api_key_repr():
-    assert hide_api_key_repr(Settings('secret', 'username')) == (
+    settings = Settings(api_key='secret', username='username')
+    assert hide_api_key_repr(settings) == (
         'Settings(\n'
-        '    api_key=...,\n'
+
         "    username='username',\n"
         '    fork=False,\n'
         "    base_url='https://api.github.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )
 

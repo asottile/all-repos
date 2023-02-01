@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+from unittest import mock
 
 import pytest
 
@@ -55,22 +57,54 @@ def repos_response(mock_urlopen):
     ),
 )
 def test_list_repos(settings, expected_repo_names):
-    settings = Settings('key', 'user', **settings)
+    settings = Settings(api_key='key', username='user', **settings)
     ret = list_repos(settings)
     assert set(ret) == expected_repo_names
 
 
 def test_settings_repr():
-    settings = Settings('api_key', 'user')
+    settings = Settings(api_key='api_key', username='user')
 
     assert repr(settings) == (
         'Settings(\n'
-        '    api_key=...,\n'
         "    username='user',\n"
         '    collaborator=False,\n'
         '    forks=False,\n'
         '    private=False,\n'
         '    archived=False,\n'
         "    base_url='https://api.github.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )
+
+
+def test_list_repos_api_key_via_env_var(monkeypatch, mock_urlopen):
+    settings = Settings(api_key_env='MAGIC', username='U')
+
+    url = 'https://api.github.com/user/repos?per_page=100'
+    mock_urlopen.side_effect = urlopen_side_effect({url: FakeResponse(b'[]')})
+
+    with mock.patch.dict(os.environ, {'MAGIC': 'M'}):
+        ret = list_repos(settings)
+    assert not ret
+    mock_urlopen.assert_called_once()
+    assert mock_urlopen.call_args[0][0].headers == {'Authorization': 'token M'}
+
+
+def test_list_repos_api_key_via_env_var_not_set(monkeypatch):
+    settings = Settings(api_key_env='MAGIC', username='U')
+
+    with pytest.raises(ValueError) as excinfo:
+        with mock.patch.dict(os.environ, clear=True):
+            list_repos(settings)
+    msg, = excinfo.value.args
+    assert msg == 'api_key_env (MAGIC) not set'
+
+
+def test_list_repos_api_key_via_env_var_and_env_not_set():
+    settings = Settings(username='U')
+    with pytest.raises(ValueError) as excinfo:
+        list_repos(settings)
+    msg, = excinfo.value.args
+    assert msg == 'expected exactly one of: api_key, api_key_env'

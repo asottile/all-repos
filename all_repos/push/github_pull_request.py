@@ -8,13 +8,15 @@ from all_repos import autofix_lib
 from all_repos import git
 from all_repos import github_api
 from all_repos.util import hide_api_key_repr
+from all_repos.util import load_api_key
 
 
 class Settings(NamedTuple):
-    api_key: str
     username: str
     fork: bool = False
     base_url: str = 'https://api.github.com'
+    api_key: str | None = None
+    api_key_env: str | None = None
 
     # TODO: https://github.com/python/mypy/issues/8543
     def __repr__(self) -> str:
@@ -25,7 +27,7 @@ def make_pull_request(
         settings: Settings,
         branch_name: str,
 ) -> github_api.Response:
-    headers = {'Authorization': f'token {settings.api_key}'}
+    headers = {'Authorization': f'token {load_api_key(settings)}'}
 
     remote_url = git.remote('.')
     _, _, repo_slug = remote_url.rpartition(':')

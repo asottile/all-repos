@@ -87,11 +87,14 @@ def test_github_pull_request_with_fork(mock_urlopen, fake_github_repo_fork):
 
 
 def test_settings_repr():
-    assert repr(github_pull_request.Settings('secret', 'username')) == (
+    settings = github_pull_request.Settings(api_key='secret', username='user')
+    assert repr(settings) == (
         'Settings(\n'
-        '    api_key=...,\n'
-        "    username='username',\n"
+
+        "    username='user',\n"
         '    fork=False,\n'
         "    base_url='https://api.github.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )

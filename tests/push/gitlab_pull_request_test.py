@@ -79,10 +79,13 @@ def test_gitlab_pull_request_with_fork(mock_urlopen, fake_gitlab_repo_fork):
 
 
 def test_settings_repr():
-    assert repr(gitlab_pull_request.Settings('secret')) == (
+    assert repr(gitlab_pull_request.Settings(api_key='secret')) == (
         'Settings(\n'
-        '    api_key=...,\n'
         "    base_url='https://gitlab.com/api/v4',\n"
         '    fork=False,\n'
+
+        '    api_key=...,\n'
+
+        '    api_key_env=None,\n'
         ')'
     )
