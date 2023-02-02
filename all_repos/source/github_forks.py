@@ -4,16 +4,18 @@ from typing import NamedTuple
 
 from all_repos import github_api
 from all_repos.util import hide_api_key_repr
+from all_repos.util import load_api_key
 
 
 class Settings(NamedTuple):
-    api_key: str
     repo: str
     collaborator: bool = True
     forks: bool = True
     private: bool = False
     archived: bool = False
     base_url: str = 'https://api.github.com'
+    api_key: str | None = None
+    api_key_env: str | None = None
 
     # TODO: https://github.com/python/mypy/issues/8543
     def __repr__(self) -> str:
@@ -28,7 +30,7 @@ def list_repos(settings: Settings) -> dict[str, str]:
         slug = to_search.pop()
         res = github_api.get_all(
             f'{settings.base_url}/repos/{slug}/forks?per_page=100',
-            headers={'Authorization': f'token {settings.api_key}'},
+            headers={'Authorization': f'token {load_api_key(settings)}'},
         )
         repos.extend(res)
         to_search.extend(repo['full_name'] for repo in res if repo['forks'])

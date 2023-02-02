@@ -76,9 +76,11 @@ def test_settings_repr():
     )
     assert repr(settings) == (
         'Settings(\n'
-        '    api_key=...,\n'
+
         "    organization='fake-org',\n"
         "    project='fake-project',\n"
         "    base_url='https://dev.azure.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )

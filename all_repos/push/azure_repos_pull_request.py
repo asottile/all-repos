@@ -10,20 +10,22 @@ from typing import NamedTuple
 from all_repos import autofix_lib
 from all_repos import git
 from all_repos.util import hide_api_key_repr
+from all_repos.util import load_api_key
 
 
 class Settings(NamedTuple):
-    api_key: str
     organization: str
     project: str
     base_url: str = 'https://dev.azure.com'
+    api_key: str | None = None
+    api_key_env: str | None = None
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self)
 
     @property
     def auth(self) -> str:
-        value = f':{self.api_key}'
+        value = f':{load_api_key(self)}'
         return base64.b64encode(value.encode()).decode()
 
 

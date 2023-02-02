@@ -26,7 +26,7 @@ def repos_response(mock_urlopen):
 
 
 def test_list_repos(repos_response):
-    settings = Settings('key', 'ronny-test')
+    settings = Settings(api_key='key', org='ronny-test')
     ret = list_repos(settings)
     expected = {
         'ronny-test/test-repo': 'git@gitlab.com:ronny-test/test-repo.git',
@@ -35,11 +35,12 @@ def test_list_repos(repos_response):
 
 
 def test_settings_repr():
-    assert repr(Settings('key', 'sass')) == (
+    assert repr(Settings(api_key='key', org='sass')) == (
         'Settings(\n'
-        '    api_key=...,\n'
         "    org='sass',\n"
         "    base_url='https://gitlab.com/api/v4',\n"
         '    archived=False,\n'
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )

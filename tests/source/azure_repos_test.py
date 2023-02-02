@@ -26,9 +26,9 @@ def repositories_response(mock_urlopen):
 @pytest.mark.usefixtures('repositories_response')
 def test_list_repos():
     settings = Settings(
-        'fake-token',
-        'fake-organization',
-        'fake-project',
+        api_key='fake-token',
+        organization='fake-organization',
+        project='fake-project',
     )
     ret = list_repos(settings)
     ssh_url = (
@@ -40,11 +40,17 @@ def test_list_repos():
 
 
 def test_settings_repr():
-    assert repr(Settings('fake-token', 'fake-org', 'fake-project')) == (
+    settings = Settings(
+        api_key='fake-token',
+        organization='fake-org',
+        project='fake-project',
+    )
+    assert repr(settings) == (
         'Settings(\n'
-        '    api_key=...,\n'
         "    organization='fake-org',\n"
         "    project='fake-project',\n"
         "    base_url='https://dev.azure.com',\n"
+        '    api_key=...,\n'
+        '    api_key_env=None,\n'
         ')'
     )
