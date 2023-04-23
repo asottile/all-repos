@@ -54,11 +54,11 @@ def _check_output_dir(output_dir: str) -> None:
             return
 
         if not (
-            contents >= REPOS_JSON_FILES and
-            all(
-                os.path.isdir(os.path.join(output_dir, d))
-                for d in contents - REPOS_JSON_FILES
-            )
+                contents >= REPOS_JSON_FILES and
+                all(
+                    os.path.isdir(os.path.join(output_dir, d))
+                    for d in contents - REPOS_JSON_FILES
+                )
         ):
             raise SystemExit(
                 'output_dir should only contain repos.json, '
@@ -86,12 +86,8 @@ def load_config(filename: str) -> Config:
     exclude = re.compile(contents.get('exclude', '^$'))
     all_branches = contents.get('all_branches', False)
     return Config(
-        output_dir=output_dir,
-        include=include,
-        exclude=exclude,
-        list_repos=source_module.list_repos,
-        source_settings=source_settings,
-        push=push_module.push,
-        push_settings=push_settings,
+        output_dir=output_dir, include=include, exclude=exclude,
+        list_repos=source_module.list_repos, source_settings=source_settings,
+        push=push_module.push, push_settings=push_settings,
         all_branches=all_branches,
     )
