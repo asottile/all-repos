@@ -73,7 +73,8 @@ def load_config(filename: str) -> Config:
             contents = json.load(f)
     except FileNotFoundError:
         raise SystemExit(
-            f'{filename} does not exist. See `all-repos --help` for more.',
+            f'{filename} does not exist, you need a config file to run this '
+            f'command. See `all_repos/example-config.json`.',
         )
 
     output_dir = os.path.join(filename, '..', contents['output_dir'])
