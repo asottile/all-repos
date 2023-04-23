@@ -69,7 +69,7 @@ def _check_output_dir(output_dir: str) -> None:
 def load_config(filename: str) -> Config:
     if not os.path.exists(filename):
         raise SystemExit(
-            f'{filename} does not exist, ' ' See `all-repos --help` for more.',
+            f'{filename} does not exist. See `all-repos --help` for more.',
         )
     _check_permissions(filename)
     with open(filename) as f:
