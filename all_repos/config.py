@@ -67,13 +67,14 @@ def _check_output_dir(output_dir: str) -> None:
 
 
 def load_config(filename: str) -> Config:
-    if not os.path.exists(filename):
+    try:
+        _check_permissions(filename)
+        with open(filename) as f:
+            contents = json.load(f)
+    except FileNotFoundError:
         raise SystemExit(
             f'{filename} does not exist. See `all-repos --help` for more.',
         )
-    _check_permissions(filename)
-    with open(filename) as f:
-        contents = json.load(f)
 
     output_dir = os.path.join(filename, '..', contents['output_dir'])
     output_dir = os.path.normpath(output_dir)
