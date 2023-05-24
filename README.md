@@ -226,7 +226,8 @@ Clones all repositories available to a user on github.
 #### Optional `source_settings`
 
 - `collaborator` (default `false`): whether to include repositories which are
-  not owned but can be contributed to as a collaborator.
+- `owner` (default `false`): whether to only include repositories which are
+  owned by the user.
 - `forks` (default `false`): whether to include repositories which are forks.
 - `private` (default `false`): whether to include private repositories.
 - `archived` (default: `false`): whether to include archived repositories.

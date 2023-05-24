@@ -54,7 +54,12 @@ def _strip_trailing_dot_git(ssh_url: str) -> str:
 
 def filter_repos(
         repos: list[dict[str, Any]], *,
-        forks: bool, private: bool, collaborator: bool, archived: bool,
+        forks: bool,
+        private: bool,
+        collaborator: bool,
+        archived: bool,
+        username: str = '',
+        owner: bool = False,
 ) -> dict[str, str]:
     return {
         repo['full_name']: _strip_trailing_dot_git(repo['ssh_url'])
@@ -63,6 +68,7 @@ def filter_repos(
             (forks or not repo['fork']) and
             (private or not repo['private']) and
             (collaborator or repo['permissions']['admin']) and
+            (not owner or repo['owner']['login'] == username) and
             (archived or not repo['archived'])
         )
     }

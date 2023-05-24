@@ -30,6 +30,8 @@ def repos_response(mock_urlopen):
         _resource_json('eecs381-p4'),
         # An archived repo
         _resource_json('poi-map'),
+        # A repo owned by user
+        _resource_json('user-empty'),
     ]
     mock_urlopen.side_effect = urlopen_side_effect({
         'https://api.github.com/user/repos?per_page=100': FakeResponse(
@@ -43,17 +45,24 @@ def repos_response(mock_urlopen):
 @pytest.mark.parametrize(
     ('settings', 'expected_repo_names'),
     (
-        ({}, {'asottile/git-code-debt'}),
+        ({}, {'asottile/git-code-debt', 'user/new'}),
         (
             {'collaborator': True},
-            {'asottile/git-code-debt', 'sass/libsass-python'},
+            {'asottile/git-code-debt', 'sass/libsass-python', 'user/new'},
         ),
-        ({'forks': True}, {'asottile/git-code-debt', 'asottile/tox'}),
-        ({'private': True}, {'asottile/git-code-debt', 'asottile/eecs381-p4'}),
+        (
+            {'forks': True},
+            {'asottile/git-code-debt', 'asottile/tox', 'user/new'},
+        ),
+        (
+            {'private': True},
+            {'asottile/git-code-debt', 'asottile/eecs381-p4', 'user/new'},
+        ),
         (
             {'archived': True},
-            {'asottile/git-code-debt', 'asottile-archive/poi-map'},
+            {'asottile/git-code-debt', 'asottile-archive/poi-map', 'user/new'},
         ),
+        ({'owner': True}, {'user/new'}),
     ),
 )
 def test_list_repos(settings, expected_repo_names):
@@ -69,6 +78,7 @@ def test_settings_repr():
         'Settings(\n'
         "    username='user',\n"
         '    collaborator=False,\n'
+        '    owner=False,\n'
         '    forks=False,\n'
         '    private=False,\n'
         '    archived=False,\n'

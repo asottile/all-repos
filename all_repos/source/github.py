@@ -10,6 +10,7 @@ from all_repos.util import load_api_key
 class Settings(NamedTuple):
     username: str
     collaborator: bool = False
+    owner: bool = False
     forks: bool = False
     private: bool = False
     archived: bool = False
@@ -33,4 +34,6 @@ def list_repos(settings: Settings) -> dict[str, str]:
         private=settings.private,
         collaborator=settings.collaborator,
         archived=settings.archived,
+        username=settings.username,
+        owner=settings.owner,
     )
