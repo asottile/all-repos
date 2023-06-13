@@ -63,7 +63,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         help='override the autofixer branch name (default `%(default)s`).',
     )
     parser.add_argument(
-        '--commit-msg',
+        '--commit-msg', '--commit-message',
         help=(
             'override the autofixer commit message.  (default '
             '`git ls-files -z -- FILENAMES | xargs -0 sed -i ... EXPRESSION`).'
