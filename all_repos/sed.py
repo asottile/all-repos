@@ -40,10 +40,6 @@ def apply_fix(
     autofix_lib.run(*sed_cmd, *filenames)
 
 
-def _quote_cmd(cmd: tuple[str, ...]) -> str:
-    return ' '.join(shlex.quote(arg) for arg in cmd)
-
-
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -86,7 +82,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     sed_cmd = ('sed', '-i', *dash_r, args.expression)
     ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
 
-    msg = f'{_quote_cmd(ls_files_cmd)} | xargs -0 {_quote_cmd(sed_cmd)}'
+    msg = f'{shlex.join(ls_files_cmd)} | xargs -0 {shlex.join(sed_cmd)}'
     msg = args.commit_msg or msg
 
     repos, config, commit, autofix_settings = autofix_lib.from_cli(
