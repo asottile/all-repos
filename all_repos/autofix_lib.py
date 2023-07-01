@@ -117,8 +117,7 @@ def from_cli(
 
 
 def run(*cmd: str, **kwargs: Any) -> subprocess.CompletedProcess[str]:
-    cmdstr = ' '.join(shlex.quote(arg) for arg in cmd)
-    print(f'$ {cmdstr}', flush=True)
+    print(f'$ {shlex.join(cmd)}', flush=True)
     kwargs.setdefault('check', True)
     return subprocess.run(cmd, **kwargs)
 
