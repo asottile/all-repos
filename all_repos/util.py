@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Protocol
-else:
-    Protocol = object
+from typing import Protocol
 
 
 class NamedTupleProtocol(Protocol):
