@@ -28,10 +28,9 @@ def make_pull_request(
         branch_name: str,
 ) -> github_api.Response:
     headers = {'Authorization': f'token {load_api_key(settings)}'}
-
     remote_url = git.remote('.')
     _, _, repo_slug = remote_url.rpartition(':')
-
+    repo_slug = github_api._strip_trailing_dot_git(repo_slug)
     if settings.fork:
         resp = github_api.req(
             f'{settings.base_url}/repos/{repo_slug}/forks',
@@ -57,7 +56,6 @@ def make_pull_request(
         'base': autofix_lib.target_branch(),
         'head': head,
     }).encode()
-
     return github_api.req(
         f'{settings.base_url}/repos/{repo_slug}/pulls',
         data=data, headers=headers, method='POST',
