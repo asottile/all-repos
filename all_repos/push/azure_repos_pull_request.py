@@ -19,6 +19,7 @@ class Settings(NamedTuple):
     base_url: str = 'https://dev.azure.com'
     api_key: str | None = None
     api_key_env: str | None = None
+    draft: bool = False
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self)
@@ -53,6 +54,7 @@ def make_pull_request(
         'description': body.decode().strip(),
         'sourceRefName': f'refs/heads/{head}',
         'targetRefName': f'refs/heads/{autofix_lib.target_branch()}',
+        'isDraft': settings.draft,
     }).encode()
 
     pull_request_url = (
