@@ -82,5 +82,6 @@ def test_settings_repr():
         "    base_url='https://dev.azure.com',\n"
         '    api_key=...,\n'
         '    api_key_env=None,\n'
+        '    draft=False,\n'
         ')'
     )
