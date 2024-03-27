@@ -3,8 +3,11 @@ from __future__ import annotations
 import argparse
 import functools
 import os.path
+import platform
 import shlex
+import shutil
 import subprocess
+import sys
 from typing import Generator
 from typing import Sequence
 
@@ -13,6 +16,17 @@ from identify.identify import tags_from_path
 from all_repos import autofix_lib
 from all_repos.config import Config
 from all_repos.util import zsplit
+
+SED = 'sed'
+if platform.system() == 'Darwin':  # pragma: no cover
+    if not shutil.which('gsed'):
+        print(
+            'MacOS specific prerequisite missing, to install it run:'
+            ' brew install gnu-sed',
+        )
+        sys.exit(2)
+
+    SED = 'gsed'
 
 
 def find_repos(
@@ -44,7 +58,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             'Similar to a distributed '
-            '`git ls-files -z -- FILENAMES | xargs -0 sed -i EXPRESSION`.'
+            f'`git ls-files -z -- FILENAMES | xargs -0 {SED} -i EXPRESSION`.'
         ),
         usage='%(prog)s [options] EXPRESSION FILENAMES',
     )
@@ -62,7 +76,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         '--commit-msg', '--commit-message',
         help=(
             'override the autofixer commit message.  (default '
-            '`git ls-files -z -- FILENAMES | xargs -0 sed -i ... EXPRESSION`).'
+            '`git ls-files -z -- FILENAMES | '
+            f'xargs -0 {SED} -i ... EXPRESSION`).'
         ),
     )
     parser.add_argument(
@@ -79,7 +94,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         dash_r = ('-r',)
     else:
         dash_r = ()
-    sed_cmd = ('sed', '-i', *dash_r, args.expression)
+    sed_cmd = (SED, '-i', *dash_r, args.expression)
     ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
 
     msg = f'{shlex.join(ls_files_cmd)} | xargs -0 {shlex.join(sed_cmd)}'
