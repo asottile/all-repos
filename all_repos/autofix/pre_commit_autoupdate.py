@@ -15,7 +15,7 @@ from all_repos.grep import repos_matching
 
 
 @contextlib.contextmanager
-def tmp_pre_commit_home() -> Generator[None, None, None]:
+def tmp_pre_commit_home() -> Generator[None]:
     """During lots of autoupdates, many repositories will be cloned into the
     pre-commit directory.  This prevents leaving many MB/GB of repositories
     behind due to this autofixer.  This context creates a temporary directory

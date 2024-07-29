@@ -19,7 +19,7 @@ def find_repos(
         config: Config,
         *,
         ls_files_cmd: Sequence[str],
-) -> Generator[str, None, None]:
+) -> Generator[str]:
     for repo in config.get_cloned_repos():
         repo_dir = os.path.join(config.output_dir, repo)
         if subprocess.run(

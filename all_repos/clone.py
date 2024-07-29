@@ -17,7 +17,7 @@ from all_repos.config import load_config
 
 def _get_current_state_helper(
         path: str,
-) -> Generator[tuple[str, str], None, None]:
+) -> Generator[tuple[str, str]]:
     if not os.path.exists(path):
         return
 
