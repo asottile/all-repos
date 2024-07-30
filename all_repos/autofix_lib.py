@@ -152,7 +152,7 @@ def target_branch() -> str:
 
 
 @contextlib.contextmanager
-def repo_context(repo: str, *, use_color: bool) -> Generator[None, None, None]:
+def repo_context(repo: str, *, use_color: bool) -> Generator[None]:
     print(color.fmt(f'***{repo}', color.TURQUOISE_H, use_color=use_color))
     try:
         remote = git.remote(repo)
