@@ -10,10 +10,10 @@ import subprocess
 import sys
 import tempfile
 import traceback
+from collections.abc import Generator
+from collections.abc import Iterable
 from typing import Any
 from typing import Callable
-from typing import Generator
-from typing import Iterable
 from typing import NamedTuple
 from typing import NoReturn
 

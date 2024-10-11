@@ -5,8 +5,8 @@ import functools
 import os.path
 import shlex
 import subprocess
-from typing import Generator
-from typing import Sequence
+from collections.abc import Generator
+from collections.abc import Sequence
 
 from identify.identify import tags_from_path
 

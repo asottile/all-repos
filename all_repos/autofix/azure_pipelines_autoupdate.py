@@ -5,7 +5,7 @@ import functools
 import re
 import subprocess
 import tempfile
-from typing import Sequence
+from collections.abc import Sequence
 
 import yaml
 
@@ -26,7 +26,7 @@ def _clone(service: str, repo: str, path: str) -> None:
     subprocess.check_call(fetch, cwd=path)
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def _latest_tag(service: str, repo: str) -> str:
     with tempfile.TemporaryDirectory() as tmpdir:
         _clone(service, repo, tmpdir)

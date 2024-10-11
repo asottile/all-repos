@@ -5,7 +5,7 @@ import os.path
 import re
 import subprocess
 import sys
-from typing import Sequence
+from collections.abc import Sequence
 
 from all_repos import cli
 from all_repos import color
