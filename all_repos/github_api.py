@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 import urllib.request
 from typing import Any
-from typing import Dict
-from typing import List
 from typing import NamedTuple
 from typing import TypeVar
 
@@ -68,7 +66,7 @@ def filter_repos(
     }
 
 
-T = TypeVar('T', List[Any], Dict[str, Any], Any)
+T = TypeVar('T', list[Any], dict[str, Any], Any)
 
 
 def better_repr(obj: T) -> T:

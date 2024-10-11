@@ -4,10 +4,10 @@ import json
 import os
 import re
 import sys
+from re import Pattern
 from typing import Any
 from typing import Callable
 from typing import NamedTuple
-from typing import Pattern
 
 REPOS_JSON_FILES = frozenset(('repos.json', 'repos_filtered.json'))
 

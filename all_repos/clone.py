@@ -6,8 +6,8 @@ import json
 import os.path
 import shutil
 import subprocess
-from typing import Generator
-from typing import Sequence
+from collections.abc import Generator
+from collections.abc import Sequence
 
 from all_repos import cli
 from all_repos import git

@@ -5,9 +5,9 @@ import contextlib
 import os
 import sys
 import tempfile
+from collections.abc import Generator
+from collections.abc import Sequence
 from typing import Any
-from typing import Generator
-from typing import Sequence
 
 from all_repos import autofix_lib
 from all_repos.config import Config

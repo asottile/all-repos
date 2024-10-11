@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import functools
-from typing import Sequence
+from collections.abc import Sequence
 
 from all_repos import autofix_lib
 from all_repos.autofix._pre_commit_hook_migrate import apply_fix_fn

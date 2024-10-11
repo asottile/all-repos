@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from typing import Sequence
+from collections.abc import Sequence
 
 from all_repos import autofix_lib
 from all_repos.config import Config

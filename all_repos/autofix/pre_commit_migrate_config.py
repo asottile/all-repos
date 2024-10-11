@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import os.path
 import sys
-from typing import Sequence
+from collections.abc import Sequence
 
 import yaml
 from pre_commit.constants import CONFIG_FILE
