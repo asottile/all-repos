@@ -477,11 +477,12 @@ branch.
 
 #### Optional `push_settings`
 
+- `base_url` (default: `https://api.github.com`) is the base URL to the Github
+  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
+- `draft` (default: `false`) if true will open the pull request as a draft.
 - `fork` (default: `false`): (if applicable) a fork will be created and pushed
   to instead of the upstream repository.  The pull request will then be made
   to the upstream repository.
-- `base_url` (default: `https://api.github.com`) is the base URL to the Github
-  API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
 
 ### `all_repos.push.bitbucket_server_pull_request`
 
