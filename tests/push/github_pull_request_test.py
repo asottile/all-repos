@@ -50,6 +50,7 @@ def test_github_pull_request(mock_urlopen, fake_github_repo):
     assert data['title'] == 'This is a commit message'
     assert data['body'] == 'Here is some more information!'
     assert data['head'] == 'feature'
+    assert data['draft'] is False
 
 
 @pytest.fixture
@@ -96,5 +97,6 @@ def test_settings_repr():
         "    base_url='https://api.github.com',\n"
         '    api_key=...,\n'
         '    api_key_env=None,\n'
+        '    draft=False,\n'
         ')'
     )

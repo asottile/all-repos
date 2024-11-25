@@ -17,6 +17,7 @@ class Settings(NamedTuple):
     base_url: str = 'https://api.github.com'
     api_key: str | None = None
     api_key_env: str | None = None
+    draft: bool = False
 
     # TODO: https://github.com/python/mypy/issues/8543
     def __repr__(self) -> str:
@@ -56,6 +57,7 @@ def make_pull_request(
         'body': body.decode().strip(),
         'base': autofix_lib.target_branch(),
         'head': head,
+        'draft': settings.draft,
     }).encode()
 
     return github_api.req(

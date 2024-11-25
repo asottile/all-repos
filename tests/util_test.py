@@ -31,6 +31,7 @@ def test_hide_api_key_repr():
         "    base_url='https://api.github.com',\n"
         '    api_key=...,\n'
         '    api_key_env=None,\n'
+        '    draft=False,\n'
         ')'
     )
 
