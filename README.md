@@ -390,7 +390,7 @@ Clones all repositories from an organization on gitlab.
 - `api_key`: the api key which the user will log in as.
     - Use the settings tab (eg https://{gitlab.domain.com}/-/profile/personal_access_tokens) to create a
       personal access token.
-    - We need the scope: `read_api`, `read_repository`.
+    - We need the scope: `read_api`.
 - `api_key_env`: alternatively API key can also be passed via an environment variable
 - `org`: the organization to clone from
 
