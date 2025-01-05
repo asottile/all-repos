@@ -61,6 +61,13 @@ def add_repos_with_matches_arg(parser: ParserType) -> None:
     )
 
 
+def add_repos_without_matches_arg(parser: ParserType) -> None:
+    parser.add_argument(
+        '--repos-without-matches', action='store_true',
+        help='only print repositories without matches.',
+    )
+
+
 def add_output_paths_arg(parser: ParserType) -> None:
     parser.add_argument(
         '--output-paths', action='store_true',

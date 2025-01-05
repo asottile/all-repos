@@ -74,6 +74,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     cli.add_common_args(parser)
     cli.add_repos_with_matches_arg(parser)
+    cli.add_repos_without_matches_arg(parser)
     cli.add_output_paths_arg(parser)
     parser.add_argument('pattern', help='the python regex to match.')
     args = parser.parse_args(argv)
