@@ -8,7 +8,8 @@ import pytest
 from all_repos.config import load_config
 from all_repos.grep import grep
 from all_repos.grep import main
-from all_repos.grep import repos_matching, repos_not_matching
+from all_repos.grep import repos_matching
+from all_repos.grep import repos_not_matching
 
 
 def test_repos_matching(file_config_files):
@@ -70,7 +71,6 @@ def test_repos_not_matching_cli(file_config_files, capsys):
     assert ret == 1
     out, _ = capsys.readouterr()
     assert out == ''
-
 
     ret = main((
         '-C', str(file_config_files.cfg), '--repos-without-matches', 'OHAI',

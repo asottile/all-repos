@@ -43,6 +43,7 @@ def grep(config: Config, grep_args: Sequence[str]) -> dict[str, bytes]:
 def repos_matching(config: Config, grep_args: Sequence[str]) -> set[str]:
     return set(grep(config, ('--quiet', *grep_args)))
 
+
 def repos_not_matching(config: Config, grep_args: Sequence[str]) -> set[str]:
     grep_ret = set(grep(config, ('--quiet', *grep_args)))
     repos = [os.path.join(config.output_dir, repo) for repo in config.get_cloned_repos()]
