@@ -15,6 +15,7 @@ class Settings(NamedTuple):
     username: str
     app_password: str
     base_url: str
+    draft: bool = False
 
     @property
     def auth(self) -> str:
@@ -50,6 +51,7 @@ def make_pull_request(
         'state': 'OPEN',
         'open': True,
         'closed': False,
+        'draft': settings.draft,
         'fromRef': {
             'id': head,
             'repository': {
