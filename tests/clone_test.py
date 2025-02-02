@@ -108,9 +108,9 @@ def test_clones_all_branches_true(file_config):
     # initially we should not see multiple branches
     branch_out = subprocess.check_output((
         'git', '-C', str(file_config.output_dir.join('repo1')),
-        'branch', '--remote',
+        'for-each-ref', 'refs/remotes', "--format='%(refname:strip=2)'",
     )).decode()
-    assert branch_out == '  origin/main\n'
+    assert branch_out == "'origin/HEAD'\n'origin/main'\n"
 
     # set that we want to clone all branches
     cfg_contents = json.loads(file_config.cfg.read())
@@ -121,9 +121,9 @@ def test_clones_all_branches_true(file_config):
 
     branch_out = subprocess.check_output((
         'git', '-C', str(file_config.output_dir.join('repo1')),
-        'branch', '--remote',
+        'for-each-ref', 'refs/remotes', "--format='%(refname:strip=2)'",
     )).decode()
-    assert branch_out == '  origin/b2\n  origin/main\n'
+    assert branch_out == "'origin/HEAD'\n'origin/b2'\n'origin/main'\n"
 
 
 def test_it_sorts_filtered_repos(file_config):
