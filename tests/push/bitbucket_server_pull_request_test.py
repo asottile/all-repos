@@ -67,5 +67,6 @@ def test_settings_repr():
         "    username='cool_user',\n"
         '    app_password=...,\n'
         "    base_url='bitbucket.domain.com',\n"
+        '    draft=False,\n'
         ')'
     )
