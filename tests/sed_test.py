@@ -41,3 +41,17 @@ def test_main_custom_file_pattern(file_config_files):
     assert file_config_files.dir1.join('f').read() == 'OHAI\n'
     assert file_config_files.dir1.join('g').read() == 'OHIE\n'
     assert file_config_files.dir2.join('f').read() == 'OHELLO\n'
+
+
+def test_main_multiple_file_pattern(file_config_files):
+    write_file_commit(file_config_files.dir1, 'g', 'OHAI\n')
+    write_file_commit(file_config_files.dir1, 'h', 'OHAI\n')
+    clone.main(('--config-filename', str(file_config_files.cfg)))
+    assert not main((
+        '--config-filename', str(file_config_files.cfg),
+        's/AI/IE/g', 'g', 'f',
+    ))
+    assert file_config_files.dir1.join('f').read() == 'OHIE\n'
+    assert file_config_files.dir1.join('g').read() == 'OHIE\n'
+    assert file_config_files.dir1.join('h').read() == 'OHAI\n'
+    assert file_config_files.dir2.join('f').read() == 'OHELLO\n'

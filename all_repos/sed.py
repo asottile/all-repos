@@ -69,7 +69,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         'expression', help='sed program. For example: `s/hi/hello/g`.',
     )
     parser.add_argument(
-        'filenames', help='filenames glob (passed to `git ls-files`).',
+        'filenames', nargs='+',
+        help='filenames glob (passed to `git ls-files`).',
     )
     args = parser.parse_args(argv)
 
@@ -80,7 +81,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         dash_r = ()
     sed_cmd = ('sed', '-i', *dash_r, args.expression)
-    ls_files_cmd = ('git', 'ls-files', '-z', '--', args.filenames)
+    ls_files_cmd = ('git', 'ls-files', '-z', '--', *args.filenames)
 
     msg = f'{shlex.join(ls_files_cmd)} | xargs -0 {shlex.join(sed_cmd)}'
     msg = args.commit_msg or msg
