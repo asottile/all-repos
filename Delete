@@ -1,0 +1,10 @@
+$ git rm readme.md
+$ git commit
+$ git push
+
+$ git rm master
+$ git commit
+$ git push
+
+delete all data
+childapend
