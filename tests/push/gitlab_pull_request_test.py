@@ -10,8 +10,11 @@ from testing.auto_namedtuple import auto_namedtuple
 from testing.git import init_repo
 
 
-@pytest.fixture
-def fake_gitlab_repo(tmpdir):
+@pytest.fixture(
+    params=[{}, {'draft': True}, {'assignee_ids': [1, 2]}],
+    ids=['no-optional', 'draft', 'assignees'],
+)
+def fake_gitlab_repo(tmpdir, request):
     # hax: make the repo end with :repo/slug so it "looks" like a gitlab repo
     src = tmpdir.join('repo:user/slug')
     init_repo(src)
@@ -25,7 +28,7 @@ def fake_gitlab_repo(tmpdir):
         'git', '-C', dest, 'commit', '--allow-empty',
         '-m', 'This is a commit message\n\nHere is some more information!',
     ))
-    settings = gitlab_pull_request.Settings(api_key='fake')
+    settings = gitlab_pull_request.Settings(api_key='fake', **request.param)
     return auto_namedtuple(src=src, dest=dest, settings=settings)
 
 
@@ -50,10 +53,16 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
     )
     assert req.method == 'POST'
     data = json.loads(req.data)
-    assert data['title'] == 'This is a commit message'
+
+    expected_title = 'This is a commit message'
+    if fake_gitlab_repo.settings.draft:
+        expected_title = 'Draft: This is a commit message'
+
+    assert data['title'] == expected_title
     assert data['description'] == 'Here is some more information!'
     assert data['target_branch'] == 'main'
     assert data['source_branch'] == 'feature'
+    assert data['assignee_ids'] == fake_gitlab_repo.settings.assignee_ids
 
 
 @pytest.fixture
