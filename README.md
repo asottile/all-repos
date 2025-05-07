@@ -514,6 +514,11 @@ Pushes the branch to `origin` and then creates a GitLab pull request for the bra
     - We need the scope: `write_repository`.
 - `api_key_env`: alternatively API key can also be passed via an environment variable
 
+#### Optional `push_settings`
+
+- `draft` (default: `false`) if true will open the pull request as a draft.
+    - If `true`, the prefix `Draft` will be added to the title.
+
 ### `all_repos.push.readonly`
 
 Does nothing.

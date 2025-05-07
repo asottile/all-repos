@@ -83,9 +83,8 @@ def test_settings_repr():
         'Settings(\n'
         "    base_url='https://gitlab.com/api/v4',\n"
         '    fork=False,\n'
-
         '    api_key=...,\n'
-
         '    api_key_env=None,\n'
+        '    draft=False,\n'
         ')'
     )
