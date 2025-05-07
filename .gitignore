@@ -3,3 +3,5 @@
 /.coverage
 /.tox
 .vscode
+.venv
+build
