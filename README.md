@@ -518,6 +518,7 @@ Pushes the branch to `origin` and then creates a GitLab pull request for the bra
 
 - `draft` (default: `false`) if true will open the pull request as a draft.
     - If `true`, the prefix `Draft` will be added to the title.
+- `assignee_ids` (default: `None`): the IDs (integer) of the users to assign the merge request to.
 
 ### `all_repos.push.readonly`
 

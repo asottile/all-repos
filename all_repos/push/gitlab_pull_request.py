@@ -25,6 +25,7 @@ class Settings(NamedTuple):
     api_key: str | None = None
     api_key_env: str | None = None
     draft: bool = False
+    assignee_ids: list[int] | None = None
 
     def __repr__(self) -> str:
         return hide_api_key_repr(self)
@@ -65,6 +66,7 @@ def push(settings: Settings, branch_name: str) -> None:
         'title': mr_title,
         'description': body.decode().strip(),
         'remove_source_branch': True,
+        'assignee_ids': settings.assignee_ids,
     }).encode()
 
     resp = gitlab_api.req(
