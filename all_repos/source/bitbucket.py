@@ -11,6 +11,7 @@ class Settings(NamedTuple):
     username: str
     app_password: str
     query: str = ''
+    include_workspace: bool = True
 
     @property
     def auth(self) -> str:
@@ -28,7 +29,8 @@ def list_repos(settings: Settings) -> dict[str, str]:
         headers={'Authorization': f'Basic {settings.auth}'},
     )
 
+    path_name_key = 'full_name' if settings.include_workspace else 'slug'
     return {
-        repo['full_name']: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
+        repo[path_name_key]: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
         for repo in repos
     }
