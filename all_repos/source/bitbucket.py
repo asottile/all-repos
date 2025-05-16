@@ -25,12 +25,13 @@ class Settings(NamedTuple):
 
 def list_repos(settings: Settings) -> dict[str, str]:
     repos = bitbucket_api.get_all(
-        f'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member&q={settings.query}',
+        'https://api.bitbucket.org/2.0/repositories'
+        f'?pagelen=100&role=member&q={settings.query}',
         headers={'Authorization': f'Basic {settings.auth}'},
     )
 
-    path_name_key = 'full_name' if settings.include_workspace else 'slug'
+    key = 'full_name' if settings.include_workspace else 'slug'
     return {
-        repo[path_name_key]: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
+        repo[key]: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
         for repo in repos
     }
