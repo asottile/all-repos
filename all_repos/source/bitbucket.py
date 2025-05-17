@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 from typing import NamedTuple
+import urllib.parse
 
 from all_repos import bitbucket_api
 from all_repos.util import hide_api_key_repr
@@ -24,9 +25,10 @@ class Settings(NamedTuple):
 
 
 def list_repos(settings: Settings) -> dict[str, str]:
+    query = urllib.parse.quote_plus(settings.query)
     repos = bitbucket_api.get_all(
         'https://api.bitbucket.org/2.0/repositories'
-        f'?pagelen=100&role=member&q={settings.query}',
+        f'?pagelen=100&role=member&q={query}',
         headers={'Authorization': f'Basic {settings.auth}'},
     )
 
