@@ -499,6 +499,7 @@ Pushes the branch to `origin` and then creates a Bitbucket pull request for the 
 #### Optional `push_settings`
 
 - `draft` (default: `false`) if true will open the pull request as a draft.
+- `reviewers` (default: `None`) is the list of user names who are responsible for reviewing the PR.
 
 
 ### `all_repos.push.gitlab_pull_request`

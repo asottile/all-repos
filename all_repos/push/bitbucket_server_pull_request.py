@@ -16,6 +16,7 @@ class Settings(NamedTuple):
     app_password: str
     base_url: str
     draft: bool = False
+    reviewers: list[str] | None = None
 
     @property
     def auth(self) -> str:
@@ -71,7 +72,10 @@ def make_pull_request(
             },
         },
         'locked': False,
-        'reviewers': [],
+        'reviewers': [
+            {'user': {'name': reviewer}}
+            for reviewer in (settings.reviewers or [])
+        ],
     }).encode()
 
     end_point = f'projects/{project}/repos/{repo_slug}/pull-requests'
