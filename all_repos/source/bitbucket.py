@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import urllib.parse
 from typing import NamedTuple
 
 from all_repos import bitbucket_api
@@ -10,6 +11,8 @@ from all_repos.util import hide_api_key_repr
 class Settings(NamedTuple):
     username: str
     app_password: str
+    query: str = ''
+    include_workspace: bool = True
 
     @property
     def auth(self) -> str:
@@ -22,12 +25,15 @@ class Settings(NamedTuple):
 
 
 def list_repos(settings: Settings) -> dict[str, str]:
+    query = urllib.parse.quote_plus(settings.query)
     repos = bitbucket_api.get_all(
-        'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member',
+        'https://api.bitbucket.org/2.0/repositories'
+        f'?pagelen=100&role=member&q={query}',
         headers={'Authorization': f'Basic {settings.auth}'},
     )
 
+    key = 'full_name' if settings.include_workspace else 'slug'
     return {
-        repo['full_name']: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
+        repo[key]: 'git@bitbucket.org:{}.git'.format(repo['full_name'])
         for repo in repos
     }
