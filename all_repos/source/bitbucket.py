@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import base64
-from typing import NamedTuple
 import urllib.parse
+from typing import NamedTuple
 
 from all_repos import bitbucket_api
 from all_repos.util import hide_api_key_repr
