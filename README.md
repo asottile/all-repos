@@ -350,6 +350,12 @@ Clones all repositories available to a user on Bitbucket Cloud.
     - Create an application password within your [account settings](https://bitbucket.org/account/admin/app-passwords).
     - We need the scope: Repositories -> Read
 
+#### Optional `source_settings`
+
+- `query` (default `''`): the query used to filter Bitbucket repositories, as described in the
+  [Bitbucket documentation](https://developer.atlassian.com/cloud/bitbucket/rest/intro/#querying).
+- `include_workspace` (default `True`): whether to include or not the namespace
+  in the pulled repo path.
 
 ### `all_repos.source.bitbucket_server`
 
