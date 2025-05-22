@@ -202,6 +202,7 @@ follows:
 
 ```
 output/
++--- .all-repos
 +--- repos.json
 +--- repos_filtered.json
 +--- {repo_key1}/
@@ -237,6 +238,7 @@ Clones all repositories available to a user on github.
 
 ```
 output/
++--- .all-repos
 +--- repos.json
 +--- repos_filtered.json
 +--- {username1}/
@@ -331,6 +333,7 @@ configured here in order to query that API.
 
 ```
 output/
++--- .all-repos
 +--- repos.json
 +--- repos_filtered.json
 +--- {repo_name1}.git/
@@ -372,6 +375,7 @@ Clones all repositories available to a user on Bitbucket Server.
 
 ```
 output/
++--- .all-repos
 +--- repos.json
 +--- repos_filtered.json
 +--- {username1}/
@@ -403,6 +407,7 @@ Clones all repositories from an organization on gitlab.
 
 ```
 output/
++--- .all-repos
 +--- repos.json
 +--- repos_filtered.json
 +--- {org}/
