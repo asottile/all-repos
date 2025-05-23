@@ -112,32 +112,50 @@ def main(argv: Sequence[str] | None = None) -> int:
     }
 
     # If the previous `repos.json` / `repos_filtered.json` files exist
-    # remove them.
+    # backup them.
     for path in (config.repos_path, config.repos_filtered_path):
         if os.path.exists(path):
-            os.remove(path)
+            os.rename(path, path + '.bak')
 
-    current_repos = set(_get_current_state(config.output_dir).items())
-    filtered_repos = set(repos_filtered.items())
+    try:
+        current_repos = set(_get_current_state(config.output_dir).items())
+        filtered_repos = set(repos_filtered.items())
 
-    # Remove old no longer cloned repositories
-    for path, _ in current_repos - filtered_repos:
-        _remove(config.output_dir, path)
+        # Remove old no longer cloned repositories
+        for path, _ in current_repos - filtered_repos:
+            _remove(config.output_dir, path)
 
-    for path, remote in filtered_repos - current_repos:
-        _init(config.output_dir, path, remote)
+        for path, remote in filtered_repos - current_repos:
+            _init(config.output_dir, path, remote)
 
-    fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
-    todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
-    with mapper.thread_mapper(args.jobs) as do_map:
-        mapper.exhaust(do_map(fn, todo))
+        fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
+        todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
+        with mapper.thread_mapper(args.jobs) as do_map:
+            mapper.exhaust(do_map(fn, todo))
 
-    # write these last
-    os.makedirs(config.output_dir, exist_ok=True)
-    with open(config.repos_path, 'w') as f:
-        f.write(json.dumps(repos))
-    with open(config.repos_filtered_path, 'w') as f:
-        f.write(json.dumps(repos_filtered))
+        # write these last
+        os.makedirs(config.output_dir, exist_ok=True)
+        with open(config.repos_path, 'w') as f:
+            f.write(json.dumps(repos))
+        with open(config.repos_filtered_path, 'w') as f:
+            f.write(json.dumps(repos_filtered))
+    except (KeyboardInterrupt, Exception):
+        print('Aborting...')
+        for path in (config.repos_path, config.repos_filtered_path):
+            bkp_path = path + '.bak'
+            if not os.path.exists(path):
+                os.rename(bkp_path, path)
+                print(f'Restored {path}')
+            else:
+                os.remove(bkp_path)
+                print(f"New {path} already exists. Removed {bkp_path}")
+    else:
+        # Remove backed up `repos.json` / `repos_filtered.json` files
+        for path in (config.repos_path, config.repos_filtered_path):
+            bkp_path = path + '.bak'
+            if os.path.exists(bkp_path):
+                os.remove(bkp_path)
+
     return 0
 
 
