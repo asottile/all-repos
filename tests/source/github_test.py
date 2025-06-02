@@ -75,6 +75,7 @@ def test_settings_repr():
         "    base_url='https://api.github.com',\n"
         '    api_key=...,\n'
         '    api_key_env=None,\n'
+        '    ssh=True,\n'
         ')'
     )
 

@@ -32,6 +32,7 @@ def test_hide_api_key_repr():
         '    api_key=...,\n'
         '    api_key_env=None,\n'
         '    draft=False,\n'
+        "    push='origin',\n"
         ')'
     )
 

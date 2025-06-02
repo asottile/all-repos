@@ -52,10 +52,13 @@ def _strip_trailing_dot_git(ssh_url: str) -> str:
 
 def filter_repos(
         repos: list[dict[str, Any]], *,
+        ssh: bool,
         forks: bool, private: bool, collaborator: bool, archived: bool,
 ) -> dict[str, str]:
     return {
-        repo['full_name']: _strip_trailing_dot_git(repo['ssh_url'])
+        repo['full_name']: _strip_trailing_dot_git(
+            repo['ssh_url' if ssh else 'clone_url'],
+        )
         for repo in repos
         if (
             (forks or not repo['fork']) and

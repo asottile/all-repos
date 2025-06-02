@@ -16,6 +16,7 @@ class Settings(NamedTuple):
     base_url: str = 'https://api.github.com'
     api_key: str | None = None
     api_key_env: str | None = None
+    ssh: bool = True
 
     # TODO: https://github.com/python/mypy/issues/8543
     def __repr__(self) -> str:
@@ -29,6 +30,7 @@ def list_repos(settings: Settings) -> dict[str, str]:
     )
     return github_api.filter_repos(
         repos,
+        ssh=settings.ssh,
         forks=settings.forks,
         private=settings.private,
         collaborator=settings.collaborator,
