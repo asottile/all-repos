@@ -232,7 +232,7 @@ Clones all repositories available to a user on github.
 - `archived` (default: `false`): whether to include archived repositories.
 - `base_url` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
-- `ssh` (default: `true`): whether to use SSH to clone the repo (in place of HTTP)
+- `ssh` (default: `true`): whether to use SSH to clone the repo (rather than HTTP)
 
 #### Directory location
 
@@ -269,7 +269,7 @@ Clones all repositories forked from a repository on github.
 - `archived` (default: `false`): whether to include archived repositories.
 - `base_url` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
-- `ssh` (default: `true`): whether to use SSH to clone the repo (in place of HTTP)
+- `ssh` (default: `true`): whether to use SSH to clone the repo (rather than HTTP)
 
 #### Directory location
 
@@ -300,7 +300,7 @@ Clones all repositories from an organization on github.
 - `archived` (default: `false`): whether to include archived repositories.
 - `base_url` (default: `https://api.github.com`) is the base URL to the Github
   API to use (for Github Enterprise support set this to `https://{your_domain}/api/v3`).
-- `ssh` (default: `true`): whether to use SSH to clone the repo (in place of HTTP)
+- `ssh` (default: `true`): whether to use SSH to clone the repo (rather than HTTP)
 
 #### Directory location
 
