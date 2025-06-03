@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 
+import pytest
+
 from all_repos.clone import main
+from all_repos.clone import safe_write_json
 from testing.git import revparse
 
 
@@ -137,3 +141,28 @@ def test_it_sorts_filtered_repos(file_config):
     repos_filtered = file_config.output_dir.join('repos_filtered.json')
     repos_filtered = json.loads(repos_filtered.read())
     assert sorted(repos_filtered) == list(repos_filtered)
+
+
+def test_safe_write_json_catches_sigint(file_config):
+    os.mkdir(file_config.output_dir)
+    repos = file_config.output_dir.join('repos.json')
+    repos_filtered = file_config.output_dir.join('repos_filtered.json')
+
+    with safe_write_json((repos, repos_filtered)):
+        raise KeyboardInterrupt
+
+    assert repos.read() == '{}'
+    assert repos_filtered.read() == '{}'
+
+
+def test_safe_write_json_reraises(file_config):
+    os.mkdir(file_config.output_dir)
+    repos = file_config.output_dir.join('repos.json')
+    repos_filtered = file_config.output_dir.join('repos_filtered.json')
+
+    with pytest.raises(ValueError):
+        with safe_write_json((repos, repos_filtered)):
+            raise ValueError
+
+    assert repos.read() == '{}'
+    assert repos_filtered.read() == '{}'

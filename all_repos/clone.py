@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import functools
 import json
 import os.path
@@ -91,6 +92,22 @@ def _fetch_reset(path: str, *, all_branches: bool) -> None:
         print(f'Error fetching {path}')
 
 
+@contextlib.contextmanager
+def safe_write_json(paths: tuple[str, str]) -> Generator[None]:
+    try:
+        yield
+    except KeyboardInterrupt:
+        print('Aborting...')
+        for path in paths:
+            with open(path, 'w') as f:
+                f.write('{}')
+    except Exception:
+        for path in paths:
+            with open(path, 'w') as f:
+                f.write('{}')
+        raise
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -117,27 +134,29 @@ def main(argv: Sequence[str] | None = None) -> int:
         if os.path.exists(path):
             os.remove(path)
 
-    current_repos = set(_get_current_state(config.output_dir).items())
-    filtered_repos = set(repos_filtered.items())
+    with safe_write_json((config.repos_path, config.repos_filtered_path)):
+        current_repos = set(_get_current_state(config.output_dir).items())
+        filtered_repos = set(repos_filtered.items())
 
-    # Remove old no longer cloned repositories
-    for path, _ in current_repos - filtered_repos:
-        _remove(config.output_dir, path)
+        # Remove old no longer cloned repositories
+        for path, _ in current_repos - filtered_repos:
+            _remove(config.output_dir, path)
 
-    for path, remote in filtered_repos - current_repos:
-        _init(config.output_dir, path, remote)
+        for path, remote in filtered_repos - current_repos:
+            _init(config.output_dir, path, remote)
 
-    fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
-    todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
-    with mapper.thread_mapper(args.jobs) as do_map:
-        mapper.exhaust(do_map(fn, todo))
+        fn = functools.partial(_fetch_reset, all_branches=config.all_branches)
+        todo = [os.path.join(config.output_dir, p) for p in repos_filtered]
+        with mapper.thread_mapper(args.jobs) as do_map:
+            mapper.exhaust(do_map(fn, todo))
 
-    # write these last
-    os.makedirs(config.output_dir, exist_ok=True)
-    with open(config.repos_path, 'w') as f:
-        f.write(json.dumps(repos))
-    with open(config.repos_filtered_path, 'w') as f:
-        f.write(json.dumps(repos_filtered))
+        # write these last
+        os.makedirs(config.output_dir, exist_ok=True)
+        with open(config.repos_path, 'w') as f:
+            f.write(json.dumps(repos))
+        with open(config.repos_filtered_path, 'w') as f:
+            f.write(json.dumps(repos_filtered))
+
     return 0
 
 
