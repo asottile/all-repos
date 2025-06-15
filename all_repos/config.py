@@ -53,13 +53,18 @@ def _check_output_dir(output_dir: str) -> None:
         if not contents:  # empty dir is ok!
             return
 
-        if not (
+        if '.all-repos' in contents:
+            return
+
+        if (
                 contents >= REPOS_JSON_FILES and
                 all(
                     os.path.isdir(os.path.join(output_dir, d))
                     for d in contents - REPOS_JSON_FILES
                 )
         ):
+            open(os.path.join(output_dir, '.all-repos'), 'w').close()
+        else:
             raise SystemExit(
                 'output_dir should only contain repos.json, '
                 'repos_filtered.json, and directories',
