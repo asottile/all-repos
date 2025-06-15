@@ -138,6 +138,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         f.write(json.dumps(repos))
     with open(config.repos_filtered_path, 'w') as f:
         f.write(json.dumps(repos_filtered))
+    open(os.path.join(config.output_dir, '.all-repos'), 'w').close()
     return 0
 
 
