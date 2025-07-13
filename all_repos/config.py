@@ -53,6 +53,9 @@ def _check_output_dir(output_dir: str) -> None:
         if not contents:  # empty dir is ok!
             return
 
+        if '.all-repos' in contents:
+            return
+
         if not (
                 contents >= REPOS_JSON_FILES and
                 all(
