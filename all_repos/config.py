@@ -4,9 +4,9 @@ import json
 import os
 import re
 import sys
+from collections.abc import Callable
 from re import Pattern
 from typing import Any
-from typing import Callable
 from typing import NamedTuple
 
 REPOS_JSON_FILES = frozenset(('repos.json', 'repos_filtered.json'))
