@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import concurrent.futures
 import contextlib
+from collections.abc import Callable
 from collections.abc import Generator
 from collections.abc import Iterable
-from typing import Callable
 from typing import ContextManager
 from typing import TypeVar
 
