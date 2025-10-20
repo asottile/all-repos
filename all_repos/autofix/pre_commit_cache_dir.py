@@ -8,16 +8,26 @@ from all_repos import autofix_lib
 from all_repos.config import Config
 from all_repos.grep import repos_matching
 
-
-APPVEYOR = 'appveyor.yml'
-TRAVIS = '.travis.yml'
+REPLACES = (
+    (
+        'appveyor.yml',
+        r'%USERPROFILE%\.pre-commit',
+        r'%USERPROFILE%\.cache\pre-commit',
+    ),
+    (
+        '.travis.yml',
+        '$HOME/.pre-commit',
+        '$HOME/.cache/pre-commit',
+    ),
+)
 
 
 def find_repos(config: Config) -> set[str]:
-    return (
-        repos_matching(config, ('$HOME/.pre-commit', '--', TRAVIS)) |
-        repos_matching(config, (r'%USERPROFILE%\\.pre-commit', '--', APPVEYOR))
-    )
+    return {
+        repo
+        for fname, pattern, _ in REPLACES
+        for repo in repos_matching(config, ('-F', pattern, '--', fname))
+    }
 
 
 def _replace_if_exists(filename: str, s1: str, s2: str) -> None:
@@ -30,11 +40,8 @@ def _replace_if_exists(filename: str, s1: str, s2: str) -> None:
 
 
 def apply_fix() -> None:
-    _replace_if_exists(TRAVIS, '$HOME/.pre-commit', '$HOME/.cache/pre-commit')
-    _replace_if_exists(
-        APPVEYOR,
-        r'%USERPROFILE%\.pre-commit', r'%USERPROFILE%\.cache\pre-commit',
-    )
+    for fname, find, replace in REPLACES:
+        _replace_if_exists(fname, find, replace)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
