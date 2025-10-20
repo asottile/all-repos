@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+from unittest import mock
+
 from all_repos import clone
 from all_repos.autofix.pre_commit_cache_dir import main
 from testing.git import write_file_commit
@@ -66,3 +69,13 @@ def test_main(file_config_files):
         r"  - '%LOCALAPPDATA%\pip\cache'\n"
         r"  - '%USERPROFILE%\.cache\pre-commit'\n"
     )
+
+
+def test_with_extended_regexp(file_config_files):
+    git_env = {
+        'GIT_CONFIG_COUNT': '1',
+        'GIT_CONFIG_KEY_0': 'grep.extendedRegexp',
+        'GIT_CONFIG_VALUE_0': 'true',
+    }
+    with mock.patch.dict(os.environ, git_env):
+        test_main(file_config_files)
