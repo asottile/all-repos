@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-import urllib.parse
 from typing import NamedTuple
 
 from all_repos import autofix_lib
@@ -35,12 +34,14 @@ def push(settings: Settings, branch_name: str) -> None:
     remote_url = git.remote('.')
     _, _, repo_slug = remote_url.rpartition(':')
     repo_slug = _strip_trailing_dot_git(repo_slug)
-    repo_slug = urllib.parse.quote(repo_slug, safe='')
     if settings.fork:
         raise NotImplementedError('fork support  not yet implemented')
     else:
         remote = 'origin'
         head = branch_name
+
+    # Resolve project slug to avoid reverse-proxy slug resolution issues
+    project_id = gitlab_api.get_project_id(settings, repo_slug)
 
     autofix_lib.run('git', 'push', remote, f'HEAD:{head}', '--quiet')
 
@@ -56,7 +57,7 @@ def push(settings: Settings, branch_name: str) -> None:
     }).encode()
 
     resp = gitlab_api.req(
-        f'{settings.base_url}/projects/{repo_slug}/merge_requests',
+        f'{settings.base_url}/projects/{project_id}/merge_requests',
         data=data, headers=headers, method='POST',
     )
     url = resp.json['web_url']

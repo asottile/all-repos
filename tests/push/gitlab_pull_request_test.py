@@ -31,7 +31,9 @@ def fake_gitlab_repo(tmpdir):
 
 def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
     resp = {'web_url': 'https://example/com'}
-    mock_urlopen.return_value.read.return_value = json.dumps(resp).encode()
+    mock_urlopen.return_value.read.side_effect = [
+        json.dumps({'id': 123}).encode(), json.dumps(resp).encode(),
+    ]
 
     with fake_gitlab_repo.dest.as_cwd():
         gitlab_pull_request.push(fake_gitlab_repo.settings, 'feature')
@@ -46,7 +48,7 @@ def test_gitlab_pull_request(mock_urlopen, fake_gitlab_repo):
     (req,), _ = mock_urlopen.call_args
     assert req.get_full_url() == (
         'https://gitlab.com/api/v4/projects'
-        '/user%2Fslug/merge_requests'
+        '/123/merge_requests'
     )
     assert req.method == 'POST'
     data = json.loads(req.data)

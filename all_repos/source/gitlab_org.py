@@ -19,14 +19,17 @@ class Settings(NamedTuple):
 
 
 LIST_REPOS_URL = (
-    '{settings.base_url}/groups/'
-    '{settings.org}/projects?with_shared=False&include_subgroups=true'
+    '{base_url}/groups/'
+    '{org_id}/projects?with_shared=False&include_subgroups=true'
 )
 
 
 def list_repos(settings: Settings) -> dict[str, str]:
+    # Resolve group slug to avoid reverse-proxy slug resolution issues
+    group_id = gitlab_api.get_group_id(settings)
+    url = LIST_REPOS_URL.format(base_url=settings.base_url, org_id=group_id)
     repos = gitlab_api.get_all(
-        LIST_REPOS_URL.format(settings=settings),
+        url,
         headers={'Private-Token': load_api_key(settings)},
     )
     return gitlab_api.filter_repos_from_settings(repos, settings)

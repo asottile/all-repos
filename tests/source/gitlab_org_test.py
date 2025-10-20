@@ -18,8 +18,11 @@ def _resource_json(name):
 @pytest.fixture
 def repos_response(mock_urlopen):
     mock_urlopen.side_effect = urlopen_side_effect({
-        'https://gitlab.com/api/v4/groups/ronny-test/'
-        'projects?with_shared=False&include_subgroups=true': FakeResponse(
+        'https://gitlab.com/api/v4/groups/ronny-test': FakeResponse(
+            json.dumps({'id': 12345}).encode(),
+        ),
+        'https://gitlab.com/api/v4/groups/12345/projects?'
+        'with_shared=False&include_subgroups=true': FakeResponse(
             json.dumps(_resource_json('org-listing')).encode(),
         ),
     })
