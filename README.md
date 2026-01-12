@@ -151,7 +151,7 @@ A configuration file looks roughly like this:
 {
     "output_dir": "output",
     "source": "all_repos.source.github",
-    "source_settings":  {
+    "source_settings": {
         "api_key": "...",
         "username": "asottile"
     },
