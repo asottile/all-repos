@@ -10,6 +10,7 @@ from all_repos.util import hide_api_key_repr
 class Settings(NamedTuple):
     username: str
     app_password: str
+    workspace: str
 
     @property
     def auth(self) -> str:
@@ -22,8 +23,12 @@ class Settings(NamedTuple):
 
 
 def list_repos(settings: Settings) -> dict[str, str]:
+    url = (
+        f'https://api.bitbucket.org/2.0/repositories/'
+        f'{settings.workspace}?pagelen=100&role=member'
+    )
     repos = bitbucket_api.get_all(
-        'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member',
+        url,
         headers={'Authorization': f'Basic {settings.auth}'},
     )
 

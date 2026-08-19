@@ -17,7 +17,10 @@ def _resource_json():
 
 @pytest.fixture
 def repos_response(mock_urlopen):
-    url = 'https://api.bitbucket.org/2.0/repositories?pagelen=100&role=member'
+    url = (
+        'https://api.bitbucket.org/2.0/repositories/my_workspace'
+        '?pagelen=100&role=member'
+    )
     mock_urlopen.side_effect = urlopen_side_effect({
         url: FakeResponse(json.dumps(_resource_json()).encode()),
     })
@@ -25,7 +28,7 @@ def repos_response(mock_urlopen):
 
 @pytest.mark.usefixtures('repos_response')
 def test_list_repos():
-    settings = Settings('cool_user', 'app_password')
+    settings = Settings('cool_user', 'app_password', 'my_workspace')
     ret = list_repos(settings)
     assert ret == {
         'fake_org/fake_repo': 'git@bitbucket.org:fake_org/fake_repo.git',
@@ -33,9 +36,10 @@ def test_list_repos():
 
 
 def test_settings_repr():
-    assert repr(Settings('cool_user', 'app_password')) == (
+    assert repr(Settings('cool_user', 'app_password', 'my_workspace')) == (
         'Settings(\n'
         "    username='cool_user',\n"
         '    app_password=...,\n'
+        "    workspace='my_workspace',\n"
         ')'
     )
