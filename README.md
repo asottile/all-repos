@@ -348,6 +348,7 @@ Clones all repositories available to a user on Bitbucket Cloud.
 
 #### Required `source_settings`
 
+- `workspace`: your Bitbucket workspace ID
 - `username`: the Bitbucket username you will log in as.
 - `app_password`: the authentication method for the above user to login with
     - Create an application password within your [account settings](https://bitbucket.org/account/admin/app-passwords).
