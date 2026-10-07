@@ -7,12 +7,12 @@ import importlib.metadata
 import os
 import shlex
 import subprocess
-import sys
 import tempfile
 import traceback
 from collections.abc import Callable
 from collections.abc import Generator
 from collections.abc import Iterable
+from contextlib import chdir
 from typing import Any
 from typing import NamedTuple
 from typing import NoReturn
@@ -25,11 +25,6 @@ from all_repos import git
 from all_repos import mapper
 from all_repos.config import Config
 from all_repos.config import load_config
-
-if sys.version_info >= (3, 11):  # pragma: >=3.11 cover
-    from contextlib import chdir
-else:  # pragma: <3.11 cover
-    from contextlib_chdir import chdir
 
 
 def add_fixer_args(parser: argparse.ArgumentParser) -> None:
