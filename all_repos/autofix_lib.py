@@ -12,7 +12,6 @@ import traceback
 from collections.abc import Callable
 from collections.abc import Generator
 from collections.abc import Iterable
-from contextlib import chdir
 from typing import Any
 from typing import NamedTuple
 from typing import NoReturn
@@ -153,7 +152,7 @@ def repo_context(repo: str, *, use_color: bool) -> Generator[None]:
         remote = git.remote(repo)
         with tempfile.TemporaryDirectory() as tmpdir:
             run('git', 'clone', '--quiet', repo, tmpdir)
-            with chdir(tmpdir):
+            with contextlib.chdir(tmpdir):
                 run('git', 'remote', 'set-url', 'origin', remote)
                 run('git', 'fetch', '--prune', '--quiet')
                 yield
